@@ -3,6 +3,7 @@ from langchain_ollama import ChatOllama # langchain allows prompts to be sent to
 from langchain_ollama.llms import OllamaLLM # useful for one time questions 
 from langchain_core.prompts import ChatPromptTemplate , MessagesPlaceholder, HumanMessagePromptTemplate, SystemMessagePromptTemplate
 from langchain.memory import ConversationBufferMemory
+from services.fetching_functions import get_all_messages_4_doc
 
 
 #TODO: set up the single response LLM to be for specific uses
@@ -15,8 +16,6 @@ DocBrain = ChatOllama(model="llama3.2", temperature=0.3)
 #temp has to do with how accurate the response is from the AI, less imaginative
 #num_predict makes controls the amount of words the LLM can output back to the user
 
-# Create the memory to hold onto the conversation / chat_history 
-DocsMemory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, format="json")
 
 DocsPrompt = ChatPromptTemplate.from_messages([
     # Doc's Purpose
@@ -34,22 +33,20 @@ DocsPrompt = ChatPromptTemplate.from_messages([
 # Put all the pieces of the llm together
 
 #function to get make for Docs processing process
-def getKnowledgeFromDoc(user_input : str): # get input from the user that doc should look into
+def getKnowledgeFromDoc(user_input : str, session_id: str): # get input from the user that doc should look into
+    # use the data fetching function I made to get the messages and sort them so that I can add them as chat history
+    message_history = get_all_messages_4_doc(session_id=session_id) # get the information if there is any in the DB
 
     # Use the prompt to input the necessary variable into the prompt to finally send to doc
-    prompt = DocsPrompt.format(
+    prompt = DocsPrompt.format( # format the prompt for Doc to use
         user_input=user_input,
-        chat_history=DocsMemory.chat_memory.messages# todo: update to new LangGraph memory method to be able to store memory for multiple different users
-        # todo: update the memory and make it session based as well as get messages from the database
+        # stores the information to the database once the session id is made
+        chat_history=message_history # todo: update to new LangGraph memory method to be able to store memory for multiple different users
+                                    # todo: update the memory and make it session based as well as get messages from the database
         )
     
     # Bring everything together and ask Doc the prompt
     answer = DocBrain.invoke(prompt)
-
-    # save the AI response into the chat history so that way Doc can reference
-    DocsMemory.chat_memory.add_ai_message(answer.content)
-    # saves the users input to memory
-    DocsMemory.chat_memory.add_user_message(user_input) # add a users input into the chats memory 
 
     # store the response in the chat history
     return answer.content

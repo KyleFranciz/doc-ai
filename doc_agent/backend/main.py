@@ -12,11 +12,8 @@ import os
 # import supabase so that I can access the database
 from supabase import  create_client ,Client   #create client and handle the client once its made
 
+# For checking the real errors that are not shown if the error is not shown 
 import traceback
-
-
-
-
 
 #import the models from the schemas so that I can use them to structure the responses or the expected result from the user
 from schemas.chat_schema import DocsResponse, MessageRequest
@@ -33,28 +30,26 @@ from agent.doc_agent import getKnowledgeFromDoc # function to ask Doc the questi
 load_dotenv()
 
 #import the supabase connection string
-url : str = os.getenv("SUPABASE_URL")
-key : str = os.getenv("SUPABASE_KEY")
+url : str = os.getenv("SUPABASE_URL") # Supabase url 
+key : str = os.getenv("SUPABASE_KEY") # Supabase key
 
 
 #check if the variables were retrieved properly
-
-if isinstance(url, str) and isinstance(key, str):
-    supabase : Client = create_client(url, key)
-    if supabase is not None:
+if isinstance(url, str) and isinstance(key, str): # if the url and key are correctly brought in as strings 
+    #establish the connection to the supabase database:
+    supabase : Client = create_client(url, key) # then make the connection to the DB
+    if supabase is not None: 
+        # if everything goes correctly then print the success 
         print("variables were brought over correctly")
-        print("Supabase connection was successfull")
+        print("Supabase connection was successful")
 else:
+    # if not: make sure the issue is known
     print("Variables were not brought over properly")
 
     
-
 # Assign the app to a variable
 app = FastAPI()
 
-#get the variables from the env file
-
-#establish the connection to the supabase database:
 
 # Create cors to help with cross origin requests
 app.add_middleware(
@@ -76,24 +71,26 @@ def get_entry_root(): #general connection
 
 #set up a post route for the prompts to get sent to:
 # TODO: I might ask for a session Id to keep track of the session and send the Id to the backend so I can retrieve the data later
+
+# Adding data to the table
 @app.post("/prompt", response_model=DocsResponse) #DocResponse is the response that I give back when the user makes a request
 # user_input is a a parameter that gets sent to the backend
-async def askDoc(user_request : MessageRequest): #! the params have message_to_doc, session_id, user_id and role
-    #? supabase functions by default are sycronous
+async def askDoc(user_request : MessageRequest): #? the params have message_to_doc, session_id, user_id and role
+    #? supabase functions by default are synchronous
     try: # try to create a table in supabase
         # add users question to the DB
         print("adding User's input")
-        UserQuestion = supabase.table("messages").insert({
-            "session_id" : user_request.session_id, # information about the session id that the user is in with Doc
-            "role" : "human", 
+        UserQuestion = supabase.table("messages").insert({ # get back the state of the UserQuestion
+            "session_id" : user_request.session_id, # information about the session id that the user is in with Doc 
+            "role" : "human", # fill to automatically be human
             "content" : user_request.question, # question the user wanted to know the answer to
-            "user_id" : user_request.user_id # id of the user
+            "user_id" : user_request.user_id #! id of the user ( Replace once the auth flow is made )
         }).execute()
         print("successfully added")
 
         # ask doc the question from the user
         print("generating docs response")
-        answer = getKnowledgeFromDoc(user_input=user_request.question)
+        answer = getKnowledgeFromDoc(user_input=user_request.question, session_id=user_request.session_id) # give the question that the user had and also the session_id of the user
         print("response generated")
 
         print("adding Docs response")
@@ -106,20 +103,24 @@ async def askDoc(user_request : MessageRequest): #! the params have message_to_d
         }).execute()
         print("Doc's answer was successfully added to the database")
 
-        # check if there is data added from the attempt to add to chart
+        # check if there is data added from the attempt is added to the DB
         if not UserQuestion.data or not DocsAnswer.data:
-            # return the sucess message to the user as well as the data that was sucessfully added ( remove after testing )
+            # raise an error to the user to let them know that there was an error adding the data to the DB
             raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
         
-        print(UserQuestion.data, DocsAnswer.data)
+        else:
+            # show the data that was added if it was a success
+            print(UserQuestion.data, DocsAnswer.data) # show the data that I added to triple check
 
-        return DocsResponse(
-            status="sucess",
-            user_question=user_request.question,
-            docs_response=answer #answer that doc gave back to the user
-
-        )
-    except Exception as error:
+            # return the response model with the filled out info to the user
+            return DocsResponse(
+                # return this info to the user 
+                status="success", # let the user know that it was a success
+                user_question=user_request.question, # return the users question
+                docs_response=answer #answer that doc gave back to the user
+            )
+    
+    except Exception as error: # Log the errors if the arise and the try fails
         # if there is an error display the error to the user
         print(f"Traceback (finding the real error):", traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"There has been an error: {str(error)}")

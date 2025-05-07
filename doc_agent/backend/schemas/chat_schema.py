@@ -9,7 +9,7 @@ from typing import List # allows me to type the parameters for the objects I mak
 
 class MessageRequest(BaseModel): # use base model to define the schema for this chat request
     question : str 
-    session_id : str #string to that the sesion can be saved in the database
+    session_id : str #string to that the session can be saved in the database
     user_id : str # id of the user that sends the request
     # role will be filled automatically
     
@@ -18,6 +18,6 @@ class MessageRequest(BaseModel): # use base model to define the schema for this 
 
 #returned to in json format to the user
 class DocsResponse(BaseModel): # structure docs response
-    status : str
-    user_question : str
-    docs_response : str
+    status : str # status if the message was successful or not
+    user_question : str # the users message
+    docs_response : str # Doc's response
