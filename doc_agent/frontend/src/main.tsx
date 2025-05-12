@@ -9,15 +9,30 @@ import MainPage from "./pages/MainPage";
 import NotFound from "./pages/NotFound";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/LoginPage";
+import Layout from "./components/Layout";
 
 const router = createBrowserRouter([
-  { path: "/", Component: MainPage }, //Main page when landing on the app
-  { path: "prompt", Component: PromptPage }, // Prompt page for making request to Doc
-  { path: "settings", Component: SettingsPage }, // Page to adjust the settings of the application
-  { path: "login", Component: LoginPage }, // Page to login to the app
-  { path: "signup", Component: SignUpPage }, // Page to sign up for the app
-  { path: "*", Component: NotFound }, // Page if the user searches for a page that isn't there or isn't allowed
+  {
+    path: "/",
+    Component: Layout,
+    children: [
+      //Main page when landing on the app
+      { index: true, Component: MainPage },
+      // Prompt page for making request to Doc
+      { path: "prompt", Component: PromptPage },
+      // Page to adjust the settings of the application
+      { path: "settings", Component: SettingsPage },
+      // Page to login to the app
+      { path: "login", Component: LoginPage },
+      // Page to sign up for the app
+      { path: "signup", Component: SignUpPage },
+      // Page if the user searches for a page that isn't there or isn't allowed
+      { path: "*", Component: NotFound },
+    ],
+  },
 ]);
+
+// todo: Make a layout for the app and have the navbar remain at the top of the page.
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
