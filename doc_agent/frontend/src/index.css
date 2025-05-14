@@ -1,70 +1,75 @@
 @import "tailwindcss";
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/*This is the color theme of the app*/
+@theme {
+  /*For the background of the app*/
+  --color-background: hsl(var(--background));
+  
+  /*This is for the background color for the sidebar*/
+  --color-background: hsl(var(--sidebar-background))
+  
+  /*This controls the color of the text*/
+  --color-text: hsl(var(--text-color));
+  
+  /*This is for the color of the submit button*/
+  --color-button: hsl(var(--submit-button));
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /*color for the icon for the other accessory buttons*/
+  --color-button: hsl(var(--other-prompt-button))
+  
+  /*This is for the border color of the prompt*/
+  --color-border: hsl(var(--prompt-border));
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  /*Color for the prompt box*/
+  --color-background : hsl(var(--prompt-box))
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+/*defining the colors that will be passed to the variables up top*/
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    /*The only color will be dark mode*/
+    --background: 0 0% 15%;
+    --sidebar-background: 0 0% 11%;
+    --text-color: 0 0% 100%;
+    --submit-button: 0 0% 19%;
+    --prompt-box: 0 0% 43%;
+    --prompt-border: 0 0% 43%;
+    --other-prompt-button: 270 4% 47%;
   }
-  a:hover {
-    color: #747bff;
+}
+
+@utility container {
+  margin-inline : auto;
+  padding-inline: 2rem;
+
+  @media (width >= 640px) {
+    max-width: 640px;
   }
-  button {
-    background-color: #f9f9f9;
+  @media (width >= 768px) {
+    max-width: 768px;
   }
+  @media (width >= 1024px) {
+    max-width: 1024px;
+  }
+  @media (width >= 1280px) {
+    max-width: 1280px;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+@utility heading {
+  font-size: 4rem;
+  font-weight : bold;
+  padding: 0;
+  
+  
+}
+
+
+
+.dark {
+  background-color: var(--prompt-box);
+  padding-bottom: 0px;
 }
