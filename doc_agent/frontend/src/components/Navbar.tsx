@@ -1,6 +1,6 @@
 //interface for the items that will be in the nav
 interface NavInterface {
-  icon: string;
+  icon: string; // make into a react component
 }
 
 const NavbarMapper: NavInterface[] = [

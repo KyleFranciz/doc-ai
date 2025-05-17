@@ -33,9 +33,12 @@ load_dotenv()
 url : str = os.getenv("SUPABASE_URL") # Supabase url 
 key : str = os.getenv("SUPABASE_KEY") # Supabase key
 
+#import the doc url string to send to the frontend
+doc_url : str = os.getenv("DOC_URL")
 
-#check if the variables were retrieved properly
-if isinstance(url, str) and isinstance(key, str): # if the url and key are correctly brought in as strings 
+
+# Check if the variables were retrieved properly
+if isinstance(url, str) and isinstance(key, str) and isinstance(doc_url, str): # if the url and key are correctly brought in as strings 
     #establish the connection to the supabase database:
     supabase : Client = create_client(url, key) # then make the connection to the DB
     if supabase is not None: 
@@ -50,7 +53,6 @@ else:
 # Assign the app to a variable
 app = FastAPI()
 
-
 # Create cors to help with cross origin requests
 app.add_middleware(
     CORSMiddleware,
@@ -59,21 +61,16 @@ app.add_middleware(
     allow_headers = ["*"],
     )
 
-
 # Test route
 @app.get("/")
 def get_entry_root(): #general connection
     return {"message": "Hey there user"}
 
 
-# SignIn and Up will be handled on the frontend entirely
-
-
-#set up a post route for the prompts to get sent to:
 # TODO: I might ask for a session Id to keep track of the session and send the Id to the backend so I can retrieve the data later
 
 # Adding data to the table
-@app.post("/prompt", response_model=DocsResponse) #DocResponse is the response that I give back when the user makes a request
+@app.post("/api/prompt", response_model=DocsResponse) #DocResponse is the response that I give back when the user makes a request
 # user_input is a a parameter that gets sent to the backend
 async def askDoc(user_request : MessageRequest): #? the params have message_to_doc, session_id, user_id and role
     #? supabase functions by default are synchronous
@@ -126,6 +123,15 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         raise HTTPException(status_code=500, detail=f"There has been an error: {str(error)}")
         
 
+# route to get the env variables from the frontend 
+@app.get("/api/config")
+def send_env():
+    return {
+        # send docs url to the frontend
+        "DocsUrl" : doc_url
+        # any other config from the backend
+    }
+    pass
 
 
 

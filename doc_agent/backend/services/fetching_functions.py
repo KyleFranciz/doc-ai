@@ -1,6 +1,7 @@
 #imported functions that I will use
 
 from dotenv import load_dotenv
+
 import os
 
 #Supabase connection so that I can use it to access connections to the tables in the DB 
