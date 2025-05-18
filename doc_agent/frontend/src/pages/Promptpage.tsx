@@ -3,15 +3,15 @@ import { GoPaperclip } from "react-icons/go";
 import { PiMicrophoneFill } from "react-icons/pi";
 // use axios to help w fetching and posting data to my api route
 //import axios from "axios";
-import { useEffect, useState } from "react";
-
-//import the backend connection var from api file
+import { useState } from "react";
 
 import axios from "axios";
 
 // interface for the message got back from the server
 interface MessageToDoc {
-  message: string;
+  question: string;
+  session_id: string;
+  user_id: string;
 }
 
 function PromptPage() {
@@ -27,30 +27,46 @@ function PromptPage() {
     e.preventDefault();
 
     try {
+      //var from .env file to help with the routing to my api
+      const BASE_API_URL: string | undefined = import.meta.env
+        .VITE_DOC_BASE_API;
+      if (!BASE_API_URL) {
+        console.log("the .env variable failed to load");
+      } else {
+        console.log(BASE_API_URL);
+      }
+
+      // set loading to true so that the I can set the loading animations later
       setLoading(true);
 
       // format the data to send off
       const dataToSend: MessageToDoc = {
-        message: message2send,
+        question: message2send,
+        session_id: "session_tester",
+        user_id: "user_tester",
       };
 
-      //make a post request to the prompt route
-      const res = await axios.post("/api/prompt", dataToSend, {
+      //make a post request to the apps api prompt route
+      const res = await axios.post(`${BASE_API_URL}/api/prompt`, dataToSend, {
         headers: {
           "Content-Type": "application/json",
         },
       });
+      // show the response that I get back
       setResponse(
         `Response data has been retrieved ${JSON.stringify(res.data)}`
       );
+
+      console.log("fetching docs answer was successful", res.data);
       //clear the message so that it can get other info again later
       setMessage2Send("");
+
       //todo: route the user to a page with the chat and the message
-      //todo: or remove the title and have the prompt load on the same page
+      // catch the error
     } catch (err) {
       console.log(err);
     } finally {
-      // reset the loading state
+      // reset the loading state since the initial loading is done
       setLoading(false);
     }
   };
@@ -75,8 +91,10 @@ function PromptPage() {
               placeholder="Let me know what you want to look into"
               className="w-full mt-4.5 ml-4 h-auto outline-none text-[#ffffffe4]"
               onChange={(e) => {
+                // catch the input changes and store in state
                 setMessage2Send(e.target.value);
               }}
+              // make it required to send the data
               required
             />
             {/*bottom button for the input bar */}

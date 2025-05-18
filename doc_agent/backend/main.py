@@ -123,7 +123,7 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         raise HTTPException(status_code=500, detail=f"There has been an error: {str(error)}")
         
 
-# route to get the env variables from the frontend 
+# route to get the env variables from the frontend (might not use)
 @app.get("/api/config")
 def send_env():
     return {
