@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/LoginPage";
 import Layout from "./components/Layout";
+import ChatPage from "./pages/ChatPage";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,8 @@ const router = createBrowserRouter([
       { index: true, Component: MainPage },
       // Prompt page for making request to Doc
       { path: "prompt", Component: PromptPage },
+      // Page to host the different chats that the user makes with doc
+      { path: "chat", Component: ChatPage },
       // Page to adjust the settings of the application
       { path: "settings", Component: SettingsPage },
       // Page to login to the app
