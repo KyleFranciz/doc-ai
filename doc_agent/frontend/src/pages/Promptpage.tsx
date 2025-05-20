@@ -24,6 +24,7 @@ function PromptPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Get the url from the .env file
     try {
       //var from .env file to help with the routing to my api
       const BASE_API_URL: string | undefined = import.meta.env
@@ -39,18 +40,21 @@ function PromptPage() {
 
       // format the data to send off
       const dataToSend: MessageToDoc = {
-        question: message2send,
-        session_id: "session_tester",
-        user_id: "user_tester",
+        question: message2send, // input from the user
+        session_id: "session_tester", // generate random session_id
+        user_id: "user_tester", //get the userid from supabase when the auth is set up
       };
 
+      // send the data formatted data to the api to doc
       //make a post request to the apps api prompt route
       const res = await axios.post(`${BASE_API_URL}/api/prompt`, dataToSend, {
         headers: {
+          // identify the header type
           "Content-Type": "application/json",
         },
       });
-      // show the response that I get back
+
+      // set the response that I get back after each question
       setResponse(
         `Response data has been retrieved ${JSON.stringify(res.data)}`
       );

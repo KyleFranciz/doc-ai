@@ -6,6 +6,7 @@ import { PiMicrophoneFill } from "react-icons/pi";
 
 // create an interface to load props into the component
 interface PromptBoxI {
+  // handles all the functions, states and bools that need to be passed in
   handleSubmit?: (e: FormEvent<Element>) => Promise<void>; // prop that allows function inside
   setMessage: React.Dispatch<React.SetStateAction<string>>; // allows the set state inside
   loading?: boolean; // allows the setState loading from the outside to enter

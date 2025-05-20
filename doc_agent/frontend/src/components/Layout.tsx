@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 import Navbar from "./Navbar";
 
 export default function Layout() {
+  // TODO: If route is chat page then have the items center go away from styling
   return (
     <>
       {/*This div controls the styling for the rest of the app */}
