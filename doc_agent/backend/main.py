@@ -1,22 +1,23 @@
+# TODO: Refactor the code for the server connection to make it more prod ready
 # import the stuff for fastapi
-from fastapi import FastAPI , HTTPException, Depends, Response
+from fastapi import FastAPI , HTTPException, Depends, Response # type: ignore
 # import core package to help with making the API
 from fastapi.middleware.cors import CORSMiddleware
 
 # load_env  is important to loading the env variables from the file 
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 
 #os allows me to access the file and pull the variables that were pulled
 import os
 
 # import supabase so that I can access the database
-from supabase import  create_client ,Client   #create client and handle the client once its made
+from supabase import  create_client ,Client   # type: ignore #create client and handle the client once its made
 
 # For checking the real errors that are not shown if the error is not shown 
 import traceback
 
 #import the models from the schemas so that I can use them to structure the responses or the expected result from the user
-from schemas.chat_schema import DocsResponse, MessageRequest
+from schemas.chat_schema import DocsResponse, MessageRequest, SessionRequest
 # import the function from the doc agent to help with creating the response from the llm
 from agent.doc_agent import getKnowledgeFromDoc # function to ask Doc the question before returning the answer to the use
 
@@ -29,25 +30,31 @@ from agent.doc_agent import getKnowledgeFromDoc # function to ask Doc the questi
 #Load all the variables from the .env file 
 load_dotenv()
 
-#import the supabase connection string
+#^ import the supabase connection string
 url : str = os.getenv("SUPABASE_URL") # Supabase url 
 key : str = os.getenv("SUPABASE_KEY") # Supabase key
-
-#import the doc url string to send to the frontend
-doc_url : str = os.getenv("DOC_URL")
+frontend_url : str = os.getenv("REACT_URL")
+# doc_url : str = os.getenv("DOC_URL") # might use later
 
 
 # Check if the variables were retrieved properly
-if isinstance(url, str) and isinstance(key, str) and isinstance(doc_url, str): # if the url and key are correctly brought in as strings 
+if not url:
+    raise ValueError("Supabase Url was not loaded properly")
+if not key:
+    raise ValueError("Supabase Key was not loaded properly")
+if not frontend_url:
+    raise ValueError("react front end url was not loaded properly")
+
+
+try:
     #establish the connection to the supabase database:
     supabase : Client = create_client(url, key) # then make the connection to the DB
-    if supabase is not None: 
-        # if everything goes correctly then print the success 
-        print("variables were brought over correctly")
-        print("Supabase connection was successful")
-else:
+    print("variables were brought over correctly")
+    print("Supabase connection was successful")
+# todo: look making the else into a functioning elif        
+except Exception as err:
     # if not: make sure the issue is known
-    print("Variables were not brought over properly")
+    raise RuntimeError(f"Failed to initialize connection to supabase")
 
     
 # Assign the app to a variable
@@ -56,7 +63,7 @@ app = FastAPI()
 # Create cors to help with cross origin requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[frontend_url],
     allow_methods = ["*"],
     allow_headers = ["*"],
     )
@@ -70,10 +77,11 @@ def get_entry_root(): #general connection
 # TODO: I might ask for a session Id to keep track of the session and send the Id to the backend so I can retrieve the data later
 
 # Adding data to the table
-@app.post("/api/prompt", response_model=DocsResponse) #DocResponse is the response that I give back when the user makes a request
+@app.post("/api/prompt", response_model=DocsResponse) #DocResponse is the response that I give back when the user makes a request"
 # user_input is a a parameter that gets sent to the backend
 async def askDoc(user_request : MessageRequest): #? the params have message_to_doc, session_id, user_id and role
     #? supabase functions by default are synchronous
+    """This is a route to prompt Doc with the question as well as return a response to the user as well"""
     try: # try to create a table in supabase
         # add users question to the DB
         print("adding User's input")
@@ -123,15 +131,46 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         raise HTTPException(status_code=500, detail=f"There has been an error: {str(error)}")
         
 
+
+# route to get the chat room information for the current user
+# route is async to help with waiting and making sure the flow is good
+@app.get("/api/chat/:chat_id")
+async def get_user_chat(session : SessionRequest): # session id will be sent in to be searched in database
+    """This is a function to get info from the chat session and load it in """
+    # try to get the data:
+    try:
+        # use the session_id from the request to wait to get the messages from the database
+        response = await supabase.table("messages").select("*").eq("session_id",session.session_id).order("created_at", desc=False).execute()
+
+        # check if there is actually data that was received
+        if response.data:
+            # Return the data to the user
+            return {
+                "session_id" :session.session_id,
+                "messages": response.data,
+                "amount_of_messages" : len(response.data)
+                }
+            # return the messages that were received from the database
+        else:
+            raise HTTPException(status_code=404, detail=f"unfortunately there were no messages that matched the session id you gave: {session.session_id}")
+
+            
+        
+    except Exception as err:
+        # log the error
+        raise HTTPException(status_code=404, detail=f"failed to fetch the message: {err}")
+
+
+
 # route to get the env variables from the frontend (might not use)
-@app.get("/api/config")
-def send_env():
-    return {
-        # send docs url to the frontend
-        "DocsUrl" : doc_url
-        # any other config from the backend
-    }
-    pass
+#@app.get("/api/config")
+#def send_env():
+#    return {
+#        # send docs url to the frontend
+#        "DocsUrl" : doc_url
+#        # any other config from the backend
+#    }
+#    
 
 
 

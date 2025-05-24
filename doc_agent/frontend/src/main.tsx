@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       // Prompt page for making request to Doc
       { path: "prompt", Component: PromptPage },
       // Page to host the different chats that the user makes with doc
-      { path: "chat/:chat_id", Component: ChatPage },
+      { path: "chat/:sessionId", Component: ChatPage },
       // Page to adjust the settings of the application
       { path: "settings", Component: SettingsPage },
       // Page to login to the app

@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import axios from "axios";
 import PromptBox from "../components/PromptBox";
+import { useChatSession } from "../hooks/useChatSession";
+import { useNavigate } from "react-router";
 
 // interface for the message got back from the server
 interface MessageToDoc {
@@ -15,10 +17,16 @@ interface MessageToDoc {
 function PromptPage() {
   //useState to store the variables inside
   const [message2send, setMessage2Send] = useState<string>("");
+
   //set up loading to keep track for loading animation
   const [loading, setLoading] = useState<boolean>(false);
-  //set up state for the response
-  const [response, setResponse] = useState<string | null>("");
+
+  // get the session ID from the chat session component
+  const { sessionId } = useChatSession(); // only use the sessionId variable to store the session
+
+  // create navigation so i can use it to route to the chat page
+  const navigate = useNavigate();
+  // todo: decide if the message icon will route to a new chat
 
   // setup function to send the prompt to doc
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,26 +49,31 @@ function PromptPage() {
       // format the data to send off
       const dataToSend: MessageToDoc = {
         question: message2send, // input from the user
-        session_id: "session_tester", // generate random session_id
+        session_id: sessionId, // generate random session_id for the chat_id
         user_id: "user_tester", //get the userid from supabase when the auth is set up
       };
 
       // send the data formatted data to the api to doc
       //make a post request to the apps api prompt route
-      const res = await axios.post(`${BASE_API_URL}/api/prompt`, dataToSend, {
+      await axios.post(`${BASE_API_URL}/api/prompt`, dataToSend, {
         headers: {
           // identify the header type
           "Content-Type": "application/json",
         },
       });
 
-      // set the response that I get back after each question
-      setResponse(
-        `Response data has been retrieved ${JSON.stringify(res.data)}`
-      );
+      // route the user to the new page and have the chat session load into the page
+      navigate(`/chat/${sessionId}`);
 
-      console.log("fetching docs answer was successful", res.data);
-      //clear the message so that it can get other info again later
+      // set the response that I get back after each question
+      //setResponse(
+      //  `Response data has been retrieved ${JSON.stringify(res.data)}`
+      //);
+      //
+      //console.log("fetching docs answer was successful", res.data);
+      ////clear the message so that it can get other info again later
+
+      // clear the input box
       setMessage2Send("");
 
       //todo: route the user to a page with the chat and the message
@@ -91,8 +104,6 @@ function PromptPage() {
           setMessage={setMessage2Send}
           loading={loading}
         />
-        {/*If there is a response then test and show the response */}
-        {response && <div>{response}</div>}
       </div>
     </>
   );

@@ -3,6 +3,8 @@ interface NavInterface {
   icon: string; // make into a react component
 }
 
+//TODO : WORK ON THE CHANGING THE ICONS TO THE PROPER ONES IN THE NAVBAR
+
 const NavbarMapper: NavInterface[] = [
   //todo: change the message icon
   { icon: "message icon" },

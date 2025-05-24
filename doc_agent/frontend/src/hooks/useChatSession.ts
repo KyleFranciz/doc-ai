@@ -17,9 +17,9 @@ export const useChatSession = () => {
     // get the sessionId from local storage if it exists already
     let alreadyStoredId: string | null = localStorage.getItem(SESSION_ID); //use "let" since i'll update the storedId later
 
-    // check if the SESSION_ID is returned back as null
+    // check if there is no already stored ID
     if (!alreadyStoredId) {
-      // generate new sessionId
+      // if not generate new sessionId
       alreadyStoredId = uuidv4();
 
       // store the newly generated id in the local storage
@@ -28,6 +28,9 @@ export const useChatSession = () => {
       // set the state for the newly generated id
       setSessionId(alreadyStoredId);
     }
+
+    // if there is a locally stored id, save it in the state to be sent out to the user
+    setSessionId(alreadyStoredId);
   }, []);
 
   // function to reset the sessionId once the user wants to create a new chat

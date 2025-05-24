@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import "../main.css";
 
 export default function MainPage() {
@@ -7,6 +8,7 @@ export default function MainPage() {
         This page will introduce the user to the application, Ill play around
         with the animations here.
       </div>
+      <Link to={"/prompt"}>(Add button here to link to the prompt page)</Link>
     </>
   );
 }
