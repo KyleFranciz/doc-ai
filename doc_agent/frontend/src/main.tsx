@@ -35,8 +35,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-// todo: Make a layout for the app and have the navbar remain at the top of the page.
-
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />

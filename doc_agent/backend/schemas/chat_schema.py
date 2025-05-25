@@ -12,7 +12,7 @@ class MessageRequest(BaseModel): # use base model to define the schema for this 
     question : str 
     session_id : str #string to that the session can be saved in the database
     user_id : str # id of the user that sends the request
-    # role will be filled automatically
+    role: str # role will be filled automatically
 
 #returned to in json format to the user
 class DocsResponse(BaseModel): # structure docs response

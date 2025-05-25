@@ -7,11 +7,12 @@ import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
 import { useNavigate } from "react-router";
 
-// interface for the message got back from the server
-interface MessageToDoc {
+// interface for the message sent to the server
+export interface MessageToDoc {
   question: string;
   session_id: string;
   user_id: string;
+  role: "human" | "ai";
 }
 
 function PromptPage() {
@@ -51,6 +52,7 @@ function PromptPage() {
         question: message2send, // input from the user
         session_id: sessionId, // generate random session_id for the chat_id
         user_id: "user_tester", //get the userid from supabase when the auth is set up
+        role: "human",
       };
 
       // send the data formatted data to the api to doc

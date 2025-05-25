@@ -1,10 +1,8 @@
 // Message that is retrieved from the session id saved in the database
 export interface ChatMessage {
   id: string;
-  role: "human" | "ai";
-  session_id: string;
-  message: string;
-  user_id: string;
+  role: string;
+  content: string;
   createdAt?: string; // optional: if i want to show the user when the message was made
 }
 
@@ -17,14 +15,12 @@ export interface ChatSession {
 }
 
 export interface GetMessagesResponse {
-  session_id: string; // unique id for the session
-  messages: ChatMessage[]; // list of messages
-  message_count?: number; // optional: return the number of messages that are in the chat
+  messages: ChatMessage[];
 }
 
-export interface UseSessionMessagesResponse {
+export interface UseSessionMessagesReturn {
   // state that I will use
-  messages: ChatMessage;
+  messages: ChatMessage[];
   loading: boolean;
   error: string | null;
 
@@ -37,5 +33,4 @@ export interface UseSessionMessagesResponse {
 export interface UseSessionOptions {
   sessionId: string; // use the session id from the param
   autoFetch?: boolean; // if i want to auto fetch the data
-  pollingInterval?: number; // controls how long until the message fetching will refresh
 }

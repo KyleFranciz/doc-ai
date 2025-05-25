@@ -102,7 +102,7 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         #store the response from Doc into the DB so i can check success
         DocsAnswer = supabase.table("messages").insert({
             "session_id" : user_request.session_id, 
-            "role" : "ai", 
+            "role" : user_request.role, 
             "content" : answer,
             "user_id" : user_request.user_id
         }).execute()
