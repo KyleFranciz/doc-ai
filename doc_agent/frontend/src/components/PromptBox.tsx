@@ -38,12 +38,12 @@ export default function PromptBox(props: PromptBoxI) {
             {/*styling for the bottom buttons */}
             <div className="flex w-15 scale-110 absolute bottom-3 left-3">
               <button
-                className="p-[3px] ml-1 rounded-[3px] outline-solid outline-[0.5px] outline-[#6D6D6D]"
+                className="p-[3px] ml-1 rounded-[3px] outline-solid outline-[0.5px] bg-[#303030] outline-[#6D6D6D] hover:bg-[#2a2a2a] cursor-pointer "
                 type="submit"
               >
-                {props.loading ? <div>O</div> : <GoPaperclip />}
+                {props.loading ? <div>...</div> : <GoPaperclip />}
               </button>
-              <button className="p-[3px] ml-2 rounded-[3px] outline-solid outline-[0.5px] outline-[#6D6D6D]">
+              <button className="p-[3px] ml-2 rounded-[3px] outline-solid bg-[#303030] outline-[0.5px] outline-[#6D6D6D] hover:bg-[#2a2a2a] cursor-pointer ">
                 <PiMicrophoneFill />
               </button>
             </div>

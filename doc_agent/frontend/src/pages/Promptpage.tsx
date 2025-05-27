@@ -39,7 +39,7 @@ function PromptPage() {
       const BASE_API_URL: string | undefined = import.meta.env
         .VITE_DOC_BASE_API;
       if (!BASE_API_URL) {
-        console.log("the .env variable failed to load");
+        console.log("The .env variable failed to load");
       } else {
         console.log(BASE_API_URL);
       }
@@ -95,8 +95,8 @@ function PromptPage() {
       <div className="flex justify-center items-center flex-col">
         {/*Greet the user*/}
         <div className=" justify-center items-center">
-          <h1 className="heading">Welcome User</h1>
-          <h3 className="flex justify-center mt-[-15px] mb-6 text-xl">
+          <h1 className="heading text-[#b8b8b8]">Welcome User</h1>
+          <h3 className="flex justify-center mt-[-15px] mb-6 text-xl text-[#b0b0b0]">
             What do you want to research today?
           </h3>
         </div>

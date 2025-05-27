@@ -63,7 +63,7 @@ app = FastAPI()
 # Create cors to help with cross origin requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_url],
+    allow_origins=["*"],
     allow_methods = ["*"],
     allow_headers = ["*"],
     )
@@ -134,25 +134,28 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
 
 # route to get the chat room information for the current user
 # route is async to help with waiting and making sure the flow is good
-@app.get("/api/chat/:chat_id")
-async def get_user_chat(session : SessionRequest): # session id will be sent in to be searched in database
+@app.get("/api/chat/{session_id}")
+async def get_user_chat(session_id : str): # session id will be sent in to be searched in database
     """This is a function to get info from the chat session and load it in """
     # try to get the data:
     try:
         # use the session_id from the request to wait to get the messages from the database
-        response = await supabase.table("messages").select("*").eq("session_id",session.session_id).order("created_at", desc=False).execute()
+        response = supabase.table("messages").select("*").eq("session_id",session_id).order("created_at", desc=False).execute()
+
+        #see the data from the database if its there
+        print(f"Database response:", response)
 
         # check if there is actually data that was received
         if response.data:
             # Return the data to the user
             return {
-                "session_id" :session.session_id,
+                "session_id" : session_id,
                 "messages": response.data,
                 "amount_of_messages" : len(response.data)
                 }
             # return the messages that were received from the database
         else:
-            raise HTTPException(status_code=404, detail=f"unfortunately there were no messages that matched the session id you gave: {session.session_id}")
+            raise HTTPException(status_code=404, detail=f"unfortunately there were no messages that matched the session id you gave: {session_id}")
 
             
         

@@ -26,7 +26,11 @@ export const useSessionMessages = (
   const subscriptionRef = useRef<RealtimeChannel | null>(null); //todo: change the type later if problem occurs
 
   // .env variable to bring in to use in calls
-  //const BASE_API_URL: string | undefined = import.meta.env.VITE_DOC_BASE_API;
+  const BASE_API_URL: string | undefined = import.meta.env.VITE_DOC_BASE_API;
+
+  if (!BASE_API_URL) {
+    console.log("Could not load frontend url from .env");
+  }
 
   // handle api errors
   const handleApiErrors = useCallback((error: unknown): string => {
@@ -54,7 +58,7 @@ export const useSessionMessages = (
 
       const response = await axios.get<GetMessagesResponse>(
         // might add back in base url if request not successful
-        `/api/chat/${sessionId}`
+        `${BASE_API_URL}/api/chat/${sessionId}`
       );
 
       // update the component is still mounted
@@ -75,7 +79,7 @@ export const useSessionMessages = (
         setLoading(false);
       }
     }
-  }, [sessionId, handleApiErrors]);
+  }, [sessionId, handleApiErrors, BASE_API_URL]);
 
   // setup the realtime subscription
   useEffect(() => {
@@ -179,10 +183,14 @@ export const useSessionMessages = (
         };
 
         // send the message to my api
-        const res = await axios.post<ChatMessage>(
+        const res = await axios.post(
           // base url might add back if request not successful
-          `/api/prompt`,
-          questionToSend // question, sessionId and user info sent
+          `${BASE_API_URL}/api/prompt`,
+          questionToSend, // question, sessionId and user info sent
+          {
+            // header to send
+            headers: { "Content-Type": "application/json" },
+          }
         );
 
         // check if the component is currently mounted
@@ -198,7 +206,7 @@ export const useSessionMessages = (
         }
       }
     },
-    [sessionId, handleApiErrors]
+    [sessionId, handleApiErrors, BASE_API_URL]
   );
 
   // function to refresh the messages, for manual refetching the messages

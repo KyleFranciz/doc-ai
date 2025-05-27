@@ -25,7 +25,7 @@ class DocsResponse(BaseModel): # structure docs response
 class SessionRequest(BaseModel):
     """Request format to get the information about messages that match the session id"""
     session_id : str
-    user_id : str
+    # might add the user id for validation soon
 
 # format for the message that I get back from the database
 class SessionMessage(BaseModel):
