@@ -4,7 +4,7 @@ export interface ChatMessage {
   session_id: string;
   role: string;
   content: string;
-  createdAt?: string; // optional: if i want to show the user when the message was made
+  created_at?: string; // optional: if i want to show the user when the message was made
   user_id: string;
 }
 

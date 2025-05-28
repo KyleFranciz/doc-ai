@@ -15,7 +15,7 @@ interface PromptBoxI {
 // ReUsable prompting section that allows the user to ask doc questions
 export default function PromptBox(props: PromptBoxI) {
   return (
-    <div>
+    <div className="pt-[10px]">
       <form onSubmit={props.handleSubmit}>
         <div className="w-[650px] h-[110px] bg-[#303030]  outline-[#6D6D6D] outline-solid outline-[0.7px] mt-4 rounded-xl relative">
           <input

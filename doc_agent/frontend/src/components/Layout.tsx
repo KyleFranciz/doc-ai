@@ -12,7 +12,7 @@ export default function Layout() {
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
           <Navbar />
-          <div className="w-full max-w-lg">
+          <div className="w-full max-w-lg max-h-lvh">
             {/*Switch this part for the different pages*/}
             <Outlet />
           </div>

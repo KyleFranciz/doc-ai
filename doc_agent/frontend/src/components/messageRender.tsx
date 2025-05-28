@@ -1,11 +1,25 @@
+import React from "react";
 import { ChatMessage } from "../interfaces/chat-interfaces";
 
-export default function MessageRender(message: ChatMessage) {
-  return (
-    <div key={message.id}>
-      <div>{message.role}</div>
-      <div>{message.content}</div>
-      <div>{message.createdAt}</div>
+type MessageRenderProps = {
+  chatInfo: ChatMessage[];
+};
+
+const MessageRender: React.FC<MessageRenderProps> = ({ chatInfo }) => {
+  return chatInfo.map((info, index) => (
+    <div className="pt-2">
+      <div
+        key={index}
+        className={`p-2 max-w-md rounded-md ${
+          info.role === "ai"
+            ? "bg-[#303030] text-[#ffffffe4]"
+            : "bg-[#95AA75] text-[#303030]"
+        }`}
+      >
+        {info.content}
+      </div>
     </div>
-  );
-}
+  ));
+};
+
+export default MessageRender;

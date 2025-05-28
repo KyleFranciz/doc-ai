@@ -52,10 +52,12 @@ export default function ChatPage() {
 
   // Hooks to use to store the messages
 
-  // make a function to handle the submit to the backend
+  // base render for when the page loads and everything is successful
   return (
-    <div>
-      <h1>Chat {sessionId}</h1>
+    <div className="pt-[60px] flex flex-col items-center">
+      <div className="absolute top-15 flex justify-center items-center w-full">
+        <h1 className="text-[1.3rem] font-semibold">Chat {sessionId}</h1>
+      </div>
 
       {/* Display error messages */}
       <div>
@@ -67,15 +69,11 @@ export default function ChatPage() {
       </div>
 
       {/*Container for the chat messages to be displayed here */}
-      <div>
-        {/*if message loading and the length is 0 */}
+      <div className="">
         {loading && messages.length === 0 ? (
-          <div>loading chat messages...</div>
-        ) : // if leaded and message length is 0
-        messages.length === 0 ? (
-          <div>There are no messages. Start a convo with Doc</div>
+          <div>Loading...</div>
         ) : (
-          <div>{messages.map(MessageRender)}</div>
+          <MessageRender chatInfo={messages} />
         )}
       </div>
 

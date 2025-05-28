@@ -62,8 +62,9 @@ export const useSessionMessages = (
       );
 
       // update the component is still mounted
-      if (mountedRef.current) {
+      if (!mountedRef.current) {
         setMessages(response.data.messages);
+        console.log(response.data.messages);
       }
 
       // catch the error
