@@ -1,5 +1,5 @@
 #Import the base model from pydantic so that I can create a model for these chat pieces
-from pydantic import BaseModel # create default model
+from pydantic import BaseModel # create default model for the responses from the api
 
 # import langchain Ai message that the Agent gives back as a default response in this format
 from langchain_core.messages import AIMessage

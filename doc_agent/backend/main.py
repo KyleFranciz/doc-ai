@@ -102,7 +102,7 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         #store the response from Doc into the DB so i can check success
         DocsAnswer = supabase.table("messages").insert({
             "session_id" : user_request.session_id, 
-            "role" : "ai", 
+            "role" : "ai", # adds ai role to the message being sent for doc
             "content" : answer,
             "user_id" : user_request.user_id
         }).execute()
@@ -135,8 +135,13 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
 # route to get the chat room information for the current user
 # route is async to help with waiting and making sure the flow is good
 @app.get("/api/chat/{session_id}")
-async def get_user_chat(session_id : str): # session id will be sent in to be searched in database
-    """This is a function to get info from the chat session and load it in """
+async def get_user_chat(session_id : str): # session id will be sent in to be searched in database, user will be added later on 
+    """
+    This is a function to get info from the chat session and load it in
+
+    session_id: the session id of the user that wants to see the chat room information
+    user_id: the id of the user that has the chat with the specific chat room
+    """
     # try to get the data:
     try:
         # use the session_id from the request to wait to get the messages from the database
