@@ -1,10 +1,8 @@
 import { useParams } from "react-router";
-
 import { useQuery } from "@tanstack/react-query";
-
 import ChatBox from "../components/ChatBox";
 import { fetchMessages } from "../functions/fetchMessages";
-import MessageRender from "../components/messageRender";
+import MessageRender from "../components/MessageRender";
 
 export default function ChatPage() {
   // requires a setMessage (set state), handleSubmit (function triggered on submit), loading(boolean to control loading state)
@@ -52,7 +50,7 @@ export default function ChatPage() {
         ) : (
           // render the messages from the backend using the data from the useGetSessionMessages hook
 
-          <MessageRender messages={data || []} />
+          <MessageRender chatInfo={data?.data.messages || []} />
         )}
       </div>
       {/* Chat box for sending messages to the backend*/}

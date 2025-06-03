@@ -1,13 +1,17 @@
 import axios from "axios";
+import { GetMessagesResponse } from "../interfaces/chat-interfaces";
 
-export const fetchMessages = async (
-  sessionId: string | undefined
-): Promise<void> => {
-  const BASE_API_URL: string = import.meta.env.VITE_DOC_BASE_API; // get the base api url from the .env file
+const BASE_API_URL: string | undefined = import.meta.env.VITE_DOC_BASE_API;
+
+export const fetchMessages = async (sessionId: string | undefined) => {
   if (!BASE_API_URL) {
-    console.log("fetch url didn't load");
+    throw new Error("Base Url is Missing");
   }
 
-  const res = await axios.get(`${BASE_API_URL}/api/chat/${sessionId}`);
-  return res.data;
+  if (!sessionId) {
+    throw new Error("SessionId is Required");
+  }
+  return await axios.get<GetMessagesResponse>(
+    `${BASE_API_URL}/api/chat/${sessionId}`
+  ); // replace with the correct url
 };

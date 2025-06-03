@@ -16,8 +16,8 @@ export default function Navbar() {
   return (
     <nav className="absolute top-4 right-0 w-full">
       <ul className="flex justify-between mx-6">
-        {NavbarMapper.map((item) => (
-          <div>{item.icon}</div>
+        {NavbarMapper.map((item, idx) => (
+          <div key={idx}>{item.icon}</div>
         ))}
       </ul>
     </nav>
