@@ -15,7 +15,7 @@ interface PromptBoxI {
 // ReUsable prompting section that allows the user to ask doc questions
 export default function PromptBox(props: PromptBoxI) {
   return (
-    <div>
+    <div className="pt-[10px]">
       <form onSubmit={props.handleSubmit}>
         <div className="w-[650px] h-[110px] bg-[#303030]  outline-[#6D6D6D] outline-solid outline-[0.7px] mt-4 rounded-xl relative">
           <input
@@ -33,7 +33,7 @@ export default function PromptBox(props: PromptBoxI) {
           <div className="flex justify-center items-center">
             <button className="bg-[#95AA75] p-1.5 rounded-4xl outline-solid outline-[0.5px] outline-[#6D6D6D] text-[#303030] absolute right-3 bottom-3 hover: cursor-pointer">
               {/*Replace the logo for the UP with an arrow*/}
-              <FaArrowUp size={17} />
+              {props.loading ? <div>...</div> : <FaArrowUp size={17} />}
             </button>
             {/*styling for the bottom buttons */}
             <div className="flex w-15 scale-110 absolute bottom-3 left-3">
@@ -41,7 +41,7 @@ export default function PromptBox(props: PromptBoxI) {
                 className="p-[3px] ml-1 rounded-[3px] outline-solid outline-[0.5px] outline-[#6D6D6D]"
                 type="submit"
               >
-                {props.loading ? <div>O</div> : <GoPaperclip />}
+                <GoPaperclip />
               </button>
               <button className="p-[3px] ml-2 rounded-[3px] outline-solid outline-[0.5px] outline-[#6D6D6D]">
                 <PiMicrophoneFill />

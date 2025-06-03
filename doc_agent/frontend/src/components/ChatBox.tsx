@@ -6,6 +6,7 @@ import { FaArrowUp } from "react-icons/fa";
 import { GoPaperclip } from "react-icons/go";
 import { PiMicrophoneFill } from "react-icons/pi";
 import { MessageToDoc } from "../pages/Promptpage";
+import { FaRegPauseCircle } from "react-icons/fa";
 
 // interface for this Chat Component
 interface ChatboxI {
@@ -72,9 +73,9 @@ export default function ChatBox(prop: ChatboxI) {
   };
 
   return (
-    <div className="pt-[10px]">
+    <div className="">
       <form onSubmit={handleSending}>
-        <div className="w-[650px] h-[110px] bg-[#303030]  outline-[#6D6D6D] outline-solid outline-[0.7px] mt-4 rounded-xl relative">
+        <div className="w-[650px] h-[110px] bg-[#303030]  outline-[#6D6D6D] outline-solid outline-[0.7px] rounded-xl relative">
           <input
             type="text"
             placeholder="Let me know what you want to look into"
@@ -83,6 +84,7 @@ export default function ChatBox(prop: ChatboxI) {
               // catch the input changes and store in state
               setChatInput(e.target.value);
             }}
+            value={chatInput}
             // make it required to send the data
             required
           />
@@ -93,7 +95,11 @@ export default function ChatBox(prop: ChatboxI) {
               type="submit"
             >
               {/*Replace the logo for the UP with an arrow*/}
-              {loading ? <div>...</div> : <FaArrowUp size={17} />}
+              {loading ? (
+                <FaRegPauseCircle size={20} />
+              ) : (
+                <FaArrowUp size={17} />
+              )}
             </button>
             {/*styling for the bottom buttons */}
             <div className="flex w-15 scale-110 absolute bottom-3 left-3">

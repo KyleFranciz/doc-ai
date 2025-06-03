@@ -1,21 +1,35 @@
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import Navbar from "./Navbar";
 
 export default function Layout() {
-  // TODO: If route is chat page then have the items center go away from styling
+  // get current location of the page that the user is on
+  const location = useLocation();
+
+  // check if the user is on the ChatPage
+  const isChatPage = location.pathname.includes("/chat/");
+
   return (
     <>
       {/*This div controls the styling for the rest of the app */}
-      <div className=" w-screen h-screen bg-[#262626] text-white flex justify-center items-center ">
+      <div className=" h-screen bg-[#262626] text-white  ">
         {/*Sidebar goes here to handle the navigation through the prompts */}
         <div>
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
           <Navbar />
-          <div className="w-full max-w-lg">
-            {/*Switch this part for the different pages*/}
-            <Outlet />
-          </div>
+          {isChatPage ? (
+            <div className="h-[calc(100vh-60px)] w-full">
+              {/*Switch this part for the different pages*/}
+              <Outlet />
+            </div>
+          ) : (
+            <div className="h-[calc(100vh-60px)] flex justify-center items-center">
+              <div className="w-full max-w-lg max-h-lvh">
+                {/*Switch this part for the different pages*/}
+                <Outlet />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

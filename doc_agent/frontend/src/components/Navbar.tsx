@@ -1,15 +1,19 @@
+import { IoMenu } from "react-icons/io5";
+import { IconType } from "react-icons/lib";
+import { FaRegUserCircle } from "react-icons/fa";
+
 //interface for the items that will be in the nav
 interface NavInterface {
-  icon: string; // make into a react component
+  icon: IconType; // make image also possible if the user is signed in
 }
 
-//TODO : WORK ON THE CHANGING THE ICONS TO THE PROPER ONES IN THE NAVBAR
+//TODO : add the chat session to the navbar if the user is on the chat page
 
 const NavbarMapper: NavInterface[] = [
   //todo: change the message icon
-  { icon: "message icon" },
+  { icon: IoMenu },
   //todo: change the logo icon when the logo from the user login is setup
-  { icon: "user icon" },
+  { icon: FaRegUserCircle },
 ];
 
 export default function Navbar() {
@@ -17,7 +21,7 @@ export default function Navbar() {
     <nav className="absolute top-4 right-0 w-full">
       <ul className="flex justify-between mx-6">
         {NavbarMapper.map((item, idx) => (
-          <div key={idx}>{item.icon}</div>
+          <div key={idx}>{<item.icon size={"30px"} />}</div>
         ))}
       </ul>
     </nav>
