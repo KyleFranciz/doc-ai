@@ -34,7 +34,7 @@ class SessionMessage(BaseModel):
     role : str
     content : str
     user_id : str
-    pass
+    
 
 # might not be needed
 class SessionMessages(BaseModel):
@@ -42,5 +42,5 @@ class SessionMessages(BaseModel):
     session_id : str
     messages : str
     user_id : str
-    pass
+    
 
