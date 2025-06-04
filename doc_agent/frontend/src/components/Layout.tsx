@@ -6,13 +6,13 @@ export default function Layout() {
   return (
     <>
       {/*This div controls the styling for the rest of the app */}
-      <div className=" w-screen h-screen bg-[#262626] text-white flex justify-center items-center ">
+      <div className=" bg-[#303030] text-white  ">
         {/*Sidebar goes here to handle the navigation through the prompts */}
         <div>
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
           <Navbar />
-          <div className="w-full max-w-lg max-h-lvh">
+          <div className=" max-w-xl max-h-lvh bg-[#303030]">
             {/*Switch this part for the different pages*/}
             <Outlet />
           </div>

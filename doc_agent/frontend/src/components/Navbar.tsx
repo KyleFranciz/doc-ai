@@ -14,10 +14,12 @@ const NavbarMapper: NavInterface[] = [
 
 export default function Navbar() {
   return (
-    <nav className="absolute top-4 right-0 w-full">
-      <ul className="flex justify-between mx-6">
-        {NavbarMapper.map((item) => (
-          <div>{item.icon}</div>
+    <nav className="fixed right-0 w-full bg-[#303030] ">
+      <ul className="flex justify-between items-center mx-6 h-[55px]">
+        {NavbarMapper.map((item, idx) => (
+          <div key={idx} className="hover:cursor-pointer">
+            {item.icon}
+          </div>
         ))}
       </ul>
     </nav>
