@@ -11,7 +11,7 @@ from services.fetching_functions import get_all_messages_4_doc
 
 
 #create the brain
-DocBrain = ChatOllama(model="llama3.2", temperature=0.3)
+DocBrain = ChatOllama(model="deepseek-coder:6.7b", temperature=0.3)
 #model: choose the model that I want to use, choosing the models brain 
 #temp has to do with how accurate the response is from the AI, less imaginative
 #num_predict makes controls the amount of words the LLM can output back to the user
