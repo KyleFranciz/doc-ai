@@ -73,3 +73,18 @@
   background-color: var(--prompt-box);
   padding-bottom: 0px;
 }
+
+@font-face {
+  font-family: "Sommar";
+  src: url("/doc_agent/frontend/src/assets/font/SommarDisplay.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "aeternus_nano_thin";
+  src: url("/doc_agent/frontend/src/assets/font/aeternus_nano_thin\ \(static\).otf") format("otf");
+}
+
+@font-face {
+  font-family: "Matter";
+  src: url("/doc_agent/frontend/src/assets/font/Matter-Regular.otf") format("opentype");
+}

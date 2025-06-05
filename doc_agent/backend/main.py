@@ -159,6 +159,12 @@ async def get_user_chat(session_id : str): # session id will be sent in to be se
                 "amount_of_messages" : len(response.data)
                 }
             # return the messages that were received from the database
+        elif response.data == 0:
+            return {
+                "session_id" : session_id,
+                "messages": [],
+                "amount_of_messages" : 0
+            }
         else:
             raise HTTPException(status_code=404, detail=f"unfortunately there were no messages that matched the session id you gave: {session_id}")
 

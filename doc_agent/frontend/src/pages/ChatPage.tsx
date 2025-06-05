@@ -87,6 +87,13 @@ export default function ChatPage() {
         )}
       </div>
 
+      {/*If the chat has no messages*/}
+      <div>
+        {!data?.data.messages.length && (
+          <div>There are currently no messages in this chat</div>
+        )}
+      </div>
+
       {/*Container for the chat messages to be displayed here */}
       <div className="px-4">
         {isPending ? (
@@ -103,6 +110,7 @@ export default function ChatPage() {
                   <SyncLoader speedMultiplier={0.5} color="white" size={10} />
                 </div>
               )}
+
               {sendDownMessageMutation.error && (
                 <div className="flex-shrink-0">
                   <strong>Message failed to send to the server...</strong>
