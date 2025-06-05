@@ -11,7 +11,7 @@ export default function Layout() {
   return (
     <>
       {/*This div controls the styling for the rest of the app */}
-      <div className=" h-screen bg-[#303030] text-white  ">
+      <div className=" h-screen bg-[#262626] text-white  ">
         {/*Sidebar goes here to handle the navigation through the prompts */}
         <div>
           {/*Navbar mainly just has the user logo for now */}

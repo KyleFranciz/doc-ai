@@ -10,7 +10,7 @@ import { useNavigate } from "react-router";
 // interface for the message sent to the server
 export interface MessageToDoc {
   question: string;
-  session_id: string | undefined;
+  session_id: string;
   user_id: string;
   role: "human" | "ai";
 }

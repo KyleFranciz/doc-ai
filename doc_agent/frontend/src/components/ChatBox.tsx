@@ -1,33 +1,75 @@
 // component for the chat page that handles sending the messages to the server
-import { FormEvent } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { FormEvent, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
 import { GoPaperclip } from "react-icons/go";
 import { PiMicrophoneFill } from "react-icons/pi";
+import { MessageToDoc } from "../pages/Promptpage";
 import { FaRegPauseCircle } from "react-icons/fa";
 
 // interface for this Chat Component
 interface ChatboxI {
-  onSendMessage: (message: string) => void;
-  chatInput: string;
-  setChatInput: (value: string) => void;
-  isLoading: boolean;
+  sessionId: string;
 }
 
-export default function ChatBox({
-  onSendMessage,
-  chatInput,
-  setChatInput,
-  isLoading,
-}: ChatboxI) {
+export default function ChatBox(prop: ChatboxI) {
+  // react state for the chat input
+  const [chatInput, setChatInput] = useState<string>(""); // for input message
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // query client to help w mutation
+  const queryClient = useQueryClient(); // can bring in and us in any function
+
+  // base api url
+  const BASE_API_URL = import.meta.env.VITE_DOC_BASE_API; // get the base api url from the .env file
+  if (!BASE_API_URL) {
+    console.log("The .env variable failed to load");
+  }
+
+  // function to send the data to the database
+  const send2Chat = async (sessionId: string) => {
+    setLoading(true); // start the loading animation when sending
+
+    // package the data to send off
+    const questionToDoc: MessageToDoc = {
+      question: chatInput,
+      session_id: sessionId,
+      user_id: "user_id",
+      role: "human",
+    };
+
+    // send the data to the prompt server
+    const res = await axios.post(`${BASE_API_URL}/api/prompt`, questionToDoc);
+
+    setLoading(false); // finish loading
+
+    setChatInput(""); // clear the chat box
+
+    return res.data;
+  };
+
+  // set up use mutate to send the data to the backend
+  const { mutate } = useMutation({
+    mutationFn: send2Chat,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["sessionMessages"] }),
+  });
+
   //function to handle posting the data to the database
-  const handleSending = (e: FormEvent) => {
+  const handleSending = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!chatInput.trim() || isLoading) {
-      return;
+    try {
+      // send the data to the database
+      mutate(prop.sessionId);
+
+      console.log("doc got the question");
+    } catch (err) {
+      console.log(err);
     }
 
-    onSendMessage(chatInput.trim());
+    //try sending the data
   };
 
   return (
@@ -43,7 +85,6 @@ export default function ChatBox({
               setChatInput(e.target.value);
             }}
             value={chatInput}
-            disabled={isLoading}
             // make it required to send the data
             required
           />
@@ -52,10 +93,9 @@ export default function ChatBox({
             <button
               className="bg-[#95AA75] p-1.5 rounded-4xl outline-solid outline-[0.5px] outline-[#6D6D6D] text-[#303030] absolute right-3 bottom-3 hover: cursor-pointer"
               type="submit"
-              disabled={isLoading || !chatInput.trim()}
             >
               {/*Replace the logo for the UP with an arrow*/}
-              {isLoading ? (
+              {loading ? (
                 <FaRegPauseCircle size={20} />
               ) : (
                 <FaArrowUp size={17} />
@@ -66,14 +106,12 @@ export default function ChatBox({
               <button
                 className="p-[3px] ml-1 rounded-[3px] outline-solid outline-[0.5px] bg-[#303030] outline-[#6D6D6D] hover:bg-[#2a2a2a] cursor-pointer"
                 type="button"
-                disabled={isLoading}
               >
                 <GoPaperclip />
               </button>
               <button
                 className="p-[3px] ml-2 rounded-[3px] outline-solid bg-[#303030] outline-[0.5px] outline-[#6D6D6D] hover:bg-[#2a2a2a] cursor-pointer "
                 type="button"
-                disabled={isLoading}
               >
                 <PiMicrophoneFill />
               </button>
