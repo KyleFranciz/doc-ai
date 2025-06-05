@@ -2,6 +2,8 @@ import { Outlet } from "react-router";
 import Navbar from "./Navbar";
 
 export default function Layout() {
+  //const location = useLocation();
+
   // TODO: If route is chat page then have the items center go away from styling
   return (
     <>
@@ -12,7 +14,8 @@ export default function Layout() {
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
           <Navbar />
-          <div className=" max-w-xl max-h-lvh bg-[#303030]">
+
+          <div className="max-h-lvh h-screen bg-[#303030]">
             {/*Switch this part for the different pages*/}
             <Outlet />
           </div>

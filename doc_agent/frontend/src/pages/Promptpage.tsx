@@ -92,7 +92,7 @@ function PromptPage() {
   // todo: incorporate the users name in the message once the prompt is sent
   return (
     <>
-      <div className="flex justify-center items-center flex-col">
+      <div className="flex justify-center items-center flex-col h-screen">
         {/*Greet the user*/}
         <div className=" justify-center items-center">
           <h1 className="heading text-[#b8b8b8]">Welcome User</h1>
