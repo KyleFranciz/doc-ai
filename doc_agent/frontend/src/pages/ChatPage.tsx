@@ -103,11 +103,13 @@ export default function ChatPage() {
         ) : (
           // render the messages from the backend using the data from the useGetSessionMessages hook
           <div className="h-full">
-            <div className="h-full mt-[25px]">
+            <div className="h-full mt-[20px]">
               <MessageRender chatInfo={data?.data.messages || []} />
               {sendDownMessageMutation.isPending && (
                 <div className="flex justify-center items-center py-5">
-                  <SyncLoader speedMultiplier={0.5} color="white" size={10} />
+                  <div className="flex items-center justify-center bg-[black] rounded-[70px] p-2 h-[70px] w-[70px]">
+                    <SyncLoader speedMultiplier={0.5} color="white" size={8} />
+                  </div>
                 </div>
               )}
 

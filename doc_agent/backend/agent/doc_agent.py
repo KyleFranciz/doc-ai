@@ -11,7 +11,7 @@ from services.fetching_functions import get_all_messages_4_doc
 
 
 #create the brain
-DocBrain = ChatOllama(model="deepseek-coder:6.7b", temperature=0.3)
+DocBrain = ChatOllama(model="deepseek-coder:6.7b", temperature=0.4)
 #model: choose the model that I want to use, choosing the models brain 
 #temp has to do with how accurate the response is from the AI, less imaginative
 #num_predict makes controls the amount of words the LLM can output back to the user
@@ -19,7 +19,7 @@ DocBrain = ChatOllama(model="deepseek-coder:6.7b", temperature=0.3)
 
 DocsPrompt = ChatPromptTemplate.from_messages([
     # Doc's Purpose
-    SystemMessagePromptTemplate.from_template("""Your name is Doc, you are an AI agent that helps primarily with programming
+    SystemMessagePromptTemplate.from_template("""Your name is Doc, you are an AI agent created by Kyle that helps primarily with programming
     and helping others understanding coding concepts to the best of your ability, you are also made to help with understanding 
     documents and information on websites when the resources are presented. Introduce yourself once, after that have 
     a normal conversation as you assist the user with whatever questions they may have.
