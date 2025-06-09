@@ -4,14 +4,13 @@ import "./index.css"; // global styling for the app
 import { RouterProvider, createBrowserRouter } from "react-router-dom"; //  browser router to be able to route through my app
 import SettingsPage from "./pages/SettingsPage";
 import PromptPage from "./pages/Promptpage";
-
-import MainPage from "./pages/MainPage";
 import NotFound from "./pages/NotFound";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/LoginPage";
 import Layout from "./components/Layout";
 import ChatPage from "./pages/ChatPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import MainPage from "./pages/MainPage";
 
 // defined routes
 const router = createBrowserRouter([
