@@ -55,6 +55,9 @@ function PromptPage() {
         role: "human",
       };
 
+      // route the user to the new page and have the chat session load into the page
+      navigate(`/chat/${sessionId}`);
+
       // send the data formatted data to the api to doc
       //make a post request to the apps api prompt route
       await axios.post(`${BASE_API_URL}/api/prompt`, dataToSend, {
@@ -63,9 +66,6 @@ function PromptPage() {
           "Content-Type": "application/json",
         },
       });
-
-      // route the user to the new page and have the chat session load into the page
-      navigate(`/chat/${sessionId}`);
 
       // set the response that I get back after each question
       //setResponse(

@@ -88,11 +88,6 @@ export default function ChatPage() {
       </div>
 
       {/*If the chat has no messages*/}
-      <div>
-        {!data?.data.messages.length && (
-          <div>There are currently no messages in this chat</div>
-        )}
-      </div>
 
       {/*Container for the chat messages to be displayed here */}
       <div className="px-4">
@@ -107,7 +102,7 @@ export default function ChatPage() {
               <MessageRender chatInfo={data?.data.messages || []} />
               {sendDownMessageMutation.isPending && (
                 <div className="flex justify-center items-center py-5">
-                  <div className="flex items-center justify-center bg-[black] rounded-[70px] p-2 h-[70px] w-[70px]">
+                  <div className="flex items-center justify-center bg-[#252525] rounded-[70px] p-2 h-[70px] w-[70px]">
                     <SyncLoader speedMultiplier={0.5} color="white" size={8} />
                   </div>
                 </div>
