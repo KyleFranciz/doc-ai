@@ -51,10 +51,11 @@ def getKnowledgeFromDoc(user_input : str, session_id: str): # get input from the
     # store the response in the chat history
     return answer.content
 
-# function to get the messages from the database
 
 
-#function to get the chat_session from the database
+
+
+
 
 
 

@@ -1,6 +1,7 @@
 # TODO: Refactor the code for the server connection to make it more prod ready
 # import the stuff for fastapi
 from fastapi import FastAPI , HTTPException, Depends, Response # type: ignore
+
 # import core package to help with making the API
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,8 +19,12 @@ import traceback
 
 #import the models from the schemas so that I can use them to structure the responses or the expected result from the user
 from schemas.chat_schema import DocsResponse, MessageRequest, SessionRequest
+
 # import the function from the doc agent to help with creating the response from the llm
 from agent.doc_agent import getKnowledgeFromDoc # function to ask Doc the question before returning the answer to the use
+
+# import function to get the first message from sessions in the database
+from services.fetching_functions import getFirstMessage, getFirstChat
 
 
 
@@ -83,7 +88,7 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
     #? supabase functions by default are synchronous
     """This is a route to prompt Doc with the question as well as return a response to the user as well"""
     try: # try to create a table in supabase
-        # add users question to the DB
+        #^ add users question to the DB
         print("adding User's input")
         UserQuestion = supabase.table("messages").insert({ # get back the state of the UserQuestion
             "session_id" : user_request.session_id, # information about the session id that the user is in with Doc 
@@ -93,11 +98,43 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         }).execute()
         print("successfully added")
 
-        # ask doc the question from the user
+
+        #^ check if the chat table to see if it already exists in the database
+        checkChatDB = getFirstChat(user_request.user_id)
+        
+        # alert for debug
+        print(f"First chat from the database: {checkChatDB}") # show the first chat from the database
+        
+
+        # if it doesn't then create a new chat with the session info for the database
+        if not checkChatDB:
+            # get the first message from the messages table in the database
+            FirstMessage = getFirstMessage(user_request.session_id)
+            # alert for debug
+            print(f"First message from the database: {FirstMessage}") # show the first message from the database
+
+            # shorten the title of the First message
+            short_title = FirstMessage[:50]
+
+            # create a new chat with the session info for the database
+            SentChatSession = supabase.table("chats").insert({
+                "user_id" : user_request.user_id,
+                "title" : short_title.title(), # shorten the title for the chat
+            }).execute()
+            
+            #check if successful 
+            print(f"Successfully added Doc's and Users Chat to the Chat DB: {SentChatSession}")
+            
+        else:
+            print("There is already a chat message inside the Chat Database")
+
+
+        #^ ask doc the question from the user
         print("generating docs response")
         answer = getKnowledgeFromDoc(user_input=user_request.question, session_id=user_request.session_id) # give the question that the user had and also the session_id of the user
         print("response generated")
 
+        #^ add Docs Response to the Messages Database
         print("adding Docs response")
         #store the response from Doc into the DB so i can check success
         DocsAnswer = supabase.table("messages").insert({
@@ -108,10 +145,20 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         }).execute()
         print("Doc's answer was successfully added to the database")
 
+        # bundle users and docs chat session to the chat DB
+
+        
+
+
         # check if there is data added from the attempt is added to the DB
-        if not UserQuestion.data or not DocsAnswer.data:
+        if not UserQuestion.data:
             # raise an error to the user to let them know that there was an error adding the data to the DB
             raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
+        if not DocsAnswer.data:
+            # raise an error to the user to let them know that there was an error adding the data to the DB
+            raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
+        
+            
         
         else:
             # show the data that was added if it was a success
@@ -176,15 +223,7 @@ async def get_user_chat(session_id : str): # session id will be sent in to be se
 
 
 
-# route to get the env variables from the frontend (might not use)
-#@app.get("/api/config")
-#def send_env():
-#    return {
-#        # send docs url to the frontend
-#        "DocsUrl" : doc_url
-#        # any other config from the backend
-#    }
-#    
+# todo: different route to get all the different chat titles from the database
 
 
 
