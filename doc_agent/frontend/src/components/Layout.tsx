@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useLocation } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 //import { useLocation } from "react-router-dom";
 
@@ -24,6 +25,7 @@ export default function Layout() {
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
           <Navbar />
+          <Sidebar />
           {
             <div
               className={`max-h-lvh h-screen ${style} bg-[#171717] overflow-x-hidden scrollbar-transparent`}
