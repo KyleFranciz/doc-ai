@@ -8,6 +8,7 @@ import { useState } from "react";
 import { MessageToDoc } from "./Promptpage";
 import axios from "axios";
 import { fetchMessages } from "../api/ChatFetcher";
+import { toast } from "sonner";
 
 export default function ChatPage() {
   // requires a setMessage (set state), handleSubmit (function triggered on submit), loading(boolean to control loading state)
@@ -43,6 +44,10 @@ export default function ChatPage() {
         role: "human",
       };
 
+      // add toast to let the user know the question is being processed
+      toast("Doc is thinking", {
+        className: "bg-[#171717]",
+      });
       const res = await axios.post(`${BASE_API_URL}/api/prompt`, questionToDoc);
       return res.data;
     },
@@ -50,7 +55,10 @@ export default function ChatPage() {
       queryClient.invalidateQueries({ queryKey: ["sessionMessages"] });
       setChatInput(""); // clear the input after its done
     },
-    onError: (error) => console.log("Failed to send properly", error),
+    onError: (error) =>
+      toast.error(`Failed to update the chat: ${error}`, {
+        className: "bg-[#171717] text-white",
+      }),
   });
 
   const handleSendMessage = (message: string) => {

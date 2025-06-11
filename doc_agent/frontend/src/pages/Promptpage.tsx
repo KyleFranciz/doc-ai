@@ -6,6 +6,7 @@ import axios from "axios";
 import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 // interface for the message sent to the server
 export interface MessageToDoc {
@@ -58,6 +59,11 @@ function PromptPage() {
       // route the user to the new page and have the chat session load into the page
       navigate(`/chat/${sessionId}`);
 
+      // trigger the toast to pop up on the screen letting the user know a new chat with Doc has been started
+      toast.success("New chat with Doc has been created", {
+        className: "bg-[#171717] text-white",
+      });
+
       // send the data formatted data to the api to doc
       //make a post request to the apps api prompt route
       await axios.post(`${BASE_API_URL}/api/prompt`, dataToSend, {
@@ -81,7 +87,9 @@ function PromptPage() {
       //todo: route the user to a page with the chat and the message
       // catch the error
     } catch (err) {
-      console.log(err);
+      toast.error(`Chat failed to send properly: ${err}`, {
+        className: "bg-[#171717] text-white",
+      });
     } finally {
       // reset the loading state since the initial loading is done
       setLoading(false);

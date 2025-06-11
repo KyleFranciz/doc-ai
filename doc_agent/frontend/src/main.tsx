@@ -11,6 +11,7 @@ import Layout from "./components/Layout";
 import ChatPage from "./pages/ChatPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainPage from "./pages/MainPage";
+import { Toaster } from "sonner";
 
 // defined routes
 const router = createBrowserRouter([
@@ -43,6 +44,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <Toaster position="top-center" duration={4000} />
     </QueryClientProvider>
   </StrictMode>
 );
