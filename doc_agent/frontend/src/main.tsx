@@ -44,7 +44,17 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      <Toaster position="top-center" duration={4000} />
+      <Toaster
+        position="top-center"
+        theme="dark"
+        duration={4000}
+        richColors
+        toastOptions={{
+          classNames: {
+            toast: "bg-[#171717] text-white",
+          },
+        }}
+      />
     </QueryClientProvider>
   </StrictMode>
 );

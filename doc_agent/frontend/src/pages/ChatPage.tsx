@@ -4,7 +4,7 @@ import ChatBox from "../components/ChatBox";
 
 import MessageRender from "../components/messageRender";
 import { SyncLoader } from "react-spinners";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { MessageToDoc } from "./Promptpage";
 import axios from "axios";
 import { fetchMessages } from "../api/ChatFetcher";
@@ -23,6 +23,7 @@ export default function ChatPage() {
   // local states for the messages
   //const [messageInput, setMessageInput] = useState<string>(""); // keep track of messages
   //const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   // bring in session managing hook
 
@@ -37,6 +38,11 @@ export default function ChatPage() {
 
   const sendDownMessageMutation = useMutation({
     mutationFn: async (message: string) => {
+      // allow the user to scroll to the bottom of the page
+      if (bottomRef.current) {
+        bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+
       const questionToDoc: MessageToDoc = {
         question: message,
         session_id: sessionId, // change the type if the message doesn't send
@@ -44,10 +50,6 @@ export default function ChatPage() {
         role: "human",
       };
 
-      // add toast to let the user know the question is being processed
-      toast("Doc is thinking", {
-        className: "bg-[#171717]",
-      });
       const res = await axios.post(`${BASE_API_URL}/api/prompt`, questionToDoc);
       return res.data;
     },
@@ -55,10 +57,7 @@ export default function ChatPage() {
       queryClient.invalidateQueries({ queryKey: ["sessionMessages"] });
       setChatInput(""); // clear the input after its done
     },
-    onError: (error) =>
-      toast.error(`Failed to update the chat: ${error}`, {
-        className: "bg-[#171717] text-white",
-      }),
+    onError: (error) => toast.error(`Failed to update the chat: ${error}`, {}),
   });
 
   const handleSendMessage = (message: string) => {
@@ -126,8 +125,9 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+
       {/* Chat box for sending messages to the backend*/}
-      <div className="pb-2  sticky bottom-0 bg-[#171717]">
+      <div ref={bottomRef} className="pb-2  sticky bottom-0 bg-[#171717]">
         <ChatBox
           onSendMessage={handleSendMessage}
           chatInput={chatInput}

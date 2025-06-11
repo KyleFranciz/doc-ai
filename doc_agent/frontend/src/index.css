@@ -41,6 +41,26 @@
   }
 }
 
+/* styles/globals.css */
+.scrollbar-transparent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 4px;
+}
+
+/* Optional: Firefox support */
+.scrollbar-transparent {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+}
+
 @utility container {
   margin-inline : auto;
   padding-inline: 2rem;
@@ -71,6 +91,7 @@
 
 body{
   background-color: #171717;
+  
 }
 
 .dark {
@@ -206,3 +227,5 @@ body{
     @apply border-border outline-ring/50;}
   body {
     @apply bg-background text-foreground;}}
+
+

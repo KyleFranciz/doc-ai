@@ -60,9 +60,7 @@ function PromptPage() {
       navigate(`/chat/${sessionId}`);
 
       // trigger the toast to pop up on the screen letting the user know a new chat with Doc has been started
-      toast.success("New chat with Doc has been created", {
-        className: "bg-[#171717] text-white",
-      });
+      toast.success("New chat with Doc has been created", {});
 
       // send the data formatted data to the api to doc
       //make a post request to the apps api prompt route
@@ -87,9 +85,7 @@ function PromptPage() {
       //todo: route the user to a page with the chat and the message
       // catch the error
     } catch (err) {
-      toast.error(`Chat failed to send properly: ${err}`, {
-        className: "bg-[#171717] text-white",
-      });
+      toast.error(`Chat failed to send properly: ${err}`, {});
     } finally {
       // reset the loading state since the initial loading is done
       setLoading(false);

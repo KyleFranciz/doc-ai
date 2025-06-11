@@ -1,6 +1,6 @@
 // tailwind.config.ts
 import type { Config } from "tailwindcss";
-import plugin from "tailwind-scrollbar";
+import scrollbar from "tailwind-scrollbar";
 
 const config: Config = {
   content: [
@@ -10,7 +10,7 @@ const config: Config = {
     extend: {},
   },
   plugins: [
-    plugin, // tailwind-scrollbar plugin
+    scrollbar, // tailwind-scrollbar plugin
   ],
 };
 
