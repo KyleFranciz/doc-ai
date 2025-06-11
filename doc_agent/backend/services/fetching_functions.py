@@ -76,10 +76,10 @@ def getFirstMessage(session_id : str): # todo: add user_id as a param later on t
     
 
 # Function to get the first chat Message from the database
-def getFirstChat(user_id: str): # todo: add user_id as a param later on to the function
+def getFirstChat(session_id: str): # todo: add user_id as a param later on to the function
     """This is a function to get the first chat that was stored in the chats table in the data base"""
     # get all the chats from the Chats table 
-    Chats = supabase.table("chats").select("*").eq("user_id", user_id).order("created_at", desc=False).execute()
+    Chats = supabase.table("chats").select("*").eq("session_id", session_id).order("created_at", desc=False).execute()
     print(f"chat data: {Chats}")
 
 

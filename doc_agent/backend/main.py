@@ -100,7 +100,7 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
 
 
         #^ check if the chat table to see if it already exists in the database
-        checkChatDB = getFirstChat(user_request.user_id)
+        checkChatDB = getFirstChat(user_request.session_id)
         
         # alert for debug
         print(f"First chat from the database: {checkChatDB}") # show the first chat from the database
