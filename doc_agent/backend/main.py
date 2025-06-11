@@ -120,6 +120,7 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
             SentChatSession = supabase.table("chats").insert({
                 "user_id" : user_request.user_id,
                 "title" : short_title.title(), # shorten the title for the chat
+                "session_id" : user_request.session_id, # add the session_id of the chat
             }).execute()
             
             #check if successful 
@@ -145,12 +146,9 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         }).execute()
         print("Doc's answer was successfully added to the database")
 
-        # bundle users and docs chat session to the chat DB
-
-        
 
 
-        # check if there is data added from the attempt is added to the DB
+        #^ check if there is data added from the attempt is added to the DB
         if not UserQuestion.data:
             # raise an error to the user to let them know that there was an error adding the data to the DB
             raise HTTPException(status_code=500, detail="Failed to add the messages to the database")

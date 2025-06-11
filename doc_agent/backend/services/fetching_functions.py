@@ -33,6 +33,7 @@ else:
 
 # Function to get all the messages from a current session into to Doc
 def get_all_messages_4_doc(session_id: str): # pass in the session ID from the request to place into the function
+    """This is a function to get all the messages from the messages table in the database to give to Doc Agent"""
     # get the information from the Supabase 
     response = supabase.table("messages").select("*").eq("session_id",session_id).order("created_at", desc=False).execute()
     # have the info from "messages", select all the info get the information that matches the session_id and sort the date in ascending order ^
@@ -60,6 +61,7 @@ def get_all_messages_4_doc(session_id: str): # pass in the session ID from the r
 
 # Function to get all the first message in the list from the data base
 def getFirstMessage(session_id : str): # todo: add user_id as a param later on to the function
+    """This is a function to get the first message from the messages table in the data base"""
     #Get all the messages from top to bottom
     Messages = supabase.table("messages").select("*").eq("session_id", session_id).order("created_at", desc=False).execute()
 
@@ -75,6 +77,7 @@ def getFirstMessage(session_id : str): # todo: add user_id as a param later on t
 
 # Function to get the first chat Message from the database
 def getFirstChat(user_id: str): # todo: add user_id as a param later on to the function
+    """This is a function to get the first chat that was stored in the chats table in the data base"""
     # get all the chats from the Chats table 
     Chats = supabase.table("chats").select("*").eq("user_id", user_id).order("created_at", desc=False).execute()
     print(f"chat data: {Chats}")
