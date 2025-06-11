@@ -44,9 +44,10 @@ def getKnowledgeFromDoc(user_input : str, session_id: str): # get input from the
         chat_history=message_history # todo: update to new LangGraph memory method to be able to store memory for multiple different users
                                     # todo: update the memory and make it session based as well as get messages from the database
         )
-    
+
     # Bring everything together and ask Doc the prompt
     answer = DocBrain.invoke(prompt)
+
 
     # store the response in the chat history
     return answer.content

@@ -17,11 +17,11 @@ export default function PromptBox(props: PromptBoxI) {
   return (
     <div className="pt-[10px]">
       <form onSubmit={props.handleSubmit}>
-        <div className="w-[650px] h-[110px] bg-[#303030]  outline-[#6D6D6D] outline-solid outline-[0.7px] mt-4 rounded-xl relative">
+        <div className="w-[650px] h-[110px] bg-[#171717] outline-[#474747] outline-solid outline-[0.7px] mt-4 rounded-xl relative">
           <input
             type="text"
             placeholder="Let me know what you want to look into"
-            className="w-full mt-4.5 ml-4 h-auto outline-none text-[#ffffffe4]"
+            className="w-full mt-4.5 ml-4 h-auto outline-none text-[#dbdbdbe4]"
             onChange={(e) => {
               // catch the input changes and store in state
               props.setMessage(e.target.value);
@@ -41,13 +41,13 @@ export default function PromptBox(props: PromptBoxI) {
             {/*styling for the bottom buttons */}
             <div className="flex w-15 scale-110 absolute bottom-3 left-3">
               <button
-                className="p-[3px] ml-1 rounded-[3px] outline-solid outline-[0.5px] bg-[#303030] outline-[#6D6D6D] hover:bg-[#2a2a2a] cursor-pointer"
+                className="p-[3px] ml-1 rounded-[3px] outline-solid outline-[0.5px] bg-[#171717] outline-[#474747] hover:bg-[#2a2a2a] cursor-pointer"
                 type="button"
               >
                 <GoPaperclip />
               </button>
               <button
-                className="p-[3px] ml-2 rounded-[3px] outline-solid bg-[#303030] outline-[0.5px] outline-[#6D6D6D] hover:bg-[#2a2a2a] cursor-pointer "
+                className="p-[3px] ml-2 rounded-[3px] outline-solid bg-[#171717] outline-[0.5px] outline-[#474747] hover:bg-[#2a2a2a] cursor-pointer "
                 type="button"
               >
                 <PiMicrophoneFill />

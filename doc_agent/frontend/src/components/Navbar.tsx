@@ -1,30 +1,29 @@
-import { IconType } from "react-icons/lib";
 import { IoMdMenu } from "react-icons/io";
-import { FaRegUserCircle } from "react-icons/fa";
+import { Link } from "react-router";
 
-//interface for the items that will be in the nav
-interface NavInterface {
-  icon: IconType; // make into a react component
-}
-
-//TODO : WORK ON THE CHANGING THE ICONS TO THE PROPER ONES IN THE NAVBAR
-
-const NavbarMapper: NavInterface[] = [
-  //todo: change the message icon
-  { icon: IoMdMenu },
-  //todo: change the logo icon when the logo from the user login is setup
-  { icon: FaRegUserCircle },
-];
+// Adjust the navbar if the user is signed in or not
 
 export default function Navbar() {
   return (
-    <nav className="fixed right-0 w-full bg-[#303030] ">
+    <nav className="fixed right-0 w-full bg-[#171717] ">
       <ul className="flex justify-between items-center mx-6 h-[55px]">
-        {NavbarMapper.map((item, idx) => (
-          <div key={idx} className="hover:cursor-pointer">
-            <item.icon size={32} />
+        <div className="flex items-center justify-between w-full">
+          <IoMdMenu size={30} />
+          <div className="flex items-center justify-between w-[172px]">
+            <Link
+              to={"/login"}
+              className="px-4 py-1 text-black text-[15px] bg-white rounded-2xl font-semibold hover:bg-[#c4c4c4]"
+            >
+              Log in
+            </Link>
+            <Link
+              to={"/signup"}
+              className="rounded-2xl font-semibold border-[0.5px] py-1 px-4 text-[15px] hover:bg-[#282828] hover:border-white"
+            >
+              Sign Up
+            </Link>
           </div>
-        ))}
+        </div>
       </ul>
     </nav>
   );

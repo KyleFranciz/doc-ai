@@ -67,7 +67,9 @@
   
 }
 
-
+body{
+  background-color: #171717;
+}
 
 .dark {
   background-color: var(--prompt-box);

@@ -72,7 +72,7 @@ export default function ChatPage() {
 
   // base render for when the page loads and everything is successful
   return (
-    <div className="flex flex-col items-center bg-[#303030]">
+    <div className="flex flex-col items-center bg-[#171717]">
       <div className="pt-[60px] flex-shrink-0 p-4 border-b border-[gray]">
         <h1 className="text-[1.3rem] font-semibold">Chat {sessionId}</h1>
       </div>
@@ -93,7 +93,7 @@ export default function ChatPage() {
       <div className="px-4">
         {isPending ? (
           <div className="flex justify-center items-center h-64">
-            <SyncLoader speedMultiplier={0} color="white" />
+            <SyncLoader speedMultiplier={0.5} color="white" />
           </div>
         ) : (
           // render the messages from the backend using the data from the useGetSessionMessages hook
@@ -119,7 +119,7 @@ export default function ChatPage() {
         )}
       </div>
       {/* Chat box for sending messages to the backend*/}
-      <div className="pb-2  sticky bottom-0 bg-[#303030]">
+      <div className="pb-2  sticky bottom-0 bg-[#171717]">
         <ChatBox
           onSendMessage={handleSendMessage}
           chatInput={chatInput}

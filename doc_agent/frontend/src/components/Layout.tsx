@@ -25,7 +25,7 @@ export default function Layout() {
           {/* Might add an app logo later on */}
           <Navbar />
           {
-            <div className={`max-h-lvh h-screen ${style} bg-[#303030]`}>
+            <div className={`max-h-lvh h-screen ${style} bg-[#171717]`}>
               {/*Switch this part for the different pages*/}
               <Outlet />
             </div>
