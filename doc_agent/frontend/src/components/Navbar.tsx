@@ -1,27 +1,34 @@
 import { IoMdMenu } from "react-icons/io";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
+import { motion } from "framer-motion";
 
 // Adjust the navbar if the user is signed in or not
 
 export default function Navbar() {
+  // use navigate hook for the routing
+  const navigate = useNavigate();
   return (
     <nav className="fixed right-0 w-full bg-[#171717] ">
       <ul className="flex justify-between items-center mx-6 h-[55px]">
         <div className="flex items-center justify-between w-full">
           <IoMdMenu size={30} />
-          <div className="flex items-center justify-between w-[172px]">
-            <Link
-              to={"/login"}
-              className="px-4 py-1 text-black text-[15px] bg-white rounded-2xl font-semibold hover:bg-[#c4c4c4]"
+          <div className="flex items-center justify-between w-[176px]">
+            <motion.button
+              onTap={() => navigate("/login")}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.8 }}
+              className="px-4 py-1 text-black text-[15px] border-[0.5px] bg-white rounded-2xl font-semibold cursor-pointer hover:bg-[#c4c4c4]"
             >
-              Log in
-            </Link>
-            <Link
-              to={"/signup"}
-              className="rounded-2xl font-semibold border-[0.5px] py-1 px-4 text-[15px] hover:bg-[#282828] hover:border-white"
+              <div className="">Log in</div>
+            </motion.button>
+            <motion.button
+              onTap={() => navigate("/signup")}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.8 }}
+              className="rounded-2xl font-semibold border-[0.5px] py-1 px-4 text-[15px] cursor-pointer hover:bg-[#282828] hover:border-white"
             >
-              Sign Up
-            </Link>
+              <div>Sign Up</div>
+            </motion.button>
           </div>
         </div>
       </ul>

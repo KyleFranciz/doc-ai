@@ -114,7 +114,7 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
             print(f"First message from the database: {FirstMessage}") # show the first message from the database
 
             # shorten the title of the First message
-            short_title = FirstMessage[:50]
+            short_title = FirstMessage[:20]
 
             # create a new chat with the session info for the database
             SentChatSession = supabase.table("chats").insert({
@@ -222,6 +222,36 @@ async def get_user_chat(session_id : str): # session id will be sent in to be se
 
 
 # todo: different route to get all the different chat titles from the database
+@app.get("/api/chats/{user_id}")
+async def get_all_chat_titles(user_id : str): # user_id will be sent in to be searched in database, user will be added later on
+    # max out the amount of chats that the user can get
+    MAX_CHATS = 20
+    
+    # Try to get the chats from the backend
+    try:
+        # fetch the data from the backend
+        all_chats = supabase.table("chats").select("*").eq("user_id", user_id).execute()
+
+        #check if I get the data back
+        if all_chats.data:
+            # return 20 chats from the database
+            return {
+             "chat" : all_chats.data[:MAX_CHATS], 
+             "amount_of_chats" : len(all_chats.data) 
+            }
+        
+        elif all_chats.data == 0:
+            return {
+                "chat" : [],
+                "amount_of_chats" : 0  
+            }
+        
+
+    except Exception as err:
+        raise HTTPException(status_code=404, detail=f"failed to fetch the chats: {err}")
+    # get all the data of the chat info
+
+    pass
 
 
 

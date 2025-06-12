@@ -43,3 +43,18 @@ export interface SessionGetReqBody {
   session_id: string;
   user_id: string;
 }
+
+// data of the chats in the DB
+export interface ChatData {
+  session_id: string;
+  user_id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// interface for chats from the DB
+export interface Chat {
+  chat: ChatData[];
+  amount_of_chats: number;
+}

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GetMessagesResponse } from "../interfaces/chat-interfaces";
+import { Chat, GetMessagesResponse } from "../interfaces/chat-interfaces";
 
 const BASE_API_URL: string = import.meta.env.VITE_DOC_BASE_API;
 
@@ -10,4 +10,8 @@ export const fetchMessages = async (sessionId: string | undefined) => {
   return await axios.get<GetMessagesResponse>(
     `${BASE_API_URL}/api/chat/${sessionId}`
   );
+};
+
+export const fetchChats = async (user_id: string | undefined) => {
+  return await axios.get<Chat>(`${BASE_API_URL}/api/chats/${user_id}`);
 };
