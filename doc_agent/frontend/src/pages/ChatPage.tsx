@@ -270,21 +270,28 @@ export default function ChatPage() {
               )}
               {sendDownMessageMutation.isPending && (
                 <div className="flex justify-center items-center py-5">
-                  <div className="flex items-center justify-center bg-[#252525] rounded-[70px] p-2 h-[70px] w-[70px]">
+                  <div className="flex items-center px-2 justify-center bg-[#252525] rounded-[5px] p-2 h-[70px] w-[400px]">
                     <SyncLoader speedMultiplier={0.5} color="white" size={8} />
                   </div>
                 </div>
               )}
               {/* Show loading for streaming */}
               {isStreaming && !currentStreamingMessage && (
-                <div className="flex flex-col justify-center py-5">
+                <>
                   <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
                     {userQuestion}
                   </div>
-                  <div className="flex items-center justify-center bg-[#252525] rounded-[70px] p-2 h-[70px] w-[70px]">
-                    <SyncLoader speedMultiplier={0.5} color="white" size={8} />
+                  <div className="flex flex-col justify-center items-center py-5">
+                    <div className="flex items-center justify-center bg-[#252525] rounded-[5px] p-2 h-[50px] w-[200px]">
+                      <p className="mr-1">Thinking</p>
+                      <SyncLoader
+                        speedMultiplier={0.5}
+                        color="white"
+                        size={8}
+                      />
+                    </div>
                   </div>
-                </div>
+                </>
               )}
               {/* Show error for sending messages */}
               {sendDownMessageMutation.error && (

@@ -1,6 +1,6 @@
 // use axios to help w fetching and posting data to my api route
 //import axios from "axios";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
@@ -24,8 +24,6 @@ function PromptPage() {
 
   // get the session ID from the chat session component
   const { sessionId } = useChatSession(); // only use the sessionId variable to store the session
-
-  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   // create navigation so i can use it to route to the chat page
   const navigate = useNavigate();
@@ -68,16 +66,12 @@ function PromptPage() {
       });
 
       if (!resp.ok) {
-        throw new Error(`Failed to send the prompt to Doc: ${resp.status}`);
+        toast.error(`Failed to send prompt to Doc ${resp.status}`);
+        return; // stop function before nav execution
       }
 
       // route the user to the new page and have the chat session load into the page
       navigate(`/chat/${sessionId}`);
-
-      // auto scroll to the bottom of the chat window when a new message is received
-      if (bottomRef.current) {
-        bottomRef.current.scrollIntoView({ behavior: "instant" });
-      }
 
       // trigger the toast to pop up on the screen letting the user know a new chat with Doc has been started
       toast.success("New chat with Doc has been created");
