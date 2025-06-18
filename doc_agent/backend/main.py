@@ -251,7 +251,6 @@ async def get_all_chat_titles(user_id : str): # user_id will be sent in to be se
         raise HTTPException(status_code=404, detail=f"failed to fetch the chats: {err}")
     # get all the data of the chat info
 
-    pass
 
 
 

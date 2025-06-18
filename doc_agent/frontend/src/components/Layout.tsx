@@ -15,7 +15,6 @@ export default function Layout() {
     ? " w-full max-w-full"
     : "flex justify-center items-center";
 
-  // TODO: If route is chat page then have the items center go away from styling
   return (
     <>
       {/*This div controls the styling for the rest of the app */}

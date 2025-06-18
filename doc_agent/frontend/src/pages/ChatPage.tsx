@@ -12,7 +12,6 @@ import { toast } from "sonner";
 
 export default function ChatPage() {
   // requires a setMessage (set state), handleSubmit (function triggered on submit), loading(boolean to control loading state)
-  // TODO: Set up chat_id w/ useParams. Set up the chat id to be custom and load chat from the prompt page
   // States to use in this component
   const { sessionId } = useParams<{ sessionId: string | undefined }>(); // get the session id from the url, make sure that all the messages are sent to the same session
   const [chatInput, setChatInput] = useState<string>("");
