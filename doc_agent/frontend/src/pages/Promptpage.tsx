@@ -2,7 +2,6 @@
 //import axios from "axios";
 import { useState } from "react";
 
-import axios from "axios";
 import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
 import { useNavigate } from "react-router";
@@ -64,11 +63,12 @@ function PromptPage() {
 
       // send the data formatted data to the api to doc
       //make a post request to the apps api prompt route
-      await axios.post(`${BASE_API_URL}/api/prompt`, dataToSend, {
+      await fetch(`${BASE_API_URL}/api/prompt?stream=true`, {
+        method: "POST",
         headers: {
-          // identify the header type
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(dataToSend),
       });
 
       // set the response that I get back after each question

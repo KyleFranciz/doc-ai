@@ -1,31 +1,17 @@
 # TODO: Refactor the code for the server connection to make it more prod ready
-# import the stuff for fastapi
-from fastapi import FastAPI , HTTPException, Depends, Response # type: ignore
-
-# import core package to help with making the API
-from fastapi.middleware.cors import CORSMiddleware
-
-# load_env  is important to loading the env variables from the file 
-from dotenv import load_dotenv # type: ignore
-
-#os allows me to access the file and pull the variables that were pulled
-import os
-
-# import supabase so that I can access the database
-from supabase import  create_client ,Client   # type: ignore #create client and handle the client once its made
-
-# For checking the real errors that are not shown if the error is not shown 
-import traceback
-
-#import the models from the schemas so that I can use them to structure the responses or the expected result from the user
-from schemas.chat_schema import DocsResponse, MessageRequest, SessionRequest
-
-# import the function from the doc agent to help with creating the response from the llm
-from agent.doc_agent import getKnowledgeFromDoc # function to ask Doc the question before returning the answer to the use
-
-# import function to get the first message from sessions in the database
-from services.fetching_functions import getFirstMessage, getFirstChat
-
+from fastapi import FastAPI , HTTPException, Depends, Response # type: ignore # import the stuff for fastapi
+from fastapi.middleware.cors import CORSMiddleware # import core package to help with making the API
+from dotenv import load_dotenv # type: ignore # load_env  is important to loading the env variables from the file 
+import os #os allows me to access the file and pull the variables that were pulled
+from supabase import  create_client ,Client   # type: ignore #create client and handle the client once its made # import supabase so that I can access the database
+import traceback # For checking the real errors that are not shown if the error is not shown 
+from schemas.chat_schema import DocsResponse, MessageRequest, SessionRequest #import the models from the schemas so that I can use them to structure the responses or the expected result from the user
+from agent.doc_agent import getKnowledgeFromDoc, getKnowledgeFromDocStreaming # function to ask Doc the question before returning the answer to the use # import the function from the doc agent to help with creating the response from the llm
+from services.fetching_functions import getFirstMessage, getFirstChat # import function to get the first message from sessions in the database
+import asyncio
+import json
+from typing import AsyncGenerator, Optional
+from fastapi.responses import StreamingResponse # type: ignore # import the streaming response to help with streaming the response to the user
 
 
 # TODO: use the server from fast api to help with setting up the api routes for contacting the llm
@@ -84,7 +70,7 @@ def get_entry_root(): #general connection
 # Adding data to the table
 @app.post("/api/prompt", response_model=DocsResponse) #DocResponse is the response that I give back when the user makes a request"
 # user_input is a a parameter that gets sent to the backend
-async def askDoc(user_request : MessageRequest): #? the params have message_to_doc, session_id, user_id and role
+async def askDoc(user_request : MessageRequest, stream: Optional[bool] = False): #? the params have message_to_doc, session_id, user_id and role
     #? supabase functions by default are synchronous
     """This is a route to prompt Doc with the question as well as return a response to the user as well"""
     try: # try to create a table in supabase
@@ -103,7 +89,7 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         checkChatDB = getFirstChat(user_request.session_id)
         
         # alert for debug
-        print(f"First chat from the database: {checkChatDB}") # show the first chat from the database
+        #print(f"First chat from the database: {checkChatDB}") # show the first chat from the database
         
 
         # if it doesn't then create a new chat with the session info for the database
@@ -122,47 +108,56 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
                 "title" : short_title.title(), # shorten the title for the chat
                 "session_id" : user_request.session_id, # add the session_id of the chat
             }).execute()
-            
             #check if successful 
-            print(f"Successfully added Doc's and Users Chat to the Chat DB: {SentChatSession}")
-            
+            #print(f"Successfully added Doc's and Users Chat to the Chat DB: {SentChatSession}")
         else:
             print("There is already a chat message inside the Chat Database")
 
+        # check if there is a stream request from the frontend
+        if stream:
+            # return a stream response to the frontend
+            return StreamingResponse(
+                stream_doc_response(user_request), 
+                media_type="text/plain", 
+                headers={
+                    "Cache-Control" : "no-cache",
+                    "Connection" : "keep-alive",
+                    "Access-Control-Allow-Origin" : "*"
+                }
+            )
 
-        #^ ask doc the question from the user
-        print("generating docs response")
-        answer = getKnowledgeFromDoc(user_input=user_request.question, session_id=user_request.session_id) # give the question that the user had and also the session_id of the user
-        print("response generated")
-
-        #^ add Docs Response to the Messages Database
-        print("adding Docs response")
-        #store the response from Doc into the DB so i can check success
-        DocsAnswer = supabase.table("messages").insert({
-            "session_id" : user_request.session_id, 
-            "role" : "ai", # adds ai role to the message being sent for doc
-            "content" : answer,
-            "user_id" : user_request.user_id
-        }).execute()
-        print("Doc's answer was successfully added to the database")
-
-
-
-        #^ check if there is data added from the attempt is added to the DB
-        if not UserQuestion.data:
-            # raise an error to the user to let them know that there was an error adding the data to the DB
-            raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
-        if not DocsAnswer.data:
-            # raise an error to the user to let them know that there was an error adding the data to the DB
-            raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
-        
-            
-        
         else:
-            # show the data that was added if it was a success
-            print(UserQuestion.data, DocsAnswer.data) # show the data that I added to triple check
+        #^ ask doc the question from the user
+            print("generating docs response")
+            answer = getKnowledgeFromDoc(user_input=user_request.question, session_id=user_request.session_id) # give the question that the user had and also the session_id of the user
+            print("response generated")
 
-            # return the response model with the filled out info to the user
+            #^ add Docs Response to the Messages Database
+            print("adding Docs response")
+            #store the response from Doc into the DB so i can check success
+            DocsAnswer = supabase.table("messages").insert({
+                "session_id" : user_request.session_id, 
+                "role" : "ai", # adds ai role to the message being sent for doc
+                "content" : answer,
+                "user_id" : user_request.user_id
+            }).execute()
+            print("Doc's answer was successfully added to the database")
+
+
+
+            #^ check if there is data added from the attempt is added to the DB
+            if not UserQuestion.data:
+                # raise an error to the user to let them know that there was an error adding the data to the DB
+                raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
+            if not DocsAnswer.data:
+                # raise an error to the user to let them know that there was an error adding the data to the DB
+                raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
+
+
+
+
+            # show the data that was added if it was a success
+            print(UserQuestion.data, DocsAnswer.data) # show the data that I added to triple check        # return the response model with the filled out info to the user
             return DocsResponse(
                 # return this info to the user 
                 status="success", # let the user know that it was a success
@@ -175,7 +170,40 @@ async def askDoc(user_request : MessageRequest): #? the params have message_to_d
         print(f"Traceback (finding the real error):", traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"There has been an error: {str(error)}")
         
+# Async Function to stream the response from Doc
+async def stream_doc_response(user_request: MessageRequest):
+    """
+    This is a function that generates the response from Doc 
+    and streams it to the frontend as the responses are being generated
+    """
 
+    # variable to store the entire response once its done to send to the backend
+    full_response = ""
+
+    try:
+        # get the messages for Doc from the database
+        async for token in getKnowledgeFromDocStreaming(user_request.question, user_request.session_id):
+            full_response += token # add words to the full response
+
+            yield f"data: {json.dumps({'token': token, 'type': "token"})}\n\n"
+
+        # send completion signal after the response is done 
+        yield f"data: {json.dumps({'type': "complete"})}\n\n"
+
+        # save the full response to the database for the reference for the next
+        # line in the conversation
+        DocsAnswer = supabase.table("messages").insert({
+            "session_id" : user_request.session_id,
+            "role" : "ai", 
+            "content" : full_response,
+            "user_id" :  user_request.user_id
+        }).execute()
+
+        print("Doc's complete response was successfully added to the database")
+    except Exception as error:
+        error_message = f"data: {json.dumps({'type': 'error', 'message': str(error)})}\n\n"
+        yield error_message
+        print(f"Streaming error: {error}")
 
 # route to get the chat room information for the current user
 # route is async to help with waiting and making sure the flow is good
