@@ -91,3 +91,5 @@ def getFirstChat(session_id: str): # todo: add user_id as a param later on to th
         first_chat = Chats.data[0]
         return first_chat
     #get the first chat from the collection
+
+

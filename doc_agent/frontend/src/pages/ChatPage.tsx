@@ -21,6 +21,9 @@ export default function ChatPage() {
     useState<string>("");
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
 
+  // handle the user question to be displayed while the message is being streamed
+  const [userQuestion, setUserQuestion] = useState<string>("");
+
   //import base url from the .env file
   const BASE_API_URL = import.meta.env.VITE_DOC_BASE_API; // get the base api url from the .env file
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -41,10 +44,11 @@ export default function ChatPage() {
   const streamMessage = async (message: string) => {
     setIsStreaming(true);
     setCurrentStreamingMessage("");
+    setUserQuestion("");
 
     // make the auto scroll to the bottom of the page
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      bottomRef.current.scrollIntoView({ behavior: "instant" });
     }
 
     const questionToDoc: MessageToDoc = {
@@ -53,6 +57,9 @@ export default function ChatPage() {
       user_id: "user_tester",
       role: "human",
     };
+
+    // set the message to be displayed while streaming
+    setUserQuestion(message);
 
     try {
       // use Fetch instead of axios
@@ -250,9 +257,14 @@ export default function ChatPage() {
               {/*Handles the streaming request to the backend and back to the frontend */}
               {isStreaming && currentStreamingMessage && (
                 <div className="">
-                  <div className="p-2 my-1 max-w-xl rounded-md bg-[#171717] text-white">
-                    {currentStreamingMessage}
-                    <span className="animate-pulse">|</span>
+                  <div className="">
+                    <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
+                      {userQuestion}
+                    </div>
+                    <div className="p-2 my-1 max-w-xl rounded-md bg-[#171717] text-[#ffffff]">
+                      {currentStreamingMessage}
+                      <span className="animate-pulse">|</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -265,7 +277,10 @@ export default function ChatPage() {
               )}
               {/* Show loading for streaming */}
               {isStreaming && !currentStreamingMessage && (
-                <div className="flex justify-center items-center py-5">
+                <div className="flex flex-col justify-center py-5">
+                  <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
+                    {userQuestion}
+                  </div>
                   <div className="flex items-center justify-center bg-[#252525] rounded-[70px] p-2 h-[70px] w-[70px]">
                     <SyncLoader speedMultiplier={0.5} color="white" size={8} />
                   </div>

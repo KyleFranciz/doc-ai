@@ -1,17 +1,28 @@
-import { IoMdMenu } from "react-icons/io";
 import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
+import { useSidebar } from "../context/SidebarContext";
+import { TbLayoutSidebarLeftExpand } from "react-icons/tb";
 
-// Adjust the navbar if the user is signed in or not
+// todo: Adjust the navbar if the user is signed in or not
 
 export default function Navbar() {
   // use navigate hook for the routing
   const navigate = useNavigate();
+
+  // handle the toggle for the sidebar
+  const { isSidebarOpen, toggleSidebar } = useSidebar();
+
   return (
     <nav className="fixed right-0 w-full bg-[#171717] ">
       <ul className="flex justify-between items-center mx-6 h-[55px]">
         <div className="flex items-center justify-between w-full">
-          <IoMdMenu size={30} />
+          <motion.button
+            className="hover:cursor-pointer"
+            whileHover={{ scale: 1.05 }}
+            onClick={toggleSidebar}
+          >
+            {!isSidebarOpen ? <TbLayoutSidebarLeftExpand size={30} /> : <></>}
+          </motion.button>
           <div className="flex items-center justify-between w-[176px]">
             <motion.button
               onTap={() => navigate("/login")}

@@ -12,6 +12,7 @@ import ChatPage from "./pages/ChatPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainPage from "./pages/MainPage";
 import { Toaster } from "sonner";
+import { SidebarProvider } from "./context/SidebarContext";
 
 // defined routes
 const router = createBrowserRouter([
@@ -42,19 +43,21 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <Toaster
-        position="top-center"
-        theme="dark"
-        duration={4000}
-        richColors
-        toastOptions={{
-          classNames: {
-            toast: "bg-[#171717] text-white",
-          },
-        }}
-      />
-    </QueryClientProvider>
+    <SidebarProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster
+          position="top-center"
+          theme="dark"
+          duration={4000}
+          richColors
+          toastOptions={{
+            classNames: {
+              toast: "bg-[#171717] text-white",
+            },
+          }}
+        />
+      </QueryClientProvider>
+    </SidebarProvider>
   </StrictMode>
 );

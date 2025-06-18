@@ -1,6 +1,6 @@
 // icons and components for the user to use in the input box
 import React, { FormEvent } from "react";
-import { FaArrowUp } from "react-icons/fa";
+import { FaArrowUp, FaRegPauseCircle } from "react-icons/fa";
 import { GoPaperclip } from "react-icons/go";
 import { PiMicrophoneFill } from "react-icons/pi";
 
@@ -36,7 +36,11 @@ export default function PromptBox(props: PromptBoxI) {
               type="submit"
             >
               {/*Replace the logo for the UP with an arrow*/}
-              {props.loading ? <div>...</div> : <FaArrowUp size={17} />}
+              {props.loading ? (
+                <FaRegPauseCircle size={20} />
+              ) : (
+                <FaArrowUp size={17} />
+              )}
             </button>
             {/*styling for the bottom buttons */}
             <div className="flex w-15 scale-110 absolute bottom-3 left-3">

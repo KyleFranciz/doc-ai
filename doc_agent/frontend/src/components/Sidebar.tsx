@@ -7,6 +7,8 @@ import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { fetchChats } from "../api/ChatFetcher";
+import { motion } from "motion/react";
+import { useSidebar } from "../context/SidebarContext";
 
 interface SidebarInterface {
   Icon: IconType;
@@ -31,6 +33,9 @@ const SidebarMapper: SidebarInterface[] = [
 ];
 
 export default function Sidebar() {
+  // create state to keep track of the navbar
+  const { isSidebarOpen, toggleSidebar } = useSidebar();
+
   // api fetch for all the chats in the database
   const { data, isLoading, error } = useQuery({
     queryFn: () => fetchChats("user_tester"),
@@ -38,14 +43,19 @@ export default function Sidebar() {
   });
 
   return (
-    <nav className="absolute flex flex-col z-0 w-[300px] bg-[#101010] h-full">
+    <motion.nav
+      initial={{ x: -300 }}
+      transition={{ x: { type: "spring", damping: 40, stiffness: 350 } }}
+      animate={{ x: isSidebarOpen ? 0 : -300 }}
+      className="absolute flex flex-col z-0 w-[300px] bg-[#101010] h-full"
+    >
       <div className=" h-[40px] flex justify-between items-center pt-2 px-2.5">
         {/*Logo for the top half of the sidebar */}
         <Link to={"/"}>
           <FaHome size={25} />
         </Link>
-        <button>
-          <TbLayoutSidebarLeftCollapse size={25} />
+        <button className="hover:cursor-pointer" onClick={toggleSidebar}>
+          {isSidebarOpen ? <TbLayoutSidebarLeftCollapse size={25} /> : <></>}
         </button>
       </div>
       <ul className="mt-6">
@@ -67,7 +77,13 @@ export default function Sidebar() {
         <div>
           <h3 className="px-2 mx-2 mb-2 font-light text-xs">Recent</h3>
         </div>
-        <div>{error && <div>error: {error.message}</div>}</div>
+        <div>
+          {error && (
+            <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
+              error: {error.message}
+            </div>
+          )}
+        </div>
         {isLoading ? (
           <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
             loading...
@@ -91,6 +107,6 @@ export default function Sidebar() {
           Settings
         </Link>
       </div>
-    </nav>
+    </motion.nav>
   );
 }

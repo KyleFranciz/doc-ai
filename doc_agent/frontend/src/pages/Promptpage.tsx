@@ -1,6 +1,6 @@
 // use axios to help w fetching and posting data to my api route
 //import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
@@ -24,6 +24,8 @@ function PromptPage() {
 
   // get the session ID from the chat session component
   const { sessionId } = useChatSession(); // only use the sessionId variable to store the session
+
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   // create navigation so i can use it to route to the chat page
   const navigate = useNavigate();
@@ -55,15 +57,9 @@ function PromptPage() {
         role: "human",
       };
 
-      // route the user to the new page and have the chat session load into the page
-      navigate(`/chat/${sessionId}`);
-
-      // trigger the toast to pop up on the screen letting the user know a new chat with Doc has been started
-      toast.success("New chat with Doc has been created", {});
-
       // send the data formatted data to the api to doc
       //make a post request to the apps api prompt route
-      await fetch(`${BASE_API_URL}/api/prompt?stream=true`, {
+      const resp = await fetch(`${BASE_API_URL}/api/prompt?stream=true`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,13 +67,20 @@ function PromptPage() {
         body: JSON.stringify(dataToSend),
       });
 
-      // set the response that I get back after each question
-      //setResponse(
-      //  `Response data has been retrieved ${JSON.stringify(res.data)}`
-      //);
-      //
-      //console.log("fetching docs answer was successful", res.data);
-      ////clear the message so that it can get other info again later
+      if (!resp.ok) {
+        throw new Error(`Failed to send the prompt to Doc: ${resp.status}`);
+      }
+
+      // route the user to the new page and have the chat session load into the page
+      navigate(`/chat/${sessionId}`);
+
+      // auto scroll to the bottom of the chat window when a new message is received
+      if (bottomRef.current) {
+        bottomRef.current.scrollIntoView({ behavior: "instant" });
+      }
+
+      // trigger the toast to pop up on the screen letting the user know a new chat with Doc has been started
+      toast.success("New chat with Doc has been created");
 
       // clear the input box
       setMessage2Send("");
