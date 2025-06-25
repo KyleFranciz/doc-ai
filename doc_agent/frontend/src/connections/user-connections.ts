@@ -73,3 +73,22 @@ export const SignOutSupabase = async () => {
 };
 
 // function to check the user session and if they are signed in currently (might handle this in the main app component)
+export const getUserSession = async () => {
+  try {
+    // get the current user session from Supabase
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    // if there is a session, show a success message with the user's email for validation
+    if (session) {
+      toast.success(`You are currently have a session and are signed in`);
+      return;
+    } else {
+      toast.info("You are not currently signed in");
+      return;
+    }
+  } catch (sessionFetchError) {
+    toast.error(`Failed to fetch user session: ${sessionFetchError}`);
+  }
+};

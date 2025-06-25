@@ -9,7 +9,9 @@ export default function MainPage() {
           This page will introduce the user to the application
         </h1>
       </div>
-      <Link to={"/prompt"}>(Add button here to link to the prompt page)</Link>
+      <div className="bg-[#272727] p-2 rounded-[5px] ml-2 font-semibold">
+        <Link to={"/prompt"}>(Link to the prompt page)</Link>
+      </div>
     </>
   );
 }
