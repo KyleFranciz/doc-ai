@@ -14,7 +14,7 @@ export const signUpSupabase = async (email: string, password: string) => {
     // if the password is not valid, show an error message and exit the function
     if (checkedPassword) {
       toast.error(checkedPassword);
-      return; // return if the password is not valid
+      return false; // return if the password is not valid
     }
 
     // continue otherwise
@@ -28,6 +28,7 @@ export const signUpSupabase = async (email: string, password: string) => {
     // handle the successful sign up
     if (data) {
       toast.success("You have successfully signed up!");
+      return true;
     }
     // handle any errors during sign in
     if (signUpError) {
@@ -73,6 +74,7 @@ export const SignOutSupabase = async () => {
   if (signOutError) {
     toast.error(`Sign out failed: ${signOutError.message}`);
   }
+  toast.success("You have successfully signed out");
 };
 
 //^ function to check the user session and if they are signed in currently (might handle this in the main app component)
