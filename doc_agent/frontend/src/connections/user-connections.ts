@@ -3,7 +3,9 @@ import { toast } from "sonner";
 import { supabase } from "./supabaseClient"; // brought in to use Supabase for auth
 import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the password
 
-// function to sign up the user
+export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; // going to add update user function later on
+
+//^ function to sign up the user
 export const signUpSupabase = async (email: string, password: string) => {
   try {
     // check the users password to make sure that it meets the requirements
@@ -37,6 +39,7 @@ export const signUpSupabase = async (email: string, password: string) => {
   }
 };
 
+//^ function to sign in the user
 export const signInSupabase = async (email: string, password: string) => {
   try {
     // try to sign in the user
@@ -61,7 +64,7 @@ export const signInSupabase = async (email: string, password: string) => {
   }
 };
 
-// sign out function for the user
+//^ sign out function for the user
 export const SignOutSupabase = async () => {
   //try to sign out the user
   const { error: signOutError } = await supabase.auth.signOut();
@@ -72,7 +75,7 @@ export const SignOutSupabase = async () => {
   }
 };
 
-// function to check the user session and if they are signed in currently (might handle this in the main app component)
+//^ function to check the user session and if they are signed in currently (might handle this in the main app component)
 export const getUserSession = async () => {
   try {
     // get the current user session from Supabase
@@ -83,12 +86,21 @@ export const getUserSession = async () => {
     // if there is a session, show a success message with the user's email for validation
     if (session) {
       toast.success(`You are currently have a session and are signed in`);
-      return;
+      return; // stop the function if the user is signed in
+      // if there is no session, show a message that the user is not signed in
     } else {
       toast.info("You are not currently signed in");
-      return;
+      return; // stop the function if the user is not signed in
     }
   } catch (sessionFetchError) {
     toast.error(`Failed to fetch user session: ${sessionFetchError}`);
+  }
+};
+
+//^ function to check the users current Auth state and handle the the different situations
+export const handleAuthState = (event: AuthCheckerEvents) => {
+  switch (event) {
+    case "SIGNED_IN":
+      return toast.success(`You are now signed in`);
   }
 };

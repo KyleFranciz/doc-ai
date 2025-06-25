@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 
 export default function SignupBox() {
-  // todo: set up sign up auth flow to the database
+  // interface for the sign up info being passed between components
   return (
     <div className="min-h-screen bg-[#171717] flex items-center justify-center px-4">
       <div className=" w-[450px] h-[500px] bg-[#181818] rounded-lg shadow-xl p-8 outline-[0.5px] border-white">
@@ -26,6 +26,7 @@ export default function SignupBox() {
                 type="email"
                 placeholder="youremail@example.com"
                 className="w-full px-3 mb-2 py-2 bg-[#292929] outline-[0.5px] border-gray-300 rounded-md placeholder:text-white  placeholder:opacity-35 text-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                // onChange={} // add on change event to hold the email value and update it
               />
             </div>
 
