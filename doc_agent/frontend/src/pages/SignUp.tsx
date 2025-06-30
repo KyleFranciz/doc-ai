@@ -15,6 +15,7 @@ export default function SignUpPage() {
 
   // function that will handle all the sign up logic
   const handleSubmit = async (e: React.FormEvent) => {
+    // todo: rework the signUp logic here, call the signUpSupabase function and handle the success or failure
     e.preventDefault(); // prevent form from submitting normally ( I make the form submit how I want)
 
     //try to sign up with the custom func I made

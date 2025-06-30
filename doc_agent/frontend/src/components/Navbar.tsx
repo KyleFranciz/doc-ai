@@ -12,6 +12,8 @@ export default function Navbar() {
   // handle the toggle for the sidebar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
+  // when the user is logged only show the sign out button and user info
+
   return (
     <nav className="fixed right-0 w-full bg-[#171717] ">
       <ul className="flex justify-between items-center mx-6 h-[55px]">

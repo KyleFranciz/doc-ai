@@ -96,10 +96,10 @@ function PromptPage() {
       <div className="flex justify-center items-center flex-col h-screen">
         {/*Greet the user*/}
         <div className=" justify-center items-center">
-          <h1 className="heading text-[#ffffff] text-[3rem] font-[Matter]">
+          <h1 className="heading text-[#ffffff] text-[3rem]">
             <span className="">Welcome</span> Username
           </h1>
-          <h3 className="flex justify-center mt-[-13px] mb-3 text-xl font-[Matter] text-[#b0b0b0]">
+          <h3 className="flex justify-center mt-[-13px] mb-3 text-xl text-[#b0b0b0]">
             What do you want to research today?
           </h3>
         </div>

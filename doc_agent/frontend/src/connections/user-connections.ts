@@ -33,7 +33,7 @@ export const signUpSupabase = async (email: string, password: string) => {
     // handle any errors during sign in
     if (signUpError) {
       toast.error(`Sign up failed ${signUpError.message}. Please try again.`);
-      return;
+      return false;
     }
   } catch (tryError) {
     console.error(tryError);
@@ -52,13 +52,17 @@ export const signInSupabase = async (email: string, password: string) => {
     if (signInError) {
       toast.error(`Sign in failed: ${signInError.message}`);
       //exit the function if the sign in fails
-      return;
+      return false;
     }
 
-    //if the sign in is successful, show a success message
-    if (data) {
+    //if the user data was found, show a success message
+    if (data.user) {
       toast.success(`You are signed in`);
+      return true;
     }
+
+    toast.error("Sign in failed: user cannot be found");
+    return false;
     // if there was a problem with the sign in process, show an error message
   } catch (tryError) {
     toast.error(`There was a problem signing in: ${tryError} `);
@@ -88,10 +92,10 @@ export const getUserSession = async () => {
     // if there is a session, show a success message with the user's email for validation
     if (session) {
       toast.success(`You are currently have a session and are signed in`);
-      return; // stop the function if the user is signed in
+      return session; // stop the function if the user is signed in
       // if there is no session, show a message that the user is not signed in
     } else {
-      toast.info("You are not currently signed in");
+      toast.info("You currently have no session and are not signed in");
       return; // stop the function if the user is not signed in
     }
   } catch (sessionFetchError) {
@@ -104,5 +108,12 @@ export const handleAuthState = (event: AuthCheckerEvents) => {
   switch (event) {
     case "SIGNED_IN":
       return toast.success(`You are now signed in`);
+      break;
+    case "SIGNED_OUT":
+      return toast.info(`You are now signed out`);
+      break;
+    case "TOKEN_REFRESHED":
+      return toast.success(`Your session token has been refreshed`);
+      break;
   }
 };
