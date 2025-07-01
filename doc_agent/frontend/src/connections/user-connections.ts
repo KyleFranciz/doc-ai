@@ -2,6 +2,7 @@
 import { toast } from "sonner";
 import { supabase } from "./supabaseClient"; // brought in to use Supabase for auth
 import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the password
+import { data } from "react-router";
 
 export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; // going to add update user function later on
 
@@ -115,5 +116,33 @@ export const handleAuthState = (event: AuthCheckerEvents) => {
     case "TOKEN_REFRESHED":
       return toast.success(`Your session token has been refreshed`);
       break;
+  }
+};
+
+//^ function to handle getting the user information
+export const getSupabaseUser = async () => {
+  try {
+    // try to get the user data from the DB
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      toast.error(`There was no user data found`);
+      // exit the function
+      return;
+    }
+
+    if (error) {
+      toast.error(`Failed to get user data: ${error.message}`);
+      // exit the function
+      return;
+    }
+
+    // return the user out the function id found
+    return user;
+  } catch (error) {
+    toast.error(`Failed to get user from the database: ${error}`);
   }
 };
