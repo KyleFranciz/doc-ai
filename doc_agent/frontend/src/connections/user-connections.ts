@@ -104,21 +104,6 @@ export const getUserSession = async () => {
   }
 };
 
-//^ function to check the users current Auth state and handle the the different situations
-export const handleAuthState = (event: AuthCheckerEvents) => {
-  switch (event) {
-    case "SIGNED_IN":
-      return toast.success(`You are now signed in`);
-      break;
-    case "SIGNED_OUT":
-      return toast.info(`You are now signed out`);
-      break;
-    case "TOKEN_REFRESHED":
-      return toast.success(`Your session token has been refreshed`);
-      break;
-  }
-};
-
 //^ function to handle getting the user information
 export const getSupabaseUser = async () => {
   try {
@@ -129,7 +114,7 @@ export const getSupabaseUser = async () => {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      toast.error(`There was no user data found`);
+      toast.error(`There was no user data found`); // todo: take this part out in production
       // exit the function
       return;
     }
