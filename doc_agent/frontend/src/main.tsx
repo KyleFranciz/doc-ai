@@ -14,6 +14,8 @@ import MainPage from "./pages/MainPage";
 import { Toaster } from "sonner";
 import { SidebarProvider } from "./context/SidebarContext";
 
+// todo: Restructure this part of the app to work better with onAuthStateChanges for supabase
+
 // defined routes
 const router = createBrowserRouter([
   {
