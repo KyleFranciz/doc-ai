@@ -1,16 +1,15 @@
 # TODO: Refactor the code for the server connection to make it more prod ready
-from fastapi import FastAPI , HTTPException, Depends, Response # type: ignore # import the stuff for fastapi
+from fastapi import FastAPI , HTTPException # type: ignore # import the stuff for fastapi
 from fastapi.middleware.cors import CORSMiddleware # import core package to help with making the API
 from dotenv import load_dotenv # type: ignore # load_env  is important to loading the env variables from the file 
 import os #os allows me to access the file and pull the variables that were pulled
 from supabase import  create_client ,Client   # type: ignore #create client and handle the client once its made # import supabase so that I can access the database
 import traceback # For checking the real errors that are not shown if the error is not shown 
-from schemas.chat_schema import DocsResponse, MessageRequest, SessionRequest #import the models from the schemas so that I can use them to structure the responses or the expected result from the user
+from schemas.chat_schema import DocsResponse, MessageRequest #import the models from the schemas so that I can use them to structure the responses or the expected result from the user
 from agent.doc_agent import getKnowledgeFromDoc, getKnowledgeFromDocStreaming # function to ask Doc the question before returning the answer to the use # import the function from the doc agent to help with creating the response from the llm
 from services.fetching_functions import getFirstMessage, getFirstChat # import function to get the first message from sessions in the database
-import asyncio
 import json
-from typing import AsyncGenerator, Optional
+from typing import Optional
 from fastapi.responses import StreamingResponse # type: ignore # import the streaming response to help with streaming the response to the user
 
 
@@ -152,7 +151,9 @@ async def askDoc(user_request : MessageRequest, stream: Optional[bool] = False):
             if not DocsAnswer.data:
                 # raise an error to the user to let them know that there was an error adding the data to the DB
                 raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
-
+            if not SentChatSession.data:
+                # raise an error to the user to let them know that there was an error adding the data to the DB
+                raise HTTPException(status_code=500, detail="Failed to add chat session info to the database")
 
 
 

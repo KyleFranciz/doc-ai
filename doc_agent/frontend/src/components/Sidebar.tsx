@@ -32,6 +32,8 @@ const SidebarMapper: SidebarInterface[] = [
   },
 ];
 
+//TODO: Only make the chats show when the user is logged in
+
 export default function Sidebar() {
   // create state to keep track of the navbar
   const { isSidebarOpen, toggleSidebar } = useSidebar();

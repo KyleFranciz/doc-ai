@@ -22,6 +22,9 @@ export default function SignUpPage() {
     try {
       setSignUpActive(true); // set signup status as active
 
+      // send the request to supabase to sign up the user (
+      // function handles validating the users info before sending
+      // )
       const success = await signUpSupabase(email, password); // call the signUpSupabase function to sign up the user
 
       // if sign up is successful, navigate to the main page and clear the input fields

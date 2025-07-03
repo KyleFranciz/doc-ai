@@ -1,9 +1,7 @@
 // setting up the user sign in and sign out functionality
 import { toast } from "sonner";
 import { supabase } from "./supabaseClient"; // brought in to use Supabase for auth
-import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the password
-import { data } from "react-router";
-
+import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the passwordValidator
 export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; // going to add update user function later on
 
 //^ function to sign up the user

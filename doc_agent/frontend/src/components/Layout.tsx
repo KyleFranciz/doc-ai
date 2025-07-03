@@ -3,14 +3,14 @@ import Navbar from "./Navbar";
 import { useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
-//import { useLocation } from "react-router-dom";
-
 export default function Layout() {
+  // get the current location
   const location = useLocation(); // get the location
 
+  // check the current location to see if it includes the chat page
   const isChatPage = location.pathname.includes("/chat/"); // get the location of the chat page
 
-  //check if the current location is the chat page
+  //styles for the chatPage
   const style = isChatPage
     ? " w-full max-w-full"
     : "flex justify-center items-center";
