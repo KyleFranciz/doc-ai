@@ -61,7 +61,7 @@ export default function Sidebar() {
         </button>
       </div>
       <ul className="mt-6">
-        {/*Different new chat options for the sidebar */}
+        {/*Has the selector for the chat section of the sidebar*/}
         {SidebarMapper.map((items) => (
           <li key={items.keys}>
             <Link
@@ -100,10 +100,11 @@ export default function Sidebar() {
           </div>
         )}
       </div>
+      {/*Settings Section*/}
       <div className="">
         <Link
           to={"/settings"}
-          className="mx-2 absolute bottom-2 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px]"
+          className="mx-2 absolute w-[284px] bottom-3 px-2 flex items-center h-[45px] w-[100px] hover:bg-[#1d1d1d] rounded-[8px]"
         >
           <IoMdSettings size={25} className="mr-2" />
           Settings
