@@ -2,8 +2,15 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import { User } from "@supabase/supabase-js";
 
-export default function Layout() {
+// interface for user for the is component
+interface LauyoutProps {
+  user: User | null
+}
+
+
+export default function Layout({ user }: LauyoutProps) {
   // get the current location
   const location = useLocation(); // get the location
 
@@ -23,7 +30,7 @@ export default function Layout() {
         <div>
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
-          <Navbar />
+          <Navbar user={user} />
           <Sidebar />
           {
             <div

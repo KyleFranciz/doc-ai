@@ -41,7 +41,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Layout />,
+      element: <Layout user={user} />,
       children: [
         //Main page when landing on the app
         {

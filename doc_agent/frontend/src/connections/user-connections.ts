@@ -2,7 +2,10 @@
 import { toast } from "sonner";
 import { supabase } from "./supabaseClient"; // brought in to use Supabase for auth
 import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the passwordValidator
+
 export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; // going to add update user function later on
+
+// navigate variable for the routing on sign in and sign out
 
 //^ function to sign up the user
 export const signUpSupabase = async (email: string, password: string) => {
@@ -77,6 +80,7 @@ export const SignOutSupabase = async () => {
   if (signOutError) {
     toast.error(`Sign out failed: ${signOutError.message}`);
   }
+
   toast.success("You have successfully signed out");
 };
 

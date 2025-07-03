@@ -8,8 +8,9 @@ import {
 } from "../connections/user-connections";
 import { useEffect, useState } from "react";
 
-// todo: Adjust the navbar if the user is signed in or not
+// TODO: Make sure that the user is passed down so that the load state is more responsive
 
+// Navbar component
 export default function Navbar() {
   // use navigate hook for the routing
   const navigate = useNavigate();
@@ -17,7 +18,8 @@ export default function Navbar() {
   // handle the toggle for the sidebar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  // Set the login state based on the user's session
+  const [loggedIn, setLoggedIn] = useState(false);
 
   // when the user is logged only show the sign out button and user info
   useEffect(() => {
