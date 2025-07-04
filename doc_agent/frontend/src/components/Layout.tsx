@@ -32,7 +32,7 @@ export default function Layout({ user }: LauyoutProps) {
           {/* Might add an app logo later on */}
           <Navbar />
           {/*TODO: pass down the user prop into Sidebar so that the user info can be validated*/}
-          <Sidebar />
+          <Sidebar user={user} />
           {
             <div
               className={`max-h-lvh h-screen ${style} bg-[#171717] overflow-x-hidden scrollbar-transparent`}

@@ -9,15 +9,19 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchChats } from "../api/ChatFetcher";
 import { motion } from "motion/react";
 import { useSidebar } from "../context/SidebarContext";
-import { supabase } from "../connections/supabaseClient.ts";
-import { useState } from "react";
-import { toast } from "sonner";
+import { User } from "@supabase/supabase-js";
 
+// interface for the Sidebar Icons and Selectors
 interface SidebarInterface {
   Icon: IconType;
   Text: string;
   link: string;
   keys: number;
+}
+
+// Sidebar User interface for user Prop passed in
+interface SidebarUserInterface {
+  user: User | null
 }
 
 const SidebarMapper: SidebarInterface[] = [
@@ -35,10 +39,11 @@ const SidebarMapper: SidebarInterface[] = [
   },
 ];
 
+
 //TODO: Only make the chats show when the user is logged in
 //TODO: Make useEffect to wrap the get user status function
 
-export default function Sidebar() {
+export default function Sidebar({ user }: SidebarUserInterface) {
   // create state to keep track of the navbar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
@@ -50,25 +55,13 @@ export default function Sidebar() {
   });
 
   // function to get the current state of the user (might just pass down as prop)
-  const getUserData = async () => {
-    // check to see if there is currently a user signed in
-    const { data } = await supabase.auth.getUser()
-
-    // if there is a user set the state to true
-    if (data) {
-      return data
-    }
-    else {
-      toast.error("User Info Does Not Match")
-    }
-  }
 
   return (
     <motion.nav
       initial={{ x: -300 }}
       transition={{ x: { type: "spring", damping: 40, stiffness: 350 } }}
       animate={{ x: isSidebarOpen ? 0 : -300 }}
-      className="absolute flex flex-col z-0 w-[300px] bg-[#101010] h-full"
+      className="absolute flex flex-col z-1 w-[300px] bg-[#101010] h-full"
     >
       <div className=" h-[40px] flex justify-between items-center pt-2 px-2.5">
         {/*Logo for the top half of the sidebar */}
