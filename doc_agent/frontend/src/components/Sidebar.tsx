@@ -9,6 +9,9 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchChats } from "../api/ChatFetcher";
 import { motion } from "motion/react";
 import { useSidebar } from "../context/SidebarContext";
+import { supabase } from "../connections/supabaseClient.ts";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface SidebarInterface {
   Icon: IconType;
@@ -33,16 +36,32 @@ const SidebarMapper: SidebarInterface[] = [
 ];
 
 //TODO: Only make the chats show when the user is logged in
+//TODO: Make useEffect to wrap the get user status function
 
 export default function Sidebar() {
   // create state to keep track of the navbar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
+
 
   // api fetch for all the chats in the database
   const { data, isLoading, error } = useQuery({
     queryFn: () => fetchChats("user_tester"),
     queryKey: ["chats"],
   });
+
+  // function to get the current state of the user (might just pass down as prop)
+  const getUserData = async () => {
+    // check to see if there is currently a user signed in
+    const { data } = await supabase.auth.getUser()
+
+    // if there is a user set the state to true
+    if (data) {
+      return data
+    }
+    else {
+      toast.error("User Info Does Not Match")
+    }
+  }
 
   return (
     <motion.nav
@@ -74,6 +93,9 @@ export default function Sidebar() {
           </li>
         ))}
       </ul>
+
+      {/*TODO: Only show once chat if the username is the same as the user_id in the param*/}
+
       {/*Section that has all the chats from the DB */}
       <div className="mt-5 w-full cursor-pointer">
         <div>
@@ -82,7 +104,8 @@ export default function Sidebar() {
         <div>
           {error && (
             <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
-              error: {error.message}
+              {/*TODO: Change the error message to a better message for the UI*/}
+              {error.message}
             </div>
           )}
         </div>

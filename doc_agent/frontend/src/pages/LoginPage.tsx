@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import LoginBox from "../components/LoginComponent";
-import { toast } from "sonner";
 import { signInSupabase } from "../connections/user-connections";
 import { useNavigate } from "react-router";
 

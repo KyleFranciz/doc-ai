@@ -30,7 +30,8 @@ export default function Layout({ user }: LauyoutProps) {
         <div>
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
-          <Navbar user={user} />
+          <Navbar />
+          {/*TODO: pass down the user prop into Sidebar so that the user info can be validated*/}
           <Sidebar />
           {
             <div

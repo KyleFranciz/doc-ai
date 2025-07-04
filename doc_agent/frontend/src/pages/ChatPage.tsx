@@ -146,8 +146,7 @@ export default function ChatPage() {
     } catch (error) {
       console.error("Streaming Error:", error);
       toast.error(
-        `Streaming failed: ${
-          error instanceof Error ? error.message : "Unknown error"
+        `Streaming failed: ${error instanceof Error ? error.message : "Unknown error"
         }`
       );
       // Reset states on error
@@ -190,8 +189,7 @@ export default function ChatPage() {
     onError: (error) => {
       console.error("Failed to start stream:", error);
       toast.error(
-        `Streaming failed: ${
-          error instanceof Error ? error.message : "Unknown error"
+        `Streaming failed: ${error instanceof Error ? error.message : "Unknown error"
         }`
       );
       // reset the states
