@@ -53,7 +53,7 @@ function App() {
         // Page to host the different chats that the user makes with doc
         { path: "chat/:sessionId", Component: user ? ChatPage : LoginPage },
         // Page to adjust the settings of the application
-        { path: "settings", Component: user ? SettingsPage : LoginPage },
+        { path: "settings", Component: user ? SettingsPage : SignUpPage },
         // Page to login to the app
         { path: "login", element: user ? <PromptPage user={user} /> : <LoginPage /> },
         // Page to sign up for the app

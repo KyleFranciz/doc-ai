@@ -90,42 +90,44 @@ export default function Sidebar({ user }: SidebarUserInterface) {
       {/*TODO: Only show once chat if the username is the same as the user_id in the param*/}
 
       {/*Section that has all the chats from the DB */}
-      <div className="mt-5 w-full cursor-pointer">
-        <div>
-          <h3 className="px-2 mx-2 mb-2 font-light text-xs">Recent</h3>
-        </div>
-        <div>
-          {error && (
+      {user ?
+        <div className="mt-5 w-full cursor-pointer">
+          <div>
+            <h3 className="px-2 mx-2 mb-2 font-light text-xs">Recent</h3>
+          </div>
+          <div>
+            {error && (
+              <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
+                {/*TODO: Change the error message to a better message for the UI*/}
+                {error.message}
+              </div>
+            )}
+          </div>
+          {isLoading ? (
             <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
-              {/*TODO: Change the error message to a better message for the UI*/}
-              {error.message}
+              loading...
+            </div>
+          ) : (
+            <div>
+              {data?.data?.chat?.map((chats) => (
+                <div className="hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]">
+                  <Link to={`/chat/${chats.session_id}`}>{chats.title}</Link>
+                </div>
+              ))}
             </div>
           )}
-        </div>
-        {isLoading ? (
-          <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
-            loading...
-          </div>
-        ) : (
-          <div>
-            {data?.data?.chat?.map((chats) => (
-              <div className="hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]">
-                <Link to={`/chat/${chats.session_id}`}>{chats.title}</Link>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+        </div> : <></>}
       {/*Settings Section*/}
-      <div className="">
-        <Link
-          to={"/settings"}
-          className="mx-2 absolute w-[284px] bottom-3 px-2 flex items-center h-[45px] w-[100px] hover:bg-[#1d1d1d] rounded-[8px]"
-        >
-          <IoMdSettings size={25} className="mr-2" />
-          Settings
-        </Link>
-      </div>
+      {user ?
+        <div className="">
+          <Link
+            to={"/settings"}
+            className="mx-2 absolute w-[284px] bottom-3 px-2 flex items-center h-[45px] w-[100px] hover:bg-[#1d1d1d] rounded-[8px]"
+          >
+            <IoMdSettings size={25} className="mr-2" />
+            Settings
+          </Link>
+        </div> : <></>}
     </motion.nav>
   );
 }
