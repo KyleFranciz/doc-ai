@@ -10,6 +10,7 @@ import { fetchChats } from "../api/ChatFetcher";
 import { motion } from "motion/react";
 import { useSidebar } from "../context/SidebarContext";
 import { User } from "@supabase/supabase-js";
+import { MdClear } from "react-icons/md";
 
 // interface for the Sidebar Icons and Selectors
 interface SidebarInterface {
@@ -84,6 +85,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
               <p>{items.Text}</p>
             </Link>
           </li>
+
         ))}
       </ul>
 
@@ -110,8 +112,11 @@ export default function Sidebar({ user }: SidebarUserInterface) {
           ) : (
             <div>
               {data?.data?.chat?.map((chats) => (
-                <div className="hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]">
+                <div className="group hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]">
                   <Link to={`/chat/${chats.session_id}`}>{chats.title}</Link>
+                  <div className="ml-auto hidden group-hover:block">
+                    <MdClear size={20} />
+                  </div>
                 </div>
               ))}
             </div>
