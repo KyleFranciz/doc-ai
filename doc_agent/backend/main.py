@@ -12,11 +12,7 @@ import json
 from typing import Optional
 from fastapi.responses import StreamingResponse # type: ignore # import the streaming response to help with streaming the response to the user
 
-
-# TODO:: use the server from fast api to help with setting up the api routes for contacting the llm
-# TODO:: import the function from the agent Doc that I set up so that the function can help to structure the responses that I get back
 # TODO:: Figure out why is the llm saying its getting called twice when it answers
-# TODO:: Make sure all the variables are being used properly
 
 #Load all the variables from the .env file 
 load_dotenv()
