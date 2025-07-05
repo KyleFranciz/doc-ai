@@ -11,6 +11,7 @@ import { motion } from "motion/react";
 import { useSidebar } from "../context/SidebarContext";
 import { User } from "@supabase/supabase-js";
 import { MdClear } from "react-icons/md";
+import { deleteChat } from "../api/ChatDeleters.ts";
 
 // interface for the Sidebar Icons and Selectors
 interface SidebarInterface {
@@ -115,7 +116,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
                 <div className="group hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]">
                   <Link to={`/chat/${chats.session_id}`}>{chats.title}</Link>
                   <div className="ml-auto hidden group-hover:block">
-                    <MdClear size={20} />
+                    <MdClear size={20} onClick={() => deleteChat(chats.session_id)} />
                   </div>
                 </div>
               ))}
