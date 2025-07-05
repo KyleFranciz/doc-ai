@@ -167,6 +167,7 @@ async def askDoc(user_request : MessageRequest, stream: Optional[bool] = False):
         # if there is an error display the error to the user
         print(f"Traceback (finding the real error):", traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"There has been an error: {str(error)}")
+
         
 # Async Function to stream the response from Doc
 async def stream_doc_response(user_request: MessageRequest):
@@ -190,7 +191,7 @@ async def stream_doc_response(user_request: MessageRequest):
 
         # save the full response to the database for the reference for the next
         # line in the conversation
-        DocsAnswer = supabase.table("messages").insert({
+        supabase.table("messages").insert({
             "session_id" : user_request.session_id,
             "role" : "ai", 
             "content" : full_response,
@@ -245,8 +246,19 @@ async def get_user_chat(session_id : str): # session id will be sent in to be se
         # log the error
         raise HTTPException(status_code=404, detail=f"failed to fetch the message: {err}")
 
+# Function to delete the chat from the database
+@app.delete("/api/chat/{session_id}")
+async def delete_chat(session_id : str): # session id will be sent in to be searched in database, user will be added later on
+    try:
+        # use the chat session_id to delete the chat
+        resonse = supabase.table("chats").delete().eq("session_id", session_id).execute()
+        # check if the chat was deleted
+        print(resonse)
+    except Exception as err:
+        # see the error that might pop up
+        raise HTTPException(status_code=404, detail=f"failed to delete the chat: {err}")
 
-
+    
 # todo: different route to get all the different chat titles from the database
 @app.get("/api/chats/{user_id}")
 async def get_all_chat_titles(user_id : str): # user_id will be sent in to be searched in database, user will be added later on
