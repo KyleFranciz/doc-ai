@@ -5,12 +5,11 @@ import Sidebar from "./Sidebar";
 import { User } from "@supabase/supabase-js";
 
 // interface for user for the is component
-interface LauyoutProps {
-  user: User | null
+interface LayoutProps {
+  user: User | null;
 }
 
-
-export default function Layout({ user }: LauyoutProps) {
+export default function Layout({ user }: LayoutProps) {
   // get the current location
   const location = useLocation(); // get the location
 
