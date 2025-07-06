@@ -1,22 +1,18 @@
 # TODO: Refactor the code for the server connection to make it more prod ready
-from fastapi import FastAPI , HTTPException, Depends, Response # type: ignore # import the stuff for fastapi
+from fastapi import FastAPI , HTTPException # type: ignore # import the stuff for fastapi
 from fastapi.middleware.cors import CORSMiddleware # import core package to help with making the API
 from dotenv import load_dotenv # type: ignore # load_env  is important to loading the env variables from the file 
 import os #os allows me to access the file and pull the variables that were pulled
 from supabase import  create_client ,Client   # type: ignore #create client and handle the client once its made # import supabase so that I can access the database
 import traceback # For checking the real errors that are not shown if the error is not shown 
-from schemas.chat_schema import DocsResponse, MessageRequest, SessionRequest #import the models from the schemas so that I can use them to structure the responses or the expected result from the user
+from schemas.chat_schema import DocsResponse, MessageRequest #import the models from the schemas so that I can use them to structure the responses or the expected result from the user
 from agent.doc_agent import getKnowledgeFromDoc, getKnowledgeFromDocStreaming # function to ask Doc the question before returning the answer to the use # import the function from the doc agent to help with creating the response from the llm
 from services.fetching_functions import getFirstMessage, getFirstChat # import function to get the first message from sessions in the database
-import asyncio
 import json
-from typing import AsyncGenerator, Optional
+from typing import Optional
 from fastapi.responses import StreamingResponse # type: ignore # import the streaming response to help with streaming the response to the user
 
-
-# TODO: use the server from fast api to help with setting up the api routes for contacting the llm
-# todo: import the function from the agent Doc that I set up so that the function can help to structure the responses that I get back
-# TODO: Figure out why is the llm saying its getting called twice when it answers
+# TODO:: Figure out why is the llm saying its getting called twice when it answers
 
 #Load all the variables from the .env file 
 load_dotenv()
@@ -152,7 +148,9 @@ async def askDoc(user_request : MessageRequest, stream: Optional[bool] = False):
             if not DocsAnswer.data:
                 # raise an error to the user to let them know that there was an error adding the data to the DB
                 raise HTTPException(status_code=500, detail="Failed to add the messages to the database")
-
+            if not SentChatSession.data:
+                # raise an error to the user to let them know that there was an error adding the data to the DB
+                raise HTTPException(status_code=500, detail="Failed to add chat session info to the database")
 
 
 
@@ -169,6 +167,7 @@ async def askDoc(user_request : MessageRequest, stream: Optional[bool] = False):
         # if there is an error display the error to the user
         print(f"Traceback (finding the real error):", traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"There has been an error: {str(error)}")
+
         
 # Async Function to stream the response from Doc
 async def stream_doc_response(user_request: MessageRequest):
@@ -192,7 +191,7 @@ async def stream_doc_response(user_request: MessageRequest):
 
         # save the full response to the database for the reference for the next
         # line in the conversation
-        DocsAnswer = supabase.table("messages").insert({
+        supabase.table("messages").insert({
             "session_id" : user_request.session_id,
             "role" : "ai", 
             "content" : full_response,
@@ -247,8 +246,19 @@ async def get_user_chat(session_id : str): # session id will be sent in to be se
         # log the error
         raise HTTPException(status_code=404, detail=f"failed to fetch the message: {err}")
 
+# Function to delete the chat from the database
+@app.delete("/api/chat/{session_id}")
+async def delete_chat(session_id : str): # session id will be sent in to be searched in database, user will be added later on
+    try:
+        # use the chat session_id to delete the chat
+        resonse = supabase.table("chats").delete().eq("session_id", session_id).execute()
+        # check if the chat was deleted
+        print(resonse)
+    except Exception as err:
+        # see the error that might pop up
+        raise HTTPException(status_code=404, detail=f"failed to delete the chat: {err}")
 
-
+    
 # todo: different route to get all the different chat titles from the database
 @app.get("/api/chats/{user_id}")
 async def get_all_chat_titles(user_id : str): # user_id will be sent in to be searched in database, user will be added later on

@@ -8,10 +8,16 @@
     "dotenv",
     "llms",
     "Ollama",
+    "pkce",
     "Promptpage",
     "Sommar",
     "sonner",
     "supabase",
     "uuidv"
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "terminal.background": "#00000000",
+    "minimap.background": "#00000000",
+    "scrollbar.shadow": "#00000000"
+  }
 }

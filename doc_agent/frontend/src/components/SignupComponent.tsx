@@ -1,12 +1,19 @@
 import { Link } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
+import React from "react";
 
-export default function SignupBox() {
-  // todo: set up sign up auth flow to the database
+// interface for the sign up info being passed between components
+interface SignUpBox {
+  handleSubmit: (e: React.FormEvent) => Promise<void>;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  signUpActive?: boolean;
+}
+export default function SignupBox(props: SignUpBox) {
   return (
     <div className="min-h-screen bg-[#171717] flex items-center justify-center px-4">
       <div className=" w-[450px] h-[500px] bg-[#181818] rounded-lg shadow-xl p-8 outline-[0.5px] border-white">
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={props.handleSubmit}>
           {/*Tittle for the signup box */}
           <div className="text-center">
             <h1 className="text-2xl font-bold text-white mb-2">
@@ -26,6 +33,8 @@ export default function SignupBox() {
                 type="email"
                 placeholder="youremail@example.com"
                 className="w-full px-3 mb-2 py-2 bg-[#292929] outline-[0.5px] border-gray-300 rounded-md placeholder:text-white  placeholder:opacity-35 text-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                onChange={(e) => props.setEmail(e.target.value)}
+                required // required to submit the form
               />
             </div>
 
@@ -45,6 +54,7 @@ export default function SignupBox() {
                 type="password"
                 placeholder="Password"
                 className="w-full px-3 py-2 bg-[#292929] outline-[0.5px] border-gray-300 rounded-md text-white placeholder:text-white placeholder:opacity-35 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                onChange={(e) => props.setPassword(e.target.value)}
               />
             </div>
             {/*Submit button for the signup form*/}

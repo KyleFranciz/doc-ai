@@ -1,15 +1,16 @@
-import { Link } from "react-router";
 import "../main.css";
 
 export default function MainPage() {
   return (
-    <>
+    <div className="flex flex-col">
       <div className="flex justify-center items-center">
-        <h1 className="text-white">
-          This page will introduce the user to the application
+        <h1 className="font-bold text-[80px] text-white">
+          Welcome to Doc Ai
         </h1>
       </div>
-      <Link to={"/prompt"}>(Add button here to link to the prompt page)</Link>
-    </>
+      <div className="flex items-center mt-[-25px] justify-center text-[20px] font-semibold">
+        Your favorite local ai agent, here to help with all coding needs.
+      </div>
+    </div>
   );
 }

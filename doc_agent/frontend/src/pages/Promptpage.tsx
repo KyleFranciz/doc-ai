@@ -6,6 +6,7 @@ import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import { User } from "@supabase/supabase-js";
 
 // interface for the message sent to the server
 export interface MessageToDoc {
@@ -15,7 +16,12 @@ export interface MessageToDoc {
   role: "human" | "ai";
 }
 
-function PromptPage() {
+// interface for the user being brought into this page
+interface PromptPageProps {
+  user: User | null
+}
+
+function PromptPage({ user }: PromptPageProps) {
   //useState to store the variables inside
   const [message2send, setMessage2Send] = useState<string>("");
 
@@ -96,10 +102,11 @@ function PromptPage() {
       <div className="flex justify-center items-center flex-col h-screen">
         {/*Greet the user*/}
         <div className=" justify-center items-center">
-          <h1 className="heading text-[#ffffff] text-[3rem] font-[Matter]">
-            <span className="">Welcome</span> Username
+          <h1 className="heading text-[#ffffff] text-[3rem]">
+            {/* TODO: remove the user email after the test is finished*/}
+            {user ? `Welcome, ${user.user_metadata}` : "You must be new here"}
           </h1>
-          <h3 className="flex justify-center mt-[-13px] mb-3 text-xl font-[Matter] text-[#b0b0b0]">
+          <h3 className="flex justify-center mt-[-13px] mb-3 text-xl text-[#b0b0b0]">
             What do you want to research today?
           </h3>
         </div>
