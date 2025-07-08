@@ -10,38 +10,41 @@ export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; 
 //^ function to sign up the user
 export const signUpSupabase = async (email: string, password: string) => {
   try {
-
+    // check to see if a user is already signed up
 
     // check the users password to make sure that it meets the requirements
     const checkedPassword = validatePassword(password);
 
-    // if the password is not valid, show an error message and exit the function
+    //if the password is not valid, show an error message and exit the function
     if (checkedPassword) {
       toast.error(checkedPassword);
       return false; // return if the password is not valid
     }
 
     // continue otherwise
-    const { data, error: signUpError } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
-      // options: {
-      // emailRedirectTo: "/dashboard", // redirect to dashboard after the user signs up for the first time
-      // },
+      options: {
+        emailRedirectTo: "/prompt", // redirect to dashboard after the user signs up for the first time
+      },
     });
-    // handle the successful sign up
-    if (data) {
-      toast.success("You have successfully signed up!");
-      return true;
-    }
+
     // handle any errors during sign in
-    if (signUpError) {
-      toast.error(`Sign up failed ${signUpError.message}. Please try again.`);
-      return false;
+    if (error) {
+      if (error.message.includes("User already registered")) {
+        toast.error("User already exists");
+      } else {
+        toast.error(`Sign up failed: ${error.message}`);
+      }
+    } else {
+      toast.success(`Sign up successful ${data}`);
     }
+
   } catch (tryError) {
     console.error(tryError);
   }
+
 };
 
 //^ function to sign in the user
