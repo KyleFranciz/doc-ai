@@ -17,24 +17,25 @@ function App() {
   // states to store for the user to help w/ giving access to certain parts of the app
   const [user, setUser] = useState<User | null>(null); // null by default since the user is not logged in yet by default
   const [loading, setLoading] = useState<boolean>(true); // handles the loading states for the different page and components
-
   // handle the users session so that I can check if the user is logged in (handle on reload)
   useEffect(() => {
     // get the session from supabase
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
+      setUser(session?.user ?? null); // set the user if in a session or null if not
+      setLoading(false); // set loading if the page is loading or not
     });
 
-    //listen for any auth changes that happen
+    // listen for the auth state changes that happen
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
-
-    return () => subscription.unsubscribe(); //removes the listener
+    // clean up the unmounting of the subscription
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   // router for all the different pages in my app
@@ -55,9 +56,15 @@ function App() {
         // Page to adjust the settings of the application
         { path: "settings", Component: user ? SettingsPage : SignUpPage },
         // Page to login to the app
-        { path: "login", element: user ? <PromptPage user={user} /> : <LoginPage /> },
+        {
+          path: "login",
+          element: user ? <PromptPage user={user} /> : <LoginPage />,
+        },
         // Page to sign up for the app
-        { path: "signup", element: user ? <PromptPage user={user} /> : <SignUpPage /> },
+        {
+          path: "signup",
+          element: user ? <PromptPage user={user} /> : <SignUpPage />,
+        },
         // Page if the user searches for a page that isn't there or isn't allowed
         { path: "*", Component: NotFound },
       ],
