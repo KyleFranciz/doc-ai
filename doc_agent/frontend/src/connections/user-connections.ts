@@ -10,6 +10,8 @@ export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; 
 //^ function to sign up the user
 export const signUpSupabase = async (email: string, password: string) => {
   try {
+
+
     // check the users password to make sure that it meets the requirements
     const checkedPassword = validatePassword(password);
 
