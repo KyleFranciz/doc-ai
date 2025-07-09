@@ -12,7 +12,7 @@ import { User } from "@supabase/supabase-js";
 export interface MessageToDoc {
   question: string;
   session_id: string | undefined;
-  user_id: string;
+  user_id: string | undefined;
   role: "human" | "ai";
 }
 
@@ -20,13 +20,18 @@ export interface MessageToDoc {
 interface PromptPageProps {
   user: User | null
 }
+// TODO: make guest user to allow the user top have chats with doc
 
+// PromptPage components
 function PromptPage({ user }: PromptPageProps) {
   //useState to store the variables inside
   const [message2send, setMessage2Send] = useState<string>("");
 
   //set up loading to keep track for loading animation
   const [loading, setLoading] = useState<boolean>(false);
+
+  // user_id to pass to send to the database
+  const userId: string | undefined = user?.id //
 
   // get the session ID from the chat session component
   const { sessionId } = useChatSession(); // only use the sessionId variable to store the session
@@ -57,7 +62,7 @@ function PromptPage({ user }: PromptPageProps) {
       const dataToSend: MessageToDoc = {
         question: message2send, // input from the user
         session_id: sessionId, // generate random session_id for the chat_id
-        user_id: "user_tester", //get the userid from supabase when the auth is set up
+        user_id: userId, //get the userid from supabase when the auth is set up
         role: "human",
       };
 
@@ -104,7 +109,7 @@ function PromptPage({ user }: PromptPageProps) {
         <div className=" justify-center items-center">
           <h1 className="heading text-[#ffffff] text-[3rem]">
             {/* TODO: remove the user email after the test is finished*/}
-            {user ? `Welcome, ${user.user_metadata}` : "You must be new here"}
+            {user ? `Welcome, ${user.email}` : "You must be new here"}
           </h1>
           <h3 className="flex justify-center mt-[-13px] mb-3 text-xl text-[#b0b0b0]">
             What do you want to research today?
