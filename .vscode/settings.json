@@ -8,6 +8,7 @@
     "dotenv",
     "llms",
     "Ollama",
+    "PGRST",
     "pkce",
     "Promptpage",
     "Sommar",

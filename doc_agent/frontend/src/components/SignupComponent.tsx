@@ -5,9 +5,12 @@ import React from "react";
 // interface for the sign up info being passed between components
 interface SignUpBox {
   handleSubmit: (e: React.FormEvent) => Promise<void>;
+  email: string
   setEmail: React.Dispatch<React.SetStateAction<string>>;
+  password: string
   setPassword: React.Dispatch<React.SetStateAction<string>>;
   signUpActive?: boolean;
+
 }
 export default function SignupBox(props: SignUpBox) {
   return (
@@ -35,6 +38,7 @@ export default function SignupBox(props: SignUpBox) {
                 className="w-full px-3 mb-2 py-2 bg-[#292929] outline-[0.5px] border-gray-300 rounded-md placeholder:text-white  placeholder:opacity-35 text-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
                 onChange={(e) => props.setEmail(e.target.value)}
                 required // required to submit the form
+                value={props.email}
               />
             </div>
 
@@ -55,6 +59,8 @@ export default function SignupBox(props: SignUpBox) {
                 placeholder="Password"
                 className="w-full px-3 py-2 bg-[#292929] outline-[0.5px] border-gray-300 rounded-md text-white placeholder:text-white placeholder:opacity-35 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
                 onChange={(e) => props.setPassword(e.target.value)}
+                required // required to submit the form
+                value={props.password}
               />
             </div>
             {/*Submit button for the signup form*/}
