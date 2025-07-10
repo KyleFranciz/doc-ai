@@ -1,7 +1,6 @@
 // use axios to help w fetching and posting data to my api route
 //import axios from "axios";
 import { useState } from "react";
-
 import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
 import { useNavigate } from "react-router";
@@ -12,13 +11,13 @@ import { User } from "@supabase/supabase-js";
 export interface MessageToDoc {
   question: string;
   session_id: string | undefined;
-  user_id: string | undefined;
+  user_id: string | null;
   role: "human" | "ai";
 }
 
 // interface for the user being brought into this page
 interface PromptPageProps {
-  user: User | null
+  user: User | null;
 }
 // TODO: make guest user to allow the user top have chats with doc
 
@@ -30,11 +29,8 @@ function PromptPage({ user }: PromptPageProps) {
   //set up loading to keep track for loading animation
   const [loading, setLoading] = useState<boolean>(false);
 
-  // user_id to pass to send to the database
-  const userId: string | undefined = user?.id //
-
   // get the session ID from the chat session component
-  const { sessionId } = useChatSession(); // only use the sessionId variable to store the session
+  const { resetChatId } = useChatSession(); // only use the sessionId variable to store the session
 
   // create navigation so i can use it to route to the chat page
   const navigate = useNavigate();
@@ -44,60 +40,22 @@ function PromptPage({ user }: PromptPageProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Get the url from the .env file
-    try {
-      //var from .env file to help with the routing to my api
-      const BASE_API_URL: string | undefined = import.meta.env
-        .VITE_DOC_BASE_API;
-      if (!BASE_API_URL) {
-        console.log("The .env variable failed to load");
-      } else {
-        console.log(BASE_API_URL);
-      }
-
-      // set loading to true so that the I can set the loading animations later
-      setLoading(true);
-
-      // format the data to send off
-      const dataToSend: MessageToDoc = {
-        question: message2send, // input from the user
-        session_id: sessionId, // generate random session_id for the chat_id
-        user_id: userId, //get the userid from supabase when the auth is set up
-        role: "human",
-      };
-
-      // send the data formatted data to the api to doc
-      //make a post request to the apps api prompt route
-      const resp = await fetch(`${BASE_API_URL}/api/prompt?stream=true`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
-      if (!resp.ok) {
-        toast.error(`Failed to send prompt to Doc ${resp.status}`);
-        return; // stop function before nav execution
-      }
-
-      // route the user to the new page and have the chat session load into the page
-      navigate(`/chat/${sessionId}`);
-
-      // trigger the toast to pop up on the screen letting the user know a new chat with Doc has been started
-      toast.success("New chat with Doc has been created");
-
-      // clear the input box
-      setMessage2Send("");
-
-      //todo: route the user to a page with the chat and the message
-      // catch the error
-    } catch (err) {
-      toast.error(`Chat failed to send properly: ${err}`, {});
-    } finally {
-      // reset the loading state since the initial loading is done
-      setLoading(false);
+    if (!message2send.trim()) {
+      toast.error("Please enter a message in the prompt box to ask Doc");
+      return; // stop the function from running
     }
+
+    // set loading to true to show the loading animation
+    setLoading(true);
+
+    // create a new session id for the new chat
+    const newSessionID = resetChatId();
+
+    // route to the new session id that was generated
+    navigate(`/chat/${newSessionID}`, {
+      state: { initialQuestion: message2send },
+    });
+    // the component unmounts right after
   };
 
   // route to the next page when the initial prompt is queued
@@ -109,7 +67,9 @@ function PromptPage({ user }: PromptPageProps) {
         <div className=" justify-center items-center">
           <h1 className="heading text-[#ffffff] text-[3rem]">
             {/* TODO: remove the user email after the test is finished*/}
-            {user ? `Welcome, ${user.email}` : "You must be new here"}
+            {user
+              ? `Welcome, ${user.email?.split("@")[0]}`
+              : "You must be new here"}
           </h1>
           <h3 className="flex justify-center mt-[-13px] mb-3 text-xl text-[#b0b0b0]">
             What do you want to research today?
@@ -120,6 +80,7 @@ function PromptPage({ user }: PromptPageProps) {
           handleSubmit={handleSubmit}
           setMessage={setMessage2Send}
           loading={loading}
+          value={message2send}
         />
       </div>
     </>

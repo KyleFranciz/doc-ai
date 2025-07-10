@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 // declare session that I'll use to update the state of the locally stored sessionId
-const SESSION_ID: string = "this-is-session-id";
+const SESSION_ID: string = "chat-session-id";
 
 // function will return the session and something to reset the sessionId
 export const useChatSession = () => {
@@ -24,9 +24,6 @@ export const useChatSession = () => {
 
       // store the newly generated id in the local storage
       localStorage.setItem(SESSION_ID, alreadyStoredId);
-
-      // set the state for the newly generated id
-      setSessionId(alreadyStoredId);
     }
 
     // if there is a locally stored id, save it in the state to be sent out to the user
