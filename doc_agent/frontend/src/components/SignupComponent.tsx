@@ -66,7 +66,7 @@ export default function SignupBox(props: SignUpBox) {
             {/*Submit button for the signup form*/}
             <div className="space-y-3 pt-4">
               <button
-                className="w-full mb-4 bg-white hover:bg-gray-200 text-black font-semibold py-2 px-4 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-black"
+                className="w-full mb-4 bg-white hover:bg-gray-200 text-black font-semibold py-2 px-4 rounded-md transition-colors hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-black"
                 type="submit"
               >
                 Sign up

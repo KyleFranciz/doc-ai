@@ -5,7 +5,7 @@ import MessageRender from "../components/messageRender";
 import { SyncLoader } from "react-spinners";
 import { useEffect, useRef, useState } from "react";
 import { MessageToDoc } from "./Promptpage";
-import axios from "axios";
+//import axios from "axios";
 import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";
 import { getSupabaseUser } from "../connections/user-connections";
@@ -38,7 +38,7 @@ export default function ChatPage() {
   // useQuery custom function I made to help with fetching the messages from the backend
   const { data, isPending, error } = useQuery({
     queryFn: () => fetchMessages(sessionId),
-    queryKey: ["sessionMessages", { sessionId }],
+    queryKey: ["sessionMessages", sessionId]
   });
 
   useEffect(() => {
@@ -145,8 +145,7 @@ export default function ChatPage() {
       }
     } catch (error) {
       toast.error(
-        `Streaming failed: ${
-          error instanceof Error ? error.message : "Unknown error"
+        `Streaming failed: ${error instanceof Error ? error.message : "Unknown error"
         }`
       );
       // Reset states on error
@@ -155,29 +154,6 @@ export default function ChatPage() {
     }
   };
 
-  //  const sendDownMessageMutation = useMutation({
-  //    mutationFn: async (message: string) => {
-  //      // allow the user to scroll to the bottom of the page
-  //      if (bottomRef.current) {
-  //        bottomRef.current.scrollIntoView({ behavior: "smooth" });
-  //      }
-  //
-  //      const questionToDoc: MessageToDoc = {
-  //        question: message,
-  //        session_id: sessionId, // change the type if the message doesn't send
-  //        user_id: userId,
-  //        role: "human",
-  //      };
-  //
-  //    const res = await axios.post(`${BASE_API_URL}/api/prompt`, questionToDoc);
-  //    return res.data;
-  //  },
-  //  onSuccess: () => {
-  //    queryClient.invalidateQueries({ queryKey: ["sessionMessages"] });
-  //    setChatInput(""); // clear the input after its done
-  //  },
-  //  onError: (error) => toast.error(`Failed to update the chat: ${error}`, {}),
-  //});
 
   // Streaming Mutation
   const streamMessageMutation = useMutation({
@@ -189,8 +165,7 @@ export default function ChatPage() {
     onError: (error) => {
       console.error("Failed to start stream:", error);
       toast.error(
-        `Streaming failed: ${
-          error instanceof Error ? error.message : "Unknown error"
+        `Streaming failed: ${error instanceof Error ? error.message : "Unknown error"
         }`
       );
       // reset the states
