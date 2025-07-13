@@ -8,12 +8,10 @@ import { MessageToDoc } from "./Promptpage";
 //import axios from "axios";
 import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";
-import { getSupabaseUser } from "../connections/user-connections";
 
 export default function ChatPage() {
   // requires a setMessage (set state), handleSubmit (function triggered on submit), loading(boolean to control loading state)
   // States to use in this component
-  const [userId, setUserId] = useState<string | null>(""); // get the user id from the url, make sure that all the messages are sent to the same session
   const { sessionId } = useParams<{ sessionId: string | undefined }>(); // get the session id from the url, make sure that all the messages are sent to the same session
   const location = useLocation();
 
@@ -41,19 +39,6 @@ export default function ChatPage() {
     queryKey: ["sessionMessages", sessionId]
   });
 
-  useEffect(() => {
-    const FindUserId = async () => {
-      try {
-        const user = await getSupabaseUser();
-        if (user) {
-          setUserId(user.id);
-        }
-      } catch (err) {
-        toast.error(`Failed to get user data: ${err}`);
-      }
-    };
-    FindUserId(); // call the function to get the user id from the url
-  }, []);
 
   // Streaming function using Fetch
   // Improved Streaming function using Fetch
@@ -70,7 +55,7 @@ export default function ChatPage() {
     const questionToDoc: MessageToDoc = {
       question: message,
       session_id: sessionId,
-      user_id: userId,
+      user_id: "place_holder",
       role: "human",
     };
 

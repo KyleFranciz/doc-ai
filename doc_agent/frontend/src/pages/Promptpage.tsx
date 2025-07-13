@@ -1,4 +1,4 @@
-// use axios to help w fetching and posting data to my api route
+// use axios to help w fetching and posting data to my api route (might not use axios)
 //import axios from "axios";
 import { useState } from "react";
 import PromptBox from "../components/PromptBox";
@@ -29,30 +29,33 @@ function PromptPage({ user }: PromptPageProps) {
   //set up loading to keep track for loading animation
   const [loading, setLoading] = useState<boolean>(false);
 
-  // get the session ID from the chat session component
-  const { resetChatId } = useChatSession(); // only use the sessionId variable to store the session
+  // Get the session from the local storage, the resetChatId() stores it after it creates a new one 
+  // The sessionId then access it once its stored
+  const { sessionId, resetChatId } = useChatSession(); // only use the sessionId variable to store the session
 
   // create navigation so i can use it to route to the chat page
   const navigate = useNavigate();
   // todo: decide if the message icon will route to a new chat
 
-  // setup function to send the prompt to doc
+  // Function to send the prompt to doc
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // check if there is a message to from the input box
     if (!message2send.trim()) {
       toast.error("Please enter a message in the prompt box to ask Doc");
-      return; // stop the function from running
+      return; // stop the function from continuing
     }
 
     // set loading to true to show the loading animation
     setLoading(true);
 
     // create a new session id for the new chat
-    const newSessionID = resetChatId();
+    resetChatId(); // resets and makes an new chat
 
     // route to the new session id that was generated
-    navigate(`/chat/${newSessionID}`, {
+    // uses the local sessionId to route to the new page
+    navigate(`/chat/${sessionId}`, {
       state: { initialQuestion: message2send },
     });
     // the component unmounts right after
@@ -65,7 +68,7 @@ function PromptPage({ user }: PromptPageProps) {
       <div className="flex justify-center items-center flex-col h-screen">
         {/*Greet the user*/}
         <div className=" justify-center items-center">
-          <h1 className="heading text-[#ffffff] text-[3rem]">
+          <h1 className="heading text-[#ffff] text-[3rem]">
             {/* TODO: remove the user email after the test is finished*/}
             {user
               ? `Welcome, ${user.email?.split("@")[0]}`

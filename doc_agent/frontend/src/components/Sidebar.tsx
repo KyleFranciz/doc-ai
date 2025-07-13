@@ -51,7 +51,8 @@ export default function Sidebar({ user }: SidebarUserInterface) {
 
   // api fetch for all the chats in the database
   const { data, isLoading, error } = useQuery({
-    queryFn: () => fetchChats("user_tester"),
+    // The users chats are loaded into the sidebar so that they can se their chat history
+    queryFn: () => fetchChats(user?.id),
     queryKey: ["chats"],
   });
 
@@ -127,7 +128,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
         <div className="">
           <Link
             to={"/settings"}
-            className="mx-2 absolute w-[284px] bottom-3 px-2 flex items-center h-[45px] w-[100px] hover:bg-[#1d1d1d] rounded-[8px]"
+            className="mx-2 absolute w-[284px] bottom-3 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px]"
           >
             <IoMdSettings size={25} className="mr-2" />
             Settings
