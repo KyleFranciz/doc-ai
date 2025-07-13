@@ -82,7 +82,10 @@ def get_entry_root():  # general connection
 )  # DocResponse is the response that I give back when the user makes a request"
 # user_input is a a parameter that gets sent to the backend
 async def askDoc(
-    user_request: MessageRequest, stream: Optional[bool] = False
+    # takes in a users request and stream as well, stream is set to false by default
+    # can be changed in the params that are sent to the user
+    user_request: MessageRequest,
+    stream: Optional[bool] = False,
 ):  # ? the params have message_to_doc, session_id, user_id and role
     # ? supabase functions by default are synchronous
     """This is a route to prompt Doc with the question as well as return a response to the user as well"""
@@ -258,18 +261,19 @@ async def stream_doc_response(user_request: MessageRequest):
 # route to get the chat room information for the current user
 # route is async to help with waiting and making sure the flow is good
 @app.get("/api/chat/{session_id}")
-async def get_user_chat(
+async def get_msg_for_chat(
     session_id: str,
 ):  # session id will be sent in to be searched in database, user will be added later on
     """
     This is a function to get info from the chat session and load it in
 
     session_id: the session id of the user that wants to see the chat room information
+
     user_id: the id of the user that has the chat with the specific chat room
     """
     # try to get the data:
     try:
-        # use the session_id from the request to wait to get the messages from the database
+        # Query the supabase table and try to get the messages that the user has
         response = (
             supabase.table("messages")
             .select("*")
@@ -305,7 +309,7 @@ async def get_user_chat(
         )
 
 
-# Function to delete the chat from the database
+# Route to delete the chat from the database
 @app.delete("/api/chat/{session_id}")
 async def delete_chat(
     session_id: str,

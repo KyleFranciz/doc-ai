@@ -40,9 +40,7 @@ const SidebarMapper: SidebarInterface[] = [
   },
 ];
 
-
-//TODO: Only make the chats show when the user is logged in
-//TODO: Make useEffect to wrap the get user status function
+// TODO: Get the user.id to load and match the chats that the user may have
 
 export default function Sidebar({ user }: SidebarUserInterface) {
   // create state to keep track of the navbar
@@ -90,8 +88,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
         ))}
       </ul>
 
-      {/*TODO: Only show once chat if the username is the same as the user_id in the param*/}
-
+      {/*RECENT CHATS ARE BELLOW*/}
       {/*Section that has all the chats from the DB */}
       {user ?
         <div className="mt-5 w-full cursor-pointer">
@@ -101,8 +98,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
           <div>
             {error && (
               <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
-                {/*TODO: Change the error message to a better message for the UI*/}
-                {error.message}
+                {`Failed to load chats: ${error.message}`}
               </div>
             )}
           </div>
@@ -123,7 +119,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
             </div>
           )}
         </div> : <></>}
-      {/*Settings Section*/}
+      {/*SETTINGS SECTION*/}
       {user ?
         <div className="">
           <Link

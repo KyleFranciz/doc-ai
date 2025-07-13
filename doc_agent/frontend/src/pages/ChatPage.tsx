@@ -8,8 +8,15 @@ import { MessageToDoc } from "./Promptpage";
 //import axios from "axios";
 import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";
+import { User } from "@supabase/supabase-js";
 
-export default function ChatPage() {
+
+//interface for the the user for the chatpage
+interface ChatPageUserI {
+  user: User | null
+}
+
+export default function ChatPage({ user }: ChatPageUserI) {
   // requires a setMessage (set state), handleSubmit (function triggered on submit), loading(boolean to control loading state)
   // States to use in this component
   const { sessionId } = useParams<{ sessionId: string | undefined }>(); // get the session id from the url, make sure that all the messages are sent to the same session
@@ -52,11 +59,12 @@ export default function ChatPage() {
       bottomRef.current.scrollIntoView({ behavior: "instant" });
     }
 
+    // Question that is sent to doc
     const questionToDoc: MessageToDoc = {
-      question: message,
-      session_id: sessionId,
-      user_id: "place_holder",
-      role: "human",
+      question: message, // question to Doc
+      session_id: sessionId, // current session
+      user_id: user?.id, // the id of the current user 
+      role: "human", // human sending the message 
     };
 
     try {

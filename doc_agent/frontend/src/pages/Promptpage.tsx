@@ -11,7 +11,7 @@ import { User } from "@supabase/supabase-js";
 export interface MessageToDoc {
   question: string;
   session_id: string | undefined;
-  user_id: string | null;
+  user_id: string | undefined;
   role: "human" | "ai";
 }
 

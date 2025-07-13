@@ -12,7 +12,6 @@ export const useAuthListener = () => {
   useEffect(() => {
     // create the listener for the auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(
-      // TODO: Figure out why the
       (event, session) => {
         console.log(`Auth change Event: ${event}, Session:${session}`);
 
