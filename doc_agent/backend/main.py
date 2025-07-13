@@ -107,7 +107,9 @@ async def askDoc(
         print("successfully added")
 
         # ^ check if the chat table to see if it already exists in the database
-        checkChatDB = getFirstChat(user_request.session_id)
+        checkChatDB = getFirstChat(
+            user_request.session_id
+        )  # grabs the first chat from the database
 
         # alert for debug
         # print(f"First chat from the database: {checkChatDB}") # show the first chat from the database
@@ -130,7 +132,7 @@ async def askDoc(
                 .insert(
                     {
                         "user_id": user_request.user_id,
-                        "title": short_title.title(),  # shorten the title for the chat
+                        "title": short_title.title(),  # shorten the title for the chat and formats as title
                         "session_id": user_request.session_id,  # add the session_id of the chat
                     }
                 )
@@ -141,6 +143,7 @@ async def askDoc(
         else:
             print("There is already a chat message inside the Chat Database")
 
+        # SEGWAY INTO THE STREAM CHECKER TO STREAM THE RESPONSE BACK TO THE USER
         # check if there is a stream request from the frontend
         if stream:
             # return a stream response to the frontend
@@ -155,7 +158,7 @@ async def askDoc(
             )
 
         else:
-            # ^ ask doc the question from the user
+            # If there is no stream request from the user then do it this way (I'll always use stream)
             print("generating docs response")
             answer = getKnowledgeFromDoc(
                 user_input=user_request.question, session_id=user_request.session_id
