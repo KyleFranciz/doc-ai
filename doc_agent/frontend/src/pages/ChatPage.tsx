@@ -246,6 +246,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                   </div>
                 </div>
               )}
+
               {/* Show loading for streaming */}
               {isStreaming && !currentStreamingMessage && (
                 <>

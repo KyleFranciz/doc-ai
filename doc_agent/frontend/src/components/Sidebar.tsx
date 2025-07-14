@@ -40,7 +40,7 @@ const SidebarMapper: SidebarInterface[] = [
   },
 ];
 
-// TODO: Get the user.id to load and match the chats that the user may have
+// TODO: SET UP MUTATION FOR TO REFRESH ALL THE CHATS THAT THE USER HAS WHEN A NEW CHAT IS CREATED 
 
 export default function Sidebar({ user }: SidebarUserInterface) {
   // create state to keep track of the navbar

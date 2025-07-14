@@ -31,7 +31,7 @@ function PromptPage({ user }: PromptPageProps) {
 
   // Get the session from the local storage, the resetChatId() stores it after it creates a new one 
   // The sessionId then access it once its stored
-  const { sessionId, resetChatId } = useChatSession(); // only use the sessionId variable to store the session
+  const { resetChatId } = useChatSession(); // only use the sessionId variable to store the session
 
   // create navigation so i can use it to route to the chat page
   const navigate = useNavigate();
@@ -51,18 +51,19 @@ function PromptPage({ user }: PromptPageProps) {
     setLoading(true);
 
     // create a new session id for the new chat
-    resetChatId(); // resets and makes an new chat
+    const newSession = resetChatId(); // resets and makes an new chat
+    // newSession is a new chatId that I can pass into the params for the chatpage
 
     // route to the new session id that was generated
     // uses the local sessionId to route to the new page
-    navigate(`/chat/${sessionId}`, {
+    navigate(`/chat/${newSession}`, {
       state: { initialQuestion: message2send },
     });
     // the component unmounts right after
   };
 
   // route to the next page when the initial prompt is queued
-  // todo: incorporate the users name in the message once the prompt is sent
+  // TODO: incorporate the users name in the message once the prompt is sent
   return (
     <>
       <div className="flex justify-center items-center flex-col h-screen">

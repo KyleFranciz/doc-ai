@@ -29,7 +29,16 @@ export const useChatSession = () => {
     }
 
     // if there is a locally stored id, save it in the state to be sent out to the user
-    setSessionId(alreadyStoredId);
+    setSessionId(alreadyStoredId ?? uuidv4()); // set the alreadyStoredId if it exists
+    // otherwise make a new one for the user to navigate to
+
+
+    return () => {
+      // unmount the sessionId on the onmount of the component if the user goes to another page
+      if (sessionId) {
+        localStorage.removeItem(SESSION_ID) //remove the sessionID from the local storage
+      }
+    }
   }, []);
 
   // function to reset the sessionId once the user wants to create a new chat
@@ -40,6 +49,7 @@ export const useChatSession = () => {
     localStorage.setItem(SESSION_ID, newSessionId);
     // update the state to the new session id
     setSessionId(newSessionId);
+    return newSessionId // return immediatly for the routing
   };
   //return the reset function to be used outside when making a new chat, and sending the session id handled from the hook
   return { sessionId, resetChatId };
