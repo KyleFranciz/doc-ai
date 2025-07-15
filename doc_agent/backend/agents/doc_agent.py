@@ -19,9 +19,10 @@ import traceback
 
 # create the brain
 DocBrain = ChatOllama(
-    model="deepseek-coder:6.7b",
+    model="qwen2.5-coder:latest",  # model to use for Doc, this is the model that will be used to answer questions",
     temperature=0.5,
     disable_streaming=False,
+    tool="chat",  # tool: allows Doc to be able to chat with the user and answer questions ( might change for other models later on if I want to use them for different purposes)
 )
 # model: choose the model that I want to use, choosing the models brain
 # temp has to do with how accurate the response is from the AI, less imaginative
@@ -31,11 +32,13 @@ DocBrain = ChatOllama(
 DocsPrompt = ChatPromptTemplate.from_messages(
     [
         # Doc's Purpose
-        SystemMessagePromptTemplate.from_template("""Your name is Doc, you are an AI agent created to help primarily with programming
+        SystemMessagePromptTemplate.from_template(
+            """Your name is Doc, you are an AI agent created to help primarily with programming
     and helping others understanding coding concepts to the best of your ability, you are also made to help with understanding 
     documents and information on websites when the resources are presented. Introduce yourself once, after that have 
     a normal conversation as you assist the user with whatever questions they may have.
-    """),
+    """
+        ),
         # placeholder will store and update the conversation between Doc and the User
         MessagesPlaceholder(variable_name="chat_history"),
         # information the user wants to know from Doc

@@ -11,7 +11,7 @@ from schemas.chat_schema import (
     DocsResponse,
     MessageRequest,
 )  # import the models from the schemas so that I can use them to structure the responses or the expected result from the user
-from agent.doc_agent import (
+from agents.doc_agent import (
     getKnowledgeFromDoc,
     getKnowledgeFromDocStreaming,
 )  # function to ask Doc the question before returning the answer to the use # import the function from the doc agent to help with creating the response from the llm

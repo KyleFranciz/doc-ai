@@ -10,10 +10,9 @@ import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 
-
 //interface for the the user for the chatpage
 interface ChatPageUserI {
-  user: User | null
+  user: User | null;
 }
 
 export default function ChatPage({ user }: ChatPageUserI) {
@@ -37,15 +36,15 @@ export default function ChatPage({ user }: ChatPageUserI) {
   //import base url from the .env file
   const BASE_API_URL = import.meta.env.VITE_DOC_BASE_API; // get the base api url from the .env file
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
   const initialPromptHandled = useRef(false); // ref to prevent the initial prompt from re-running over and over
   // bring in session managing hook
 
   // useQuery custom function I made to help with fetching the messages from the backend
   const { data, isPending, error } = useQuery({
     queryFn: () => fetchMessages(sessionId),
-    queryKey: ["sessionMessages", sessionId]
+    queryKey: ["sessionMessages", sessionId],
   });
-
 
   // Streaming function using Fetch
   // Improved Streaming function using Fetch
@@ -63,8 +62,8 @@ export default function ChatPage({ user }: ChatPageUserI) {
     const questionToDoc: MessageToDoc = {
       question: message, // question to Doc
       session_id: sessionId, // current session
-      user_id: user?.id, // the id of the current user 
-      role: "human", // human sending the message 
+      user_id: user?.id, // the id of the current user
+      role: "human", // human sending the message
     };
 
     try {
@@ -138,7 +137,8 @@ export default function ChatPage({ user }: ChatPageUserI) {
       }
     } catch (error) {
       toast.error(
-        `Streaming failed: ${error instanceof Error ? error.message : "Unknown error"
+        `Streaming failed: ${
+          error instanceof Error ? error.message : "Unknown error"
         }`
       );
       // Reset states on error
@@ -146,7 +146,6 @@ export default function ChatPage({ user }: ChatPageUserI) {
       setCurrentStreamingMessage("");
     }
   };
-
 
   // Streaming Mutation
   const streamMessageMutation = useMutation({
@@ -158,7 +157,8 @@ export default function ChatPage({ user }: ChatPageUserI) {
     onError: (error) => {
       console.error("Failed to start stream:", error);
       toast.error(
-        `Streaming failed: ${error instanceof Error ? error.message : "Unknown error"
+        `Streaming failed: ${
+          error instanceof Error ? error.message : "Unknown error"
         }`
       );
       // reset the states
