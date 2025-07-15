@@ -253,8 +253,9 @@ export default function ChatPage({ user }: ChatPageUserI) {
                   <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
                     {userQuestion}
                   </div>
+                  {/*NOTE: UI thinking message for when streaming response is loading*/}
                   <div className="flex flex-col justify-center items-center py-5">
-                    <div className="flex items-center justify-center bg-[#252525] rounded-[5px] p-2 h-[50px] w-[200px]">
+                    <div className="flex items-center justify-center bg-[#252525] rounded-[10px] p-2 h-[50px] w-[200px]">
                       <p className="mr-1">Thinking</p>
                       <SyncLoader
                         speedMultiplier={0.5}
