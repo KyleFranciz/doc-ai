@@ -10,7 +10,7 @@ import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 
-//interface for the the user for the chatpage
+//interface for the the user for the chat page
 interface ChatPageUserI {
   user: User | null;
 }
@@ -36,11 +36,10 @@ export default function ChatPage({ user }: ChatPageUserI) {
   //import base url from the .env file
   const BASE_API_URL = import.meta.env.VITE_DOC_BASE_API; // get the base api url from the .env file
   const bottomRef = useRef<HTMLDivElement | null>(null);
-
-  const initialPromptHandled = useRef(false); // ref to prevent the initial prompt from re-running over and over
+  //const initialPromptHandled = useRef(false); // ref to prevent the initial prompt from re-running over and over
   // bring in session managing hook
 
-  // useQuery custom function I made to help with fetching the messages from the backend
+  // useQuery function to get all the messages for the current session
   const { data, isPending, error } = useQuery({
     queryFn: () => fetchMessages(sessionId),
     queryKey: ["sessionMessages", sessionId],
@@ -170,11 +169,12 @@ export default function ChatPage({ user }: ChatPageUserI) {
   // This useEffect hook runs when the page loads to handle the initial prompt
   useEffect(() => {
     const initialQuestion = location.state?.initialQuestion;
-    if (initialQuestion && !initialPromptHandled.current) {
-      initialPromptHandled.current = true; // Mark as handled
+    const sessionPromptKey = `prompted-${sessionId}`;
+    if (initialQuestion && !sessionStorage.getItem(sessionPromptKey)) {
+      sessionStorage.setItem(sessionPromptKey, "true");
       streamMessageMutation.mutate(initialQuestion);
     }
-  }, [location.state, streamMessageMutation]);
+  }, [location.state, streamMessageMutation, sessionId]);
 
   const handleSendMessage = (message: string) => {
     if (!message.trim()) return;

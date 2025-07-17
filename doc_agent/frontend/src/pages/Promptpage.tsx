@@ -29,7 +29,7 @@ function PromptPage({ user }: PromptPageProps) {
   //set up loading to keep track for loading animation
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Get the session from the local storage, the resetChatId() stores it after it creates a new one 
+  // Get the session from the local storage, the resetChatId() stores it after it creates a new one
   // The sessionId then access it once its stored
   const { resetChatId } = useChatSession(); // only use the sessionId variable to store the session
 
@@ -52,7 +52,7 @@ function PromptPage({ user }: PromptPageProps) {
 
     // create a new session id for the new chat
     const newSession = resetChatId(); // resets and makes an new chat
-    // newSession is a new chatId that I can pass into the params for the chatpage
+    // newSession is a new chatId that I can pass into the params for the chat page
 
     // route to the new session id that was generated
     // uses the local sessionId to route to the new page

@@ -37,6 +37,7 @@ export default function PromptBox(props: PromptBoxI) {
             <button
               className="bg-[#95AA75] p-1.5 rounded-4xl outline-solid outline-[0.5px] outline-[#6D6D6D] text-[#303030] absolute right-3 bottom-3 hover: cursor-pointer"
               type="submit"
+              disabled={props.loading}
             >
               {/*Replace the logo for the UP with an arrow*/}
               {props.loading ? (
