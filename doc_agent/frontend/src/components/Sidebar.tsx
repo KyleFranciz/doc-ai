@@ -6,6 +6,7 @@ import { IoMdSettings } from "react-icons/io";
 import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
+// import { useMutation } from "@tanstack/react-query"; add back onvce the mutaton
 import { fetchChats } from "../api/ChatFetcher";
 import { motion } from "motion/react";
 import { useSidebar } from "../context/SidebarContext";
@@ -54,7 +55,11 @@ export default function Sidebar({ user }: SidebarUserInterface) {
     queryKey: ["chats"],
   });
 
+  // TODO: WORK ON THE FUNCTION TO HELP WITH DELETING THE CHATS AND REFRESHING THE SIDEBAR
   // mutation function to refresh the chats on the Sidebar
+  // const {mutate} = useMutation({
+  //   // mutation function
+  // })
 
   return (
     <motion.nav
@@ -111,7 +116,10 @@ export default function Sidebar({ user }: SidebarUserInterface) {
                 <div className="group hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]">
                   <Link to={`/chat/${chats.session_id}`}>{chats.title}</Link>
                   <div className="ml-auto hidden group-hover:block">
-                    <MdClear size={20} onClick={() => deleteChat(chats.session_id)} />
+                    <MdClear
+                      size={20}
+                      onClick={() => deleteChat(chats.session_id)}
+                    />
                   </div>
                 </div>
               ))}
