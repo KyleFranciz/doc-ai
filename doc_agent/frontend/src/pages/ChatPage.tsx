@@ -228,10 +228,12 @@ export default function ChatPage({ user }: ChatPageUserI) {
             <div className="h-full mt-[20px]">
               <MessageRender chatInfo={data?.data.messages || []} />
               {/*Handles the streaming request to the backend and back to the frontend */}
+              {/*Show the message that is streaming to the user and the current question that the user wants to know*/}
               {isStreaming && currentStreamingMessage && (
                 <div className="">
                   <div className="">
                     <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
+                      {/*Initial question from the user while the message is rendering to the frontend*/}
                       {userQuestion}
                     </div>
                     <div className="p-2 my-1 max-w-xl rounded-md bg-[#171717] text-[#ffffff]">

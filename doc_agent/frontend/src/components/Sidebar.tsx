@@ -22,7 +22,7 @@ interface SidebarInterface {
 
 // Sidebar User interface for user Prop passed in
 interface SidebarUserInterface {
-  user: User | null
+  user: User | null;
 }
 
 const SidebarMapper: SidebarInterface[] = [
@@ -40,12 +40,11 @@ const SidebarMapper: SidebarInterface[] = [
   },
 ];
 
-// TODO: SET UP MUTATION FOR TO REFRESH ALL THE CHATS THAT THE USER HAS WHEN A NEW CHAT IS CREATED 
+// TODO: SET UP MUTATION FOR TO REFRESH ALL THE CHATS THAT THE USER HAS WHEN A NEW CHAT IS CREATED
 
 export default function Sidebar({ user }: SidebarUserInterface) {
   // create state to keep track of the navbar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
-
 
   // api fetch for all the chats in the database
   const { data, isLoading, error } = useQuery({
@@ -54,7 +53,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
     queryKey: ["chats"],
   });
 
-  // function to get the current state of the user (might just pass down as prop)
+  // mutation function to refresh the chats on the Sidebar
 
   return (
     <motion.nav
@@ -84,13 +83,12 @@ export default function Sidebar({ user }: SidebarUserInterface) {
               <p>{items.Text}</p>
             </Link>
           </li>
-
         ))}
       </ul>
 
       {/*RECENT CHATS ARE BELLOW*/}
       {/*Section that has all the chats from the DB */}
-      {user ?
+      {user ? (
         <div className="mt-5 w-full cursor-pointer">
           <div>
             <h3 className="px-2 mx-2 mb-2 font-light text-xs">Recent</h3>
@@ -118,9 +116,12 @@ export default function Sidebar({ user }: SidebarUserInterface) {
               ))}
             </div>
           )}
-        </div> : <></>}
+        </div>
+      ) : (
+        <></>
+      )}
       {/*SETTINGS SECTION*/}
-      {user ?
+      {user ? (
         <div className="">
           <Link
             to={"/settings"}
@@ -129,7 +130,10 @@ export default function Sidebar({ user }: SidebarUserInterface) {
             <IoMdSettings size={25} className="mr-2" />
             Settings
           </Link>
-        </div> : <></>}
+        </div>
+      ) : (
+        <></>
+      )}
     </motion.nav>
   );
 }

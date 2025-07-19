@@ -71,9 +71,7 @@ function PromptPage({ user }: PromptPageProps) {
         <div className=" justify-center items-center">
           <h1 className="heading text-[#ffff] text-[3rem]">
             {/* TODO: remove the user email after the test is finished*/}
-            {user
-              ? `Welcome, ${user.email?.split("@")[0]}`
-              : "You must be new here"}
+            {user ? `Welcome, ${user}` : "You must be new here"}
           </h1>
           <h3 className="flex justify-center mt-[-13px] mb-3 text-xl text-[#b0b0b0]">
             What do you want to research today?
