@@ -6,7 +6,7 @@ import { IoMdSettings } from "react-icons/io";
 import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-// import { useMutation } from "@tanstack/react-query"; add back onvce the mutaton
+// import { useMutation } from "@tanstack/react-query"; add back once the mutation is set up
 import { fetchChats } from "../api/ChatFetcher";
 import { motion } from "motion/react";
 import { useSidebar } from "../context/SidebarContext";
