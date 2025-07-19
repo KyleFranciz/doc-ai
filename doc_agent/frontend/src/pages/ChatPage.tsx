@@ -128,7 +128,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                 "Error parsing SSE data:",
                 parseError,
                 "Line:",
-                line
+                line,
               );
             }
           }
@@ -138,7 +138,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
       toast.error(
         `Streaming failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`
+        }`,
       );
       // Reset states on error
       setIsStreaming(false);
@@ -158,7 +158,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
       toast.error(
         `Streaming failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`
+        }`,
       );
       // reset the states
       setIsStreaming(false);
@@ -166,15 +166,17 @@ export default function ChatPage({ user }: ChatPageUserI) {
     },
   });
 
-  // This useEffect hook runs when the page loads to handle the initial prompt
+  // This useEffect hook runs when the page loads to handle the initial prompt (This line affected the question being sent twice)
   useEffect(() => {
-    const initialQuestion = location.state?.initialQuestion;
-    const sessionPromptKey = `prompted-${sessionId}`;
+    const initialQuestion = location.state?.initialQuestion; // the users initial question from the location state
+    const sessionPromptKey = `prompted-${sessionId}`; // store the session key in a variable to help w/ not sending the same question twice
     if (initialQuestion && !sessionStorage.getItem(sessionPromptKey)) {
-      sessionStorage.setItem(sessionPromptKey, "true");
+      // checks if there is an initial question from the state and a session key in the session storage
+      sessionStorage.setItem(sessionPromptKey, "true"); // checks the session item using the session key and sets the value to true to make sure that the messages arent sent twice
+      // this function is only sent once load, and because the sessionStorage the message doesnt send again even if the page is reloaded
       streamMessageMutation.mutate(initialQuestion);
     }
-  }, [location.state, streamMessageMutation, sessionId]);
+  }, [location.state, streamMessageMutation, sessionId]); // this only changes if its sent again from the prompt page
 
   const handleSendMessage = (message: string) => {
     if (!message.trim()) return;
