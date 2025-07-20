@@ -2,39 +2,21 @@ import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { useSidebar } from "../context/SidebarContext";
 import { TbLayoutSidebarLeftExpand } from "react-icons/tb";
-import {
-  getSupabaseUser,
-  SignOutSupabase,
-} from "../connections/user-connections";
-import { useEffect, useState } from "react";
+import { SignOutSupabase } from "../connections/user-connections";
+import { User } from "@supabase/supabase-js";
 
-// TODO: Make sure that the user is passed down so that the load state is more responsive
+// interface for the Navbar component
+interface NavbarProps {
+  user: User | null;
+}
 
 // Navbar component
-export default function Navbar() {
+export default function Navbar({ user }: NavbarProps) {
   // use navigate hook for the routing
   const navigate = useNavigate();
 
   // handle the toggle for the sidebar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
-
-  // Set the login state based on the user's session
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  // when the user is logged only show the sign out button and user info
-  useEffect(() => {
-    const NavbarUserStyling = async () => {
-      // check if the user is logged in
-      const User = await getSupabaseUser();
-
-      if (User) {
-        setLoggedIn(true);
-      } else {
-        setLoggedIn(false);
-      }
-    };
-    NavbarUserStyling();
-  }, []);
 
   return (
     <nav className="fixed right-0 w-full bg-[#171717] ">
@@ -48,7 +30,7 @@ export default function Navbar() {
           >
             {!isSidebarOpen ? <TbLayoutSidebarLeftExpand size={30} /> : <></>}
           </motion.button>
-          {loggedIn ? (
+          {user ? (
             //? Sign Out button for the user
             <div>
               <motion.button

@@ -32,6 +32,8 @@ export default function SignUpPage() {
         setEmail(""); // clear the email input
         setPassword(""); // clear the password input
         navigate("/"); // navigate to the user back to the main page
+      } else {
+        navigate("/login"); // navigate the user to the login page
       }
     } catch (signUpError) {
       // display error message if sign up fails
@@ -47,6 +49,8 @@ export default function SignUpPage() {
   return (
     <div>
       <SignupBox
+        email={email}
+        password={password}
         setEmail={setEmail}
         setPassword={setPassword}
         signUpActive={signUpActive}

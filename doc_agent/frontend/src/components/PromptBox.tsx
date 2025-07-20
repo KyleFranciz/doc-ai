@@ -10,6 +10,7 @@ interface PromptBoxI {
   handleSubmit?: (e: FormEvent<Element>) => Promise<void>; // prop that allows function inside
   setMessage: React.Dispatch<React.SetStateAction<string>>; // allows the set state inside
   loading?: boolean; // allows the setState loading from the outside to enter
+  value: string;
 }
 
 // ReUsable prompting section that allows the user to ask doc questions
@@ -28,12 +29,15 @@ export default function PromptBox(props: PromptBoxI) {
             }}
             // make it required to send the data
             required
+            // make the value the same as the state
+            value={props.value}
           />
           {/*bottom button for the input bar */}
           <div className="flex justify-center items-center">
             <button
               className="bg-[#95AA75] p-1.5 rounded-4xl outline-solid outline-[0.5px] outline-[#6D6D6D] text-[#303030] absolute right-3 bottom-3 hover: cursor-pointer"
               type="submit"
+              disabled={props.loading}
             >
               {/*Replace the logo for the UP with an arrow*/}
               {props.loading ? (

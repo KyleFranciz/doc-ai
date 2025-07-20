@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import { useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { User } from "@supabase/supabase-js";
+import { useAuthListener } from "../hooks/useAuthListener.ts";
 
 // interface for user for the is component
 interface LayoutProps {
@@ -21,6 +22,8 @@ export default function Layout({ user }: LayoutProps) {
     ? " w-full max-w-full"
     : "flex justify-center items-center";
 
+  // use the useAuthListener hook
+  useAuthListener();
   return (
     <>
       {/*This div controls the styling for the rest of the app */}
@@ -29,8 +32,7 @@ export default function Layout({ user }: LayoutProps) {
         <div>
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
-          <Navbar />
-          {/*TODO: pass down the user prop into Sidebar so that the user info can be validated*/}
+          <Navbar user={user} />
           <Sidebar user={user} />
           {
             <div

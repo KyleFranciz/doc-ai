@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
-// create client for supabase
+// get the keys from the env file and create client for supabase
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
