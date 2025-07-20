@@ -127,7 +127,7 @@ async def askDoc(
             )  # show the first message from the database
 
             # shorten the title of the First message
-            short_title = FirstMessage[:20]
+            short_title = FirstMessage[:20] + "..."
 
             # create a new chat with the session info for the database
             SentChatSession = (
