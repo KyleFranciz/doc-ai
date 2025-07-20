@@ -5,7 +5,7 @@ import { BsChatLeftFill } from "react-icons/bs";
 import { IoMdSettings } from "react-icons/io";
 import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
 import { Link } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // import { useMutation } from "@tanstack/react-query"; add back once the mutation is set up
 import { fetchChats } from "../api/ChatFetcher";
 import { motion } from "motion/react";
@@ -13,6 +13,7 @@ import { useSidebar } from "../context/SidebarContext";
 import { User } from "@supabase/supabase-js";
 import { MdClear } from "react-icons/md";
 import { deleteChat } from "../api/ChatDeleters.ts";
+import { toast } from "sonner";
 
 // interface for the Sidebar Icons and Selectors
 interface SidebarInterface {
@@ -45,6 +46,9 @@ const SidebarMapper: SidebarInterface[] = [
 // TODO: SET UP MUTATION FOR TO REFRESH ALL THE CHATS THAT THE USER HAS WHEN A NEW CHAT IS CREATED
 
 export default function Sidebar({ user }: SidebarUserInterface) {
+  // get the query client to handle the queries and mutations, help sidbar refetch
+  const queryClient = useQueryClient();
+
   // create state to keep track of the navbar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
@@ -52,14 +56,19 @@ export default function Sidebar({ user }: SidebarUserInterface) {
   const { data, isLoading, error } = useQuery({
     // The users chats are loaded into the sidebar so that they can se their chat history
     queryFn: () => fetchChats(user?.id),
-    queryKey: ["chats"],
+    queryKey: ["chats"], // key is an array of chats
   });
 
   // TODO: WORK ON THE FUNCTION TO HELP WITH DELETING THE CHATS AND REFRESHING THE SIDEBAR
   // mutation function to refresh the chats on the Sidebar
-  // const {mutate} = useMutation({
-  //   // mutation function
-  // })
+  const { mutateAsync: deletedChatMutation } = useMutation({
+    // function to delete the chat session
+    mutationFn: deleteChat,
+    // fire after successful deletion of the chat
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+    },
+  });
 
   return (
     <motion.nav
@@ -80,15 +89,14 @@ export default function Sidebar({ user }: SidebarUserInterface) {
       <ul className="mt-6">
         {/*Has the selector for the chat section of the sidebar*/}
         {SidebarMapper.map((items) => (
-          <li key={items.keys}>
-            <Link
-              to={items.link}
-              className="mx-2 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px] "
-            >
-              <div className="mr-2">{<items.Icon size={20} />}</div>
-              <p>{items.Text}</p>
-            </Link>
-          </li>
+          <Link
+            key={items.keys}
+            to={items.link}
+            className="mx-2 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px] "
+          >
+            <div className="mr-2">{<items.Icon size={20} />}</div>
+            <p>{items.Text}</p>
+          </Link>
         ))}
       </ul>
 
@@ -113,15 +121,29 @@ export default function Sidebar({ user }: SidebarUserInterface) {
           ) : (
             <div>
               {data?.data?.chat?.map((chats) => (
-                <div className="group hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]">
-                  <Link to={`/chat/${chats.session_id}`}>{chats.title}</Link>
+                <Link
+                  className="group hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]"
+                  to={`/chat/${chats.session_id}`}
+                >
+                  {chats.title}
                   <div className="ml-auto hidden group-hover:block">
                     <MdClear
                       size={20}
-                      onClick={() => deleteChat(chats.session_id)}
+                      // Mutation function to delete the chat session from the sidebar
+                      // Await the deletion of the chat from the sidebar
+                      onClick={async () => {
+                        try {
+                          await deletedChatMutation(chats.session_id);
+                        } catch (error) {
+                          // let the user know if there is an error
+                          toast.error(
+                            `Message failed to delete properly ${error}`,
+                          );
+                        }
+                      }}
                     />
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

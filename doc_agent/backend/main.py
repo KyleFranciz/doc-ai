@@ -89,7 +89,10 @@ async def askDoc(
 ):  # ? the params have message_to_doc, session_id, user_id and role
     # ? supabase functions by default are synchronous
     """This is a route to prompt Doc with the question as well as return a response to the user as well"""
-    try:  # try to create a table in supabase
+
+    try:
+
+        # try to create a table in supabase
         # ^ add users question to the DB
         print("adding User's input")
         UserQuestion = (
@@ -138,6 +141,7 @@ async def askDoc(
                 )
                 .execute()
             )
+
             # check if successful
             # print(f"Successfully added Doc's and Users Chat to the Chat DB: {SentChatSession}")
         else:
@@ -319,11 +323,24 @@ async def delete_chat(
 ):  # session id will be sent in to be searched in database, user will be added later on
     try:
         # use the chat session_id to delete the chat
-        resonse = (
-            supabase.table("chats").delete().eq("session_id", session_id).execute()
+        chat_deleted = (
+            # delete that chat titles from the database
+            supabase.table("chats")
+            .delete()
+            .eq("session_id", session_id)
+            .execute()
         )
+        # delete all the messages from the database where the session_id matches
+        messages_deleted = (
+            supabase.table("messages").delete().eq("session_id", session_id).execute()
+        )
+
         # check if the chat was deleted
-        print(resonse)
+        print(
+            "The Chat and Messages from the user have been deleted: ",
+            chat_deleted,
+            messages_deleted,
+        )
     except Exception as err:
         # see the error that might pop up
         raise HTTPException(status_code=404, detail=f"failed to delete the chat: {err}")
@@ -335,7 +352,7 @@ async def get_all_chat_titles(
     user_id: str,
 ):  # user_id will be sent in to be searched in database, user will be added later on
     # max out the amount of chats that the user can get
-    MAX_CHATS = 20
+    # NOTE: MAX_CHATS = 20 #contol the amount of chats that get displayed might make this for guest users only
 
     # Try to get the chats from the backend
     try:
@@ -346,7 +363,7 @@ async def get_all_chat_titles(
         if all_chats.data:
             # return 20 chats from the database
             return {
-                "chat": all_chats.data[:MAX_CHATS],
+                "chat": all_chats.data,
                 "amount_of_chats": len(all_chats.data),
             }
 

@@ -6,10 +6,18 @@ import { toast } from "sonner";
 const BASE_API_URL = import.meta.env.VITE_DOC_BASE_API;
 
 export const deleteChat = async (session_id: string | undefined) => {
+  // try to delete the data from the database
   try {
-    const deletedChat = await axios.delete(`${BASE_API_URL}/api/chat/${session_id}`);
+    // deletes the chat from the list of chats in the database
+    const deletedChat = await axios.delete(
+      `${BASE_API_URL}/api/chat/${session_id}`,
+    );
+
+    // return the deleted chat data
     return deletedChat;
+    //error handling
   } catch (error) {
+    // notify that the message was not deleted
     toast.error(`${error}`);
   }
-}
+};

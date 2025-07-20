@@ -15,6 +15,8 @@ interface ChatPageUserI {
   user: User | null;
 }
 
+// TODO: Update the sidebar with the title whenever the user makes a new chat with Doc
+
 export default function ChatPage({ user }: ChatPageUserI) {
   // requires a setMessage (set state), handleSubmit (function triggered on submit), loading(boolean to control loading state)
   // States to use in this component
@@ -194,8 +196,6 @@ export default function ChatPage({ user }: ChatPageUserI) {
       </div>
     );
   }
-
-  // Hooks to use to store the messages
 
   // base render for when the page loads and everything is successful
   return (
