@@ -2,15 +2,21 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import { User } from "@supabase/supabase-js";
 
-//import { useLocation } from "react-router-dom";
+// interface for user for the is component
+interface LayoutProps {
+  user: User | null;
+}
 
-export default function Layout() {
+export default function Layout({ user }: LayoutProps) {
+  // get the current location
   const location = useLocation(); // get the location
 
+  // check the current location to see if it includes the chat page
   const isChatPage = location.pathname.includes("/chat/"); // get the location of the chat page
 
-  //check if the current location is the chat page
+  //styles for the chatPage
   const style = isChatPage
     ? " w-full max-w-full"
     : "flex justify-center items-center";
@@ -24,7 +30,8 @@ export default function Layout() {
           {/*Navbar mainly just has the user logo for now */}
           {/* Might add an app logo later on */}
           <Navbar />
-          <Sidebar />
+          {/*TODO: pass down the user prop into Sidebar so that the user info can be validated*/}
+          <Sidebar user={user} />
           {
             <div
               className={`max-h-lvh h-screen ${style} bg-[#171717] overflow-x-hidden scrollbar-transparent`}
