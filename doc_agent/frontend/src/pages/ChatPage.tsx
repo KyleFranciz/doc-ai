@@ -10,6 +10,8 @@ import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 
+//TODO: Make the markdown out put from the use display properly on the frontend
+
 //interface for the the user for the chat page
 interface ChatPageUserI {
   user: User | null;

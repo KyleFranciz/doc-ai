@@ -6,6 +6,7 @@ import { useChatSession } from "../hooks/useChatSession";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
+import logo from "../assets/logos/ChatGPT Image Jul 21, 2025, 02_09_30 AM.png";
 
 // interface for the message sent to the server
 export interface MessageToDoc {
@@ -68,12 +69,13 @@ function PromptPage({ user }: PromptPageProps) {
     <>
       <div className="flex justify-center items-center flex-col h-screen">
         {/*Greet the user*/}
-        <div className=" justify-center items-center">
-          <h1 className="heading text-[#ffff] text-[3rem]">
+        <div className=" justify-center flex-col flex w-full items-center ">
+          <img className="w-[115px] h-[115px] mb-[-50px]" src={logo} />
+          <h1 className="font-[instumentSerif] tracking-tight text-[#ffff] text-[6rem]">
             {/* TODO: remove the user email after the test is finished*/}
-            {user ? `Welcome, ${user}` : "You must be new here"}
+            {user ? `Welcome, ${user}` : "Welcome back,"}
           </h1>
-          <h3 className="flex justify-center mt-[-13px] mb-3 text-xl text-[#b0b0b0]">
+          <h3 className="flex justify-center font-[instrumentSerif] mt-[-30px] mb-3 text-[1.5rem] text-[#b0b0b0]">
             What do you want to research today?
           </h3>
         </div>
