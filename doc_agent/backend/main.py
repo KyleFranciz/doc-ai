@@ -126,8 +126,16 @@ async def askDoc(
                 f"First message from the database: {FirstMessage}"
             )  # show the first message from the database
 
-            # shorten the title of the First message
-            short_title = FirstMessage[:20] + "..."
+            # CODE BLOCK TO CHECK AND ADJUST THE LENGTH OF THE TITLES BASED ON THE WORDS COUNT
+            # if the len of the first message is longer than 25 letters
+            if len(FirstMessage) >= 25:
+                # shorten the title of the First message and add the "..." to the end of it
+                short_title = FirstMessage[:25] + "..."
+            elif len(FirstMessage) <= 25:
+                # if the first question is short then dont add the dots at the end
+                short_title = FirstMessage[
+                    :20
+                ]  # if its less than 25 then just use the first message as the title
 
             # create a new chat with the session info for the database
             SentChatSession = (

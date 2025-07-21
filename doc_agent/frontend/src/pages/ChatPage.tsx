@@ -282,8 +282,9 @@ export default function ChatPage({ user }: ChatPageUserI) {
         )}
       </div>
 
-      {/* Chat box for sending messages to the backend*/}
-      <div ref={bottomRef} className="pb-2  sticky bottom-0 bg-[#171717]">
+      {/*ChatBox component for inputing questions from the user*/}
+      {/* TODO: animate the box to go down from the middle of the page */}
+      <div ref={bottomRef} className="pb-4 bg-[#171717] absolute bottom-0">
         <ChatBox
           onSendMessage={handleSendMessage}
           chatInput={chatInput}
