@@ -35,7 +35,7 @@ export default function PromptBox(props: PromptBoxI) {
           {/*bottom button for the input bar */}
           <div className="flex justify-center items-center">
             <button
-              className="bg-[#95AA75] p-1.5 rounded-4xl outline-solid outline-[0.5px] outline-[#6D6D6D] text-[#303030] absolute right-3 bottom-3 hover: cursor-pointer"
+              className="bg-[#0F9E6A] p-1.5 rounded-4xl outline-solid outline-[1px] outline-[#6D6D6D ] text-[#303030] absolute right-3 bottom-3 hover: cursor-pointer"
               type="submit"
               disabled={props.loading}
             >
