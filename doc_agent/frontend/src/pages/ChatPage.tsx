@@ -238,7 +238,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                       {/*Initial question from the user while the message is rendering to the frontend*/}
                       {userQuestion}
                     </div>
-                    <div className="p-2 my-1 max-w-xl rounded-md bg-[#171717] text-[#ffffff]">
+                    <div className="p-2 my-1 max-w-xl h-full rounded-md bg-[#171717] text-[#ffffff]">
                       {currentStreamingMessage}
                       <span className="animate-pulse">|</span>
                     </div>
@@ -286,7 +286,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
 
       {/*ChatBox component for inputing questions from the user*/}
       {/* TODO: animate the box to go down from the middle of the page */}
-      <div ref={bottomRef} className="pb-4 bg-[#171717] absolute bottom-0">
+      <div ref={bottomRef} className="pb-4 z-1 absolute bg-[#171717] bottom-0">
         <ChatBox
           onSendMessage={handleSendMessage}
           chatInput={chatInput}

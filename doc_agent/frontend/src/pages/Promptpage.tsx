@@ -72,7 +72,7 @@ function PromptPage({ user }: PromptPageProps) {
         <div className=" justify-center flex-col flex w-full items-center ">
           <h1 className="font-[instumentSerif] tracking-tight text-[#ffff] text-[6rem]">
             {/*TODO: Change to be able to display the users name*/}
-            {user ? `Welcome, User` : "Welcome back,"}
+            {user ? `Welcome User` : "Welcome back,"}
           </h1>
           <div className="flex justify-center itmes-center">
             <h3 className="flex justify-center font-[instrumentSerif] mt-[-40px] mb-3 text-[1.5rem] text-[#b0b0b0]">

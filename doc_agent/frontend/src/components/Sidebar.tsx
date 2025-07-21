@@ -75,7 +75,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
       initial={{ x: -300 }}
       transition={{ x: { type: "spring", damping: 40, stiffness: 350 } }}
       animate={{ x: isSidebarOpen ? 0 : -300 }}
-      className="absolute flex flex-col z-1 w-[300px] bg-[#101010] h-full"
+      className="absolute flex flex-col z-2 w-[300px] bg-[#101010] h-full"
     >
       <div className=" h-[40px] flex justify-between items-center pt-2 px-2.5">
         {/*Logo for the top half of the sidebar */}
