@@ -34,10 +34,9 @@ export default function ChatBox({
     <div className="">
       <form onSubmit={handleSending}>
         <div className="w-[650px] h-[110px] bg-[#171717]  outline-[#474747] outline-solid outline-[0.7px] rounded-xl relative">
-          <input
-            type="text"
+          <textarea
             placeholder="Let me know what you want to look into"
-            className="w-full mt-4.5 ml-4 h-auto outline-none text-[#dbdbdbe4]"
+            className="w-[620px] mt-4.5 ml-4 h-auto outline-none resize-none text-[#dbdbdbe4] "
             onChange={(e) => {
               // catch the input changes and store in state
               setChatInput(e.target.value);
