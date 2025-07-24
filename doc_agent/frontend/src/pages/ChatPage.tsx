@@ -12,7 +12,7 @@ import { User } from "@supabase/supabase-js";
 
 //TODO: Make the markdown out put from the use display properly on the frontend
 
-//interface for the the user for the chat page
+//interface for the user for the chat page
 interface ChatPageUserI {
   user: User | null;
 }
@@ -52,6 +52,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
   // Streaming function using Fetch
   // Improved Streaming function using Fetch
   const streamMessage = async (message: string) => {
+    // States that are set when the message is being streamed
     setIsStreaming(true);
     setCurrentStreamingMessage("");
     setUserQuestion(message); // set the user question to be displayed while streaming, make my UI look cleaner
@@ -172,15 +173,15 @@ export default function ChatPage({ user }: ChatPageUserI) {
 
   // This useEffect hook runs when the page loads to handle the initial prompt (This line affected the question being sent twice)
   useEffect(() => {
-    const initialQuestion = location.state?.initialQuestion; // the users initial question from the location state
-    const sessionPromptKey = `prompted-${sessionId}`; // store the session key in a variable to help w/ not sending the same question twice
+    const initialQuestion = location.state?.initialQuestion; // the user's initial question from the location state
+    const sessionPromptKey = `prompted-${sessionId}`; // store the session key in a variable to help with not sending the same question twice
     if (initialQuestion && !sessionStorage.getItem(sessionPromptKey)) {
       // checks if there is an initial question from the state and a session key in the session storage
-      sessionStorage.setItem(sessionPromptKey, "true"); // checks the session item using the session key and sets the value to true to make sure that the messages arent sent twice
-      // this function is only sent once load, and because the sessionStorage the message doesnt send again even if the page is reloaded
+      sessionStorage.setItem(sessionPromptKey, "true"); // checks the session item using the session key and sets the value to true to make sure that the messages aren't sent twice
+      // this function is only sent once on load, and because of the sessionStorage the message doesn't send again even if the page is reloaded
       streamMessageMutation.mutate(initialQuestion);
     }
-  }, [location.state, streamMessageMutation, sessionId]); // this only changes if its sent again from the prompt page
+  }, [location.state, streamMessageMutation, sessionId]); // this only changes if it's sent again from the prompt page
 
   const handleSendMessage = (message: string) => {
     if (!message.trim()) return;
@@ -194,7 +195,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
     return (
       <div>
         <h2>Failed Chat Session</h2>
-        <p>chat session failed to load properly</p>
+        <p>Chat session failed to load properly</p>
       </div>
     );
   }
@@ -284,7 +285,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
         )}
       </div>
 
-      {/*ChatBox component for inputing questions from the user*/}
+      {/*ChatBox component for inputting questions from the user*/}
       {/* TODO: animate the box to go down from the middle of the page */}
       <div ref={bottomRef} className="pb-4 z-1 sticky bg-[#171717] bottom-0">
         <ChatBox
