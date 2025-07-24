@@ -1,7 +1,7 @@
 import { useLocation, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ChatBox from "../components/ChatBox";
-import MessageRender from "../components/messageRender";
+import MessageRender from "../components/messageRender"; // this component houses all my markdown code to render after the message is completed
 import { SyncLoader } from "react-spinners";
 import { useEffect, useRef, useState } from "react";
 import { MessageToDoc } from "./Promptpage";
@@ -190,6 +190,8 @@ export default function ChatPage({ user }: ChatPageUserI) {
     streamMessageMutation.mutate(message);
   };
 
+  //NOTE: Main HTML of the Chat Page
+
   // account for chat if not loading
   if (!sessionId) {
     return (
@@ -239,6 +241,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                       {/*Initial question from the user while the message is rendering to the frontend*/}
                       {userQuestion}
                     </div>
+                    {/*This renders the streaming message in Markdown*/}
                     <div className="p-2 my-1 max-w-xl h-full rounded-md bg-[#171717] text-[#ffffff]">
                       {currentStreamingMessage}
                       <span className="animate-pulse">|</span>
