@@ -9,6 +9,7 @@ import { MessageToDoc } from "./Promptpage";
 import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
+import { MarkdownRenderer } from "../components/MarkdownRenderer"; // this component renders the markdown content for the messages
 
 //TODO: Make the markdown out put from the use display properly on the frontend
 
@@ -243,7 +244,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                     </div>
                     {/*This renders the streaming message in Markdown*/}
                     <div className="p-2 my-1 max-w-xl h-full rounded-md bg-[#171717] text-[#ffffff]">
-                      {currentStreamingMessage}
+                      <MarkdownRenderer content={currentStreamingMessage} />
                       <span className="animate-pulse">|</span>
                     </div>
                   </div>
