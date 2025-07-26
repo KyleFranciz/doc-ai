@@ -364,8 +364,14 @@ async def get_all_chat_titles(
 
     # Try to get the chats from the backend
     try:
-        # fetch the data from the backend
-        all_chats = supabase.table("chats").select("*").eq("user_id", user_id).execute()
+        # fetch the data from the backend and have the newest chats at the top
+        all_chats = (
+            supabase.table("chats")
+            .select("*")
+            .eq("user_id", user_id)
+            .order("created_at", desc=True)
+            .execute()
+        )
 
         # check if I get the data back
         if all_chats.data:

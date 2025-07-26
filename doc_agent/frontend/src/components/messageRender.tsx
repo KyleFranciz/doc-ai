@@ -16,8 +16,8 @@ const MessageRender: React.FC<MessageRenderProps> = ({ chatInfo }) => {
           <MarkdownRenderer content={info.content} />
         </div>
       ) : (
-        <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
-          <MarkdownRenderer content={info.content} />
+        <div className="p-3 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
+          {info.content}
         </div>
       )}
     </div>

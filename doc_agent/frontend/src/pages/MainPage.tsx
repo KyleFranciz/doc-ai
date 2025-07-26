@@ -19,7 +19,7 @@ export default function MainPage() {
       {/* </div> */}
       <div className="flex items-center mt-[-22px] justify-center text-[22px] font-semibold">
         I'm <span className="font-bold italic mx-1.5 text-[#0F9E6A]">Doc</span>{" "}
-        your favorite local ai agent here to help with all coding needs.
+        your favorite local ai agent here to help with all your coding needs.
       </div>
       {/*Buttons for the user to sign up or sign in*/}
       <div className="flex items-center justify-center mt-2 text-[22px] font-semibold">

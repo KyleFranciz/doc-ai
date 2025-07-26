@@ -105,7 +105,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
       {user ? (
         <div className="mt-5 w-full cursor-pointer">
           <div>
-            <h3 className="px-2 mx-2 mb-2 font-light text-xs">Recent</h3>
+            <h3 className="px-2 mx-2 mb-2 font-light text-xs">Conversations</h3>
           </div>
           <div>
             {error && (
