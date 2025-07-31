@@ -10,7 +10,7 @@ from langchain_core.prompts import (
     SystemMessagePromptTemplate,
 )
 from services.fetching_functions import get_all_messages_4_doc
-import traceback
+import traceback  # might comment out after the errors are gone
 
 
 # TODO: set up the single response LLM to be for specific uses
