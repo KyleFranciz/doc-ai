@@ -261,9 +261,6 @@ export default function ChatPage({ user }: ChatPageUserI) {
               {/* Show loading for streaming */}
               {isStreaming && !currentStreamingMessage && (
                 <>
-                  {/* <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]"> */}
-                  {/*   {userQuestion} */}
-                  {/* </div> */}
                   {/*NOTE: UI thinking message for when streaming response is loading*/}
                   <div className="flex flex-col justify-center items-center py-5">
                     <div className="flex items-center justify-center bg-[#252525] rounded-[30px] p-2 h-[50px] w-[200px]">
