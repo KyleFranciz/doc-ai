@@ -3,6 +3,7 @@
 
 # imports
 # from langchain.schema import Document
+from langchain.tools import Tool
 from langchain_ollama import ChatOllama  # helps use local model
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -16,7 +17,7 @@ SummarizerBrain = ChatOllama(
     model="llama3.2:latest",  # decided to use Meta's LLM
     temperature=0.2,  # NOTE: Adjust to make summary more creative
     disable_streaming=True,  # not streaming
-    tool=[web_scraper()],  # tool to search the web
+    tool=[web_scraper],  # tool to search the web
 )
 
 # Prompt for the Summarizer to follow
@@ -30,7 +31,8 @@ SummarizerPrompt = ChatPromptTemplate.from_messages(
         on the web and helping to summaraize and organize information for another LLM to use to relay the
         information to a Human.
 
-        organize the information with one string having the "Summary" and the other having relevant
+        organize the information with one string that has a section that says "Summary" with a summary 
+        of the information and the other section "Relevant Info" that has the relevant
         information from the page or document that the other LLM should know that will help to answer 
         other possible information pertaining to the question.
         """
@@ -57,3 +59,11 @@ def fetch_and_summarize(url: str) -> str:
     summary = summarizer_chain.invoke({"web_content": content})
 
     return summary.content  # response from the summarizer agent
+
+
+# Tool: for the Doc to use
+get_url_summary = Tool(
+    name="Get Url Summary",
+    func=fetch_and_summarize,
+    description="gets the summary of any webpage and gives a summary of the page to any LLM",
+)

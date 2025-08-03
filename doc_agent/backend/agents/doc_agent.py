@@ -10,6 +10,9 @@ from langchain_core.prompts import (
     SystemMessagePromptTemplate,
 )
 from services.fetching_functions import get_all_messages_4_doc
+from summarizer_agent import (
+    get_url_summary,
+)  # Tool for Doc to use to get the summary of webpage from a user
 import traceback  # might comment out after the errors are gone
 
 
@@ -22,13 +25,16 @@ DocBrain = ChatOllama(
     model="qwen2.5-coder:latest",  # model to use for Doc, this is the model that will be used to answer questions",
     temperature=0.5,
     disable_streaming=False,
-    tool="chat",  # tool: allows Doc to be able to chat with the user and answer questions ( might change for other models later on if I want to use them for different purposes)
+    tool=[
+        "chat",  # tool: allows Doc to be able to chat with the user and answer questions ( might change for other models later on if I want to use them for different purposes)
+        get_url_summary,  # tool for scraping web url's for data and summarizing the content on the page.
+    ],
 )
 # model: choose the model that I want to use, choosing the models brain
 # temp has to do with how accurate the response is from the AI, less imaginative
 # num_predict makes controls the amount of words the LLM can output back to the user
 
-
+# System prompt for doc
 DocsPrompt = ChatPromptTemplate.from_messages(
     [
         # Doc's Purpose
@@ -46,8 +52,6 @@ DocsPrompt = ChatPromptTemplate.from_messages(
         HumanMessagePromptTemplate.from_template("{user_input}"),
     ]
 )
-
-# Put all the pieces of the llm together
 
 
 # function to get make for Docs processing process

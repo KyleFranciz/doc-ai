@@ -1,6 +1,9 @@
 import requests  # helps do I can send requests and get responses
 
 from bs4 import BeautifulSoup  # helps so I can put the info together
+import re
+
+# from langchain.tools import Tool
 
 # from urllib.parse import urljoin, urlparse # helpful so I can parse sites
 # from langchain.schema import Document
@@ -19,20 +22,13 @@ def web_scraper(url: str):
     return soup.getText()
 
 
-# # combine the web_scraper function with this function to build the agent to scrape, get and format the info
-# def web_scraper_agent(url: str) -> Document:
-#     # get the text from the page
-#     page_text = web_scraper(url)  # pass in the url and have func fetch the info
-#     return Document(
-#         # return the page content and the source
-#         page_content=page_text,
-#         metadata={"source": url},
-#     )
-#
+# set up url pattern to be able to check for urls
+url_pattern = re.compile(
+    r"https?://[^\s]+"
+)  # checks for https:// and any other whitespace or symbols
 
-# tool that the summarizing agent will use to get the information from the web when called on
-# scraper_tool = Tool(
-#     name="Web Scraper",
-#     func=web_scraper_agent,
-#     description="Scrapes the provided url and return cleaned up text",
-# )
+
+# function to check a users input for a url
+def check_for_url(user_input: str) -> bool:
+    # get back true or false if url is found users input
+    return bool(url_pattern.search(user_input))
