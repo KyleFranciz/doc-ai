@@ -9,8 +9,10 @@ from langchain_core.prompts import (
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
 )
+from backend.agents.tools.web_parser import check_all_urls, check_for_url
 from services.fetching_functions import get_all_messages_4_doc
 from summarizer_agent import (
+    fetch_and_summarize,
     get_url_summary,
 )  # Tool for Doc to use to get the summary of webpage from a user
 import traceback  # might comment out after the errors are gone
@@ -92,10 +94,33 @@ async def getKnowledgeFromDocStreaming(
     Yields: str: The response from Doc, sent in real time as it is generated.
     """
     try:
-        print("Streaming response from Doc to the User")
 
+        # check if the users input has urls inside of it
+        if check_for_url(user_input):  # if there is a url in the user input
+
+            # get all the urls that might be in the user input
+            urls = check_all_urls(user_input)
+
+            # loop to get a summary for each of the urls
+            for url in urls:
+                # add a simulates delay to the stream
+                await asyncio.sleep(0.5)
+
+                # get summary from the LLMs
+                synopsis = await fetch_and_summarize(url)
+
+                # yield each summary and stream each one of the summaries
+                yield f"data: Summary of {url}:\n {synopsis}\n\n"
+            # let the know when done
+            yield "data:[DONE]\n\n"
+
+        # stream the list of summaries to the frontend
+
+        print("Streaming response from Doc to the User")
+        # message_history so that doc has the messages for the curent chat
         message_history = get_all_messages_4_doc(session_id=session_id)
 
+        # equipt the agent with the tools that he may need to complete the assignments
         prompt = DocsPrompt.format(user_input=user_input, chat_history=message_history)
 
         print("Formatted the prompt, starting Doc's response Stream...")

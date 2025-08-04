@@ -25,10 +25,19 @@ def web_scraper(url: str):
 # set up url pattern to be able to check for urls
 url_pattern = re.compile(
     r"https?://[^\s]+"
-)  # checks for https:// and any other whitespace or symbols
+)  # checks for https:// and any other whitespace or symbols right after
+
+
+# function to check for all the links in the users input check if multiple layouts are given
+def check_all_urls(user_input: str):
+    # check if there are urls and then save the urls in an array
+    all_urls = re.findall(url_pattern, user_input)
+    # return all the urls in the user_input in order
+    return all_urls  # will use to loop through later on
 
 
 # function to check a users input for a url
+# TODO: use for in the doc_agent.py file or the route on the main.py file
 def check_for_url(user_input: str) -> bool:
     # get back true or false if url is found users input
     return bool(url_pattern.search(user_input))

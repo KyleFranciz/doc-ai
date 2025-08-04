@@ -28,11 +28,10 @@ SummarizerPrompt = ChatPromptTemplate.from_messages(
         SystemMessagePromptTemplate.from_messages(
             """
         You are summarizing agent, your purpose is to use the data that you get from parsing documments 
-        on the web and helping to summaraize and organize information for another LLM to use to relay the
-        information to a Human.
+        on the web and helping to summaraize and organize information for a user .
 
-        organize the information with one string that has a section that says "Summary" with a summary 
-        of the information and the other section "Relevant Info" that has the relevant
+        organize the information do that string that has a section that with a summary 
+        of the relevant information that the user may want to know, even more if the information has to do with coding Documentation and the other section ras the relevant
         information from the page or document that the other LLM should know that will help to answer 
         other possible information pertaining to the question.
         """
@@ -51,12 +50,14 @@ summarizer_chain = (
 def fetch_and_summarize(url: str) -> str:
     """
     This gets the information from the web and passes it to a Summarizer LLM
+
+    url : might be either a str or a List of strings
     """
     # use url to have the scrapper get the info from the page
     content = web_scraper(url)
 
     # call the agent to summarize the content from the web
-    summary = summarizer_chain.invoke({"web_content": content})
+    summary = summarizer_chain.astream({"web_content": content})
 
     return summary.content  # response from the summarizer agent
 
