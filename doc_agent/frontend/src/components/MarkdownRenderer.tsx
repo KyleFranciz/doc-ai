@@ -37,7 +37,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
           <div>
             <hr className="my-5 opacity-10" />
             <pre className="bg-[#141414] text-[#fffffe] overflow-x-auto p-4 rounded-md my-3">
-              <code className="rext-[0.98rem] font-mono text-gray-400">
+              <code className="text-[0.98rem] font-mono text-gray-400">
                 {children}
               </code>
             </pre>

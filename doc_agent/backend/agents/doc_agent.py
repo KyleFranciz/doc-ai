@@ -9,9 +9,9 @@ from langchain_core.prompts import (
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
 )
-from backend.agents.tools.web_parser import check_all_urls, check_for_url
+from agents.tools.web_parser import check_all_urls, check_for_url
 from services.fetching_functions import get_all_messages_4_doc
-from summarizer_agent import (
+from agents.summarizer_agent import (
     fetch_and_summarize,
     get_url_summary,
 )  # Tool for Doc to use to get the summary of webpage from a user
@@ -95,6 +95,7 @@ async def getKnowledgeFromDocStreaming(
     """
     try:
 
+        # NOTE: Might make it to where Doc gives a summary of the url and the breakdown of the url
         # check if the users input has urls inside of it
         if check_for_url(user_input):  # if there is a url in the user input
 
@@ -106,33 +107,39 @@ async def getKnowledgeFromDocStreaming(
                 # add a simulates delay to the stream
                 await asyncio.sleep(0.5)
 
-                # get summary from the LLMs
+                # get summary of each url from the summary agent
                 synopsis = await fetch_and_summarize(url)
 
                 # yield each summary and stream each one of the summaries
-                yield f"data: Summary of {url}:\n {synopsis}\n\n"
+                # TODO: might change to not add all the "data:" on the inside of the yields
+                yield f"content: Summary of {url}:\n {synopsis}\n\n"
             # let the know when done
-            yield "data:[DONE]\n\n"
+            yield "content:[DONE]\n\n"
 
-        # stream the list of summaries to the frontend
+        else:
 
-        print("Streaming response from Doc to the User")
-        # message_history so that doc has the messages for the curent chat
-        message_history = get_all_messages_4_doc(session_id=session_id)
+            # stream the list of summaries to the frontend
+            # WARNING: Might have to add the "else" to be able to stream properly if needed
 
-        # equipt the agent with the tools that he may need to complete the assignments
-        prompt = DocsPrompt.format(user_input=user_input, chat_history=message_history)
+            print("Streaming response from Doc to the User")
+            # message_history so that doc has the messages for the curent chat
+            message_history = get_all_messages_4_doc(session_id=session_id)
 
-        print("Formatted the prompt, starting Doc's response Stream...")
+            # equipt the agent with the tools that he may need to complete the assignments
+            prompt = DocsPrompt.format(
+                user_input=user_input, chat_history=message_history
+            )
 
-        async for chunk in DocBrain.astream(prompt):
-            if hasattr(chunk, "content") and chunk.content:
-                print(f"Yielding chunk: {repr(chunk.content[:50])}")
-                yield chunk.content
+            print("Formatted the prompt, starting Doc's response Stream...")
 
-                # This portion is for controlling the speed of which the words
-                # are being streamed to the frontend for the user to see
-                await asyncio.sleep(0.001)
+            async for chunk in DocBrain.astream(prompt):
+                if hasattr(chunk, "content") and chunk.content:
+                    print(f"Yielding chunk: {repr(chunk.content[:50])}")
+                    yield chunk.content
+
+                    # This portion is for controlling the speed of which the words
+                    # are being streamed to the frontend for the user to see
+                    await asyncio.sleep(0.001)
 
     except Exception as err:
         # handle the exception and print out the error message
