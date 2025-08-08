@@ -134,7 +134,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                 "Error parsing SSE data:",
                 parseError,
                 "Line:",
-                line,
+                line
               );
             }
           }
@@ -144,7 +144,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
       toast.error(
         `Streaming failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`,
+        }`
       );
       // Reset states on error
       setIsStreaming(false);
@@ -164,7 +164,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
       toast.error(
         `Streaming failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`,
+        }`
       );
       // reset the states
       setIsStreaming(false);
@@ -189,6 +189,18 @@ export default function ChatPage({ user }: ChatPageUserI) {
     // otherwise
     setChatInput("");
     streamMessageMutation.mutate(message);
+  };
+
+  // function to help to make sure that the markdown is formatted correctly, temporarily fixes the issue with the code blocks
+  const stabilizeMarkdown = (s: string) => {
+    // Count how many triple backtick fences are in the current string
+    const fenceCount = (s.match(/```/g) || []).length;
+
+    // If the count is odd, we have an unclosed fence
+    const hasUnclosedFence = fenceCount % 2 === 1;
+
+    // If unclosed, append a closing fence so the Markdown is valid for now
+    return hasUnclosedFence ? s + "\n```" : s;
   };
 
   //NOTE: Main HTML of the Chat Page
@@ -244,7 +256,9 @@ export default function ChatPage({ user }: ChatPageUserI) {
                     </div>
                     {/*This renders the streaming message in Markdown*/}
                     <div className="p-2 my-1 max-w-xl h-full rounded-md bg-[#171717] text-[#ffffff]">
-                      <MarkdownRenderer content={currentStreamingMessage} />
+                      <MarkdownRenderer
+                        content={stabilizeMarkdown(currentStreamingMessage)}
+                      />
                       <span className="animate-pulse">|</span>
                     </div>
                   </div>

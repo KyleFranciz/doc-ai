@@ -33,7 +33,7 @@ export default function ChatBox({
   return (
     <div className="">
       <form onSubmit={handleSending}>
-        <div className="w-[650px] h-[110px] bg-[#171717]  outline-[#474747] outline-solid outline-[0.7px] rounded-xl relative">
+        <div className="w-[650px] h-[110px] bg-[#202020]  outline-[#474747] outline-solid outline-[0.7px] rounded-xl relative">
           <textarea
             placeholder="Let me know what you want to look into"
             className="w-[620px] mt-4.5 ml-4 h-auto outline-none resize-none text-[#dbdbdbe4] "
@@ -63,14 +63,14 @@ export default function ChatBox({
             {/*styling for the bottom buttons */}
             <div className="flex w-15 scale-110 absolute bottom-3 left-3">
               <button
-                className="p-[3px] ml-1 rounded-[3px] outline-solid outline-[0.5px] bg-[#171717] outline-[#474747] hover:bg-[#2a2a2a] cursor-pointer"
+                className="p-[3px] ml-1 rounded-[3px] outline-solid outline-[0.5px] bg-[#202020] outline-[#474747] hover:bg-[#2a2a2a] cursor-pointer"
                 type="button"
                 disabled={isLoading}
               >
                 <GoPaperclip />
               </button>
               <button
-                className="p-[3px] ml-2 rounded-[3px] outline-solid bg-[#171717] outline-[0.5px] outline-[#474747] hover:bg-[#2a2a2a] cursor-pointer "
+                className="p-[3px] ml-2 rounded-[3px] outline-solid bg-[#202020] outline-[0.5px] outline-[#474747] hover:bg-[#2a2a2a] cursor-pointer "
                 type="button"
                 disabled={isLoading}
               >

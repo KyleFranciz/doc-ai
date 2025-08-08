@@ -1,17 +1,21 @@
 // this file is for rendering markdown content for my app
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 
 export type MarkdownRendererProps = {
   content: string | undefined;
 };
 
+type InlineCodeProps = React.HTMLAttributes<HTMLElement> & { inline?: boolean };
+
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   content,
 }) => {
   return (
     <ReactMarkdown
-      remarkPlugins={[rehypeHighlight]}
+      rehypePlugins={[rehypeHighlight]} // made a fix for the highlight plugin
+      remarkPlugins={[remarkGfm]} // made a fix for the gfm plugin
       components={{
         h1: ({ children }) => (
           <h1 className="mt-5 text-[2.1rem] font-bold">{children}</h1>
@@ -33,18 +37,21 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             <ul className="list-item font-semibold ml-6 mt-5">{children}</ul>
           </div>
         ),
-        code: ({ children }) => (
-          <div>
-            <hr className="my-5 opacity-10" />
-            <pre className="bg-[#141414] text-[#fffffe] overflow-x-auto p-4 rounded-md my-3">
-              <code className="text-[0.98rem] font-mono text-gray-400">
-                {children}
-              </code>
-            </pre>
-
-            <hr className="my-5 opacity-10" />
-          </div>
-        ),
+        // made a fix for the code block so that the different code blacks are formatted correctly
+        code: ({ children, inline }: InlineCodeProps) =>
+          inline ? (
+            <code className="bg-[#141414] text-[#fffffe] overflow-x-auto p-2 rounded-md my-3 font-mono w-auto">
+              {children}
+            </code>
+          ) : (
+            <div>
+              <pre className="bg-[#141414] text-[#fffffe] overflow-x-auto p-4 rounded-md my-5 font-mono">
+                <code className="text-[0.98rem] font-mono text-[#ececec]">
+                  {children}
+                </code>
+              </pre>
+            </div>
+          ),
         blockquote: ({ children }) => (
           <blockquote className="">{children}</blockquote>
         ),

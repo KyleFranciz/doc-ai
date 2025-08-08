@@ -104,17 +104,16 @@ async def getKnowledgeFromDocStreaming(
 
             # loop to get a summary for each of the urls
             for url in urls:
-                # add a simulates delay to the stream
-                await asyncio.sleep(0.5)
 
                 # get summary of each url from the summary agent
-                synopsis = await fetch_and_summarize(url)
+                synopsis = fetch_and_summarize(url)
 
                 # yield each summary and stream each one of the summaries
                 # TODO: might change to not add all the "data:" on the inside of the yields
-                yield f"content: Summary of {url}:\n {synopsis}\n\n"
-            # let the know when done
-            yield "content:[DONE]\n\n"
+                yield f"Summary of {url}:\n {synopsis}\n\n"
+
+                # added a small delay at the end of each call so that its a little better for the UI
+                await asyncio.sleep(0.2)
 
         else:
 
@@ -122,10 +121,10 @@ async def getKnowledgeFromDocStreaming(
             # WARNING: Might have to add the "else" to be able to stream properly if needed
 
             print("Streaming response from Doc to the User")
-            # message_history so that doc has the messages for the curent chat
+            # message_history so that doc has the messages for the current chat
             message_history = get_all_messages_4_doc(session_id=session_id)
 
-            # equipt the agent with the tools that he may need to complete the assignments
+            # equip the agent with the tools that he may need to complete the assignments
             prompt = DocsPrompt.format(
                 user_input=user_input, chat_history=message_history
             )
