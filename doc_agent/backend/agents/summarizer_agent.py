@@ -65,6 +65,14 @@ def fetch_and_summarize(url: str) -> str:
 
     return summary.content  # response from the summarizer agent
 
+# streaming variation of the fetch_and_summarize function 
+async def fetch_and_summarize_stream(url:str ):
+    content = web_scraper(url) # scrape the url for the info that is needed
+    async for chunk in summarizer_chain.astream({"web_content": content}): # loop to get all the chunks from the summarizer agent
+        if getattr(chunk, "content", None): # check if the chunk has is called content as a key
+            yield chunk.content # if so return chunk.content bit by bit
+
+
 
 # Tool: for the Doc to use
 get_url_summary = Tool(

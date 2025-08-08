@@ -13,6 +13,7 @@ from agents.tools.web_parser import check_all_urls, check_for_url
 from services.fetching_functions import get_all_messages_4_doc
 from agents.summarizer_agent import (
     fetch_and_summarize,
+    fetch_and_summarize_stream,
     get_url_summary,
 )  # Tool for Doc to use to get the summary of webpage from a user
 import traceback  # might comment out after the errors are gone
@@ -46,6 +47,10 @@ DocsPrompt = ChatPromptTemplate.from_messages(
     also made to help with understanding documents and information on websites when the resources are presented.
     Introduce yourself once, after that have a normal conversation as you assist the user with whatever questions
     they may have.
+
+    When formulating the response make sure that you use fenced code blocks only for multi-line code.
+    Do not wrap regular words in backticks. Avoid starting a code fence unless you will close it, and word the information
+    in a simple to understand way so that the user reading is able to process and properly understand the summary.
     """
         ),
         # placeholder will store and update the conversation between Doc and the User
@@ -102,18 +107,14 @@ async def getKnowledgeFromDocStreaming(
             # get all the urls that might be in the user input
             urls = check_all_urls(user_input)
 
-            # loop to get a summary for each of the urls
+            # streaming loop to render each chunk of the data on the frontend
             for url in urls:
+                # yield the information
+                yield f"Summary of {url}:\n"
+                async for t in fetch_and_summarize_stream(url):
+                    yield t
+                yield "\n\n"
 
-                # get summary of each url from the summary agent
-                synopsis = fetch_and_summarize(url)
-
-                # yield each summary and stream each one of the summaries
-                # TODO: might change to not add all the "data:" on the inside of the yields
-                yield f"Summary of {url}:\n {synopsis}\n\n"
-
-                # added a small delay at the end of each call so that its a little better for the UI
-                await asyncio.sleep(0.2)
 
         else:
 

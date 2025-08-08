@@ -40,7 +40,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
         // made a fix for the code block so that the different code blacks are formatted correctly
         code: ({ children, inline }: InlineCodeProps) =>
           inline ? (
-            <code className="bg-[#141414] text-[#fffffe] overflow-x-auto p-2 rounded-md my-3 font-mono w-auto">
+            <code className="bg-[#141414] text-[#fffffe] p-2 rounded-md my-3 font-mono w-auto">
               {children}
             </code>
           ) : (

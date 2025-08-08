@@ -116,6 +116,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                     bottomRef.current.scrollIntoView({ behavior: "smooth" });
                   }
                 } else if (data.type === "complete") {
+                  // NOTE: Might make a change here later on and place the setCurrent to setIsStreaming
                   setIsStreaming(false);
                   setCurrentStreamingMessage("");
                   // Invalidates queries when the data changes from the database
