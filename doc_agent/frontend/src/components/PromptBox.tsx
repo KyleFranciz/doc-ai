@@ -19,9 +19,10 @@ export default function PromptBox(props: PromptBoxI) {
     <div className="pt-[10px]">
       <form onSubmit={props.handleSubmit}>
         <div className="w-[650px] h-[110px] bg-[#202020] outline-[#474747] outline-solid outline-[0.7px] mt-4 rounded-xl relative">
+          {/* prompt area to put in user input */}
           <textarea
             placeholder="Let me know what you want to look into"
-            className="w-[620px] max-h-[50px] appearance-none border-none resize-none mt-4.5 ml-4 outline-none text-[#dbdbdbe4]"
+            className="w-[620px] max-h-[70px] appearance-none border-none resize-none my-4 ml-4 outline-none text-[#dbdbdbe4]"
             onChange={(e) => {
               // catch the input changes and store in state
               props.setMessage(e.target.value);

@@ -12,6 +12,7 @@ export const useSidebar = () => {
   // create  context to provide sidebar state and functions
   const context = useContext(SidebarContext);
   // throw an error if there context
+  // NOTE: MIGHT NOT NEED TO USE THIS AT ALL
   if (context === undefined) {
     throw new Error("useSidebar must be used within a SidebarProvider");
   }

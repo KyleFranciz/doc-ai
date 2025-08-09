@@ -10,21 +10,18 @@
 
   /*This is for the background color for the sidebar*/
   --color-background: hsl(var(--sidebar-background))
-
-  /*This controls the color of the text*/
-  --color-text: hsl(var(--text-color));
+    /*This controls the color of the text*/ --color-text: hsl(var(--text-color));
 
   /*This is for the color of the submit button*/
   --color-button: hsl(var(--submit-button));
 
   /*color for the icon for the other accessory buttons*/
   --color-button: hsl(var(--other-prompt-button))
-
-  /*This is for the border color of the prompt*/
-  --color-border: hsl(var(--prompt-border));
+    /*This is for the border color of the prompt*/
+    --color-border: hsl(var(--prompt-border));
 
   /*Color for the prompt box*/
-  --color-background : hsl(var(--prompt-box))
+  --color-background: hsl(var(--prompt-box));
 }
 
 /*defining the colors that will be passed to the variables up top*/
@@ -44,6 +41,7 @@
 /* styles/globals.css */
 .scrollbar-transparent::-webkit-scrollbar {
   width: 8px;
+  height: 20px;
 }
 
 .scrollbar-transparent::-webkit-scrollbar-track {
@@ -57,12 +55,13 @@
 
 /* Optional: Firefox support */
 .scrollbar-transparent {
+  scrollbar-height: 40px;
   scrollbar-width: thin;
   scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
 }
 
 @utility container {
-  margin-inline : auto;
+  margin-inline: auto;
   padding-inline: 2rem;
 
   @media (width >= 640px) {
@@ -84,14 +83,12 @@
 
 @utility heading {
   font-size: 4rem;
-  font-weight : bold;
+  font-weight: bold;
   padding: 0;
-
 }
 
-body{
+body {
   background-color: #171717;
-  
 }
 
 .dark {
@@ -132,17 +129,20 @@ body{
 
 @font-face {
   font-family: "Sommar";
-  src: url("/doc_agent/frontend/src/assets/font/SommarDisplay.ttf") format("truetype");
+  src: url("/doc_agent/frontend/src/assets/font/SommarDisplay.ttf")
+    format("truetype");
 }
 
 @font-face {
   font-family: "aeternus_nano_thin";
-  src: url("/doc_agent/frontend/src/assets/font/aeternus_nano_thin\ \(static\).otf") format("otf");
+  src: url("/doc_agent/frontend/src/assets/font/aeternus_nano_thin\ \(static\).otf")
+    format("otf");
 }
 
 @font-face {
   font-family: "Matter";
-  src: url("/doc_agent/frontend/src/assets/font/Matter-Regular.otf") format("opentype");
+  src: url("/doc_agent/frontend/src/assets/font/Matter-Regular.otf")
+    format("opentype");
 }
 
 /*---break---*/
@@ -182,7 +182,8 @@ body{
   --color-sidebar-accent: var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);}
+  --color-sidebar-ring: var(--sidebar-ring);
+}
 
 /*---break---*/
 
@@ -218,14 +219,16 @@ body{
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);}
+  --sidebar-ring: oklch(0.708 0 0);
+}
 
 /*---break---*/
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;}
+    @apply border-border outline-ring/50;
+  }
   body {
-    @apply bg-background text-foreground;}}
-
-
+    @apply bg-background text-foreground;
+  }
+}

@@ -135,7 +135,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                 "Error parsing SSE data:",
                 parseError,
                 "Line:",
-                line
+                line,
               );
             }
           }
@@ -145,7 +145,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
       toast.error(
         `Streaming failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`
+        }`,
       );
       // Reset states on error
       setIsStreaming(false);
@@ -165,7 +165,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
       toast.error(
         `Streaming failed: ${
           error instanceof Error ? error.message : "Unknown error"
-        }`
+        }`,
       );
       // reset the states
       setIsStreaming(false);
@@ -260,7 +260,8 @@ export default function ChatPage({ user }: ChatPageUserI) {
                       <MarkdownRenderer
                         content={stabilizeMarkdown(currentStreamingMessage)}
                       />
-                      <span className="animate-pulse">|</span>
+                      {/* NOTE: might decide to add back for showing a typing effect */}
+                      {/* <span className="animate-pulse">|</span> */}
                     </div>
                   </div>
                 </div>

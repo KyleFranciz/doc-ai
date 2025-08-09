@@ -59,7 +59,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
     queryKey: ["chats"], // key is an array of chats
   });
 
-  // TODO: WORK ON THE FUNCTION TO HELP WITH DELETING THE CHATS AND REFRESHING THE SIDEBAR
+  // TODO: WORK ON MAKING SURE THAT THE CHAT REFRESHES ONCE A NEW CHAT IS ADDED TO THE DB
   // mutation function to refresh the chats on the Sidebar
   const { mutateAsync: deletedChatMutation } = useMutation({
     // function to delete the chat session
@@ -87,7 +87,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
         </button>
       </div>
       <ul className="mt-6">
-        {/*Has the selector for the chat section of the sidebar*/}
+        {/*Has NEW CHAT and FIND CHAT buttons to select those options */}
         {SidebarMapper.map((items) => (
           <Link
             key={items.keys}
@@ -108,18 +108,20 @@ export default function Sidebar({ user }: SidebarUserInterface) {
             <h3 className="px-2 mx-2 mb-2 font-light text-xs">Conversations</h3>
           </div>
           <div>
+            {/* if there is an error getting the chats from the DB */}
             {error && (
               <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
                 {`Failed to load chats: ${error.message}`}
               </div>
             )}
           </div>
+          {/* TODO: make a loading animation to display when fetching the chats from the DB */}
           {isLoading ? (
             <div className="mx-2 px-2 flex items-center h-[45px] rounded-[8px] bg-[#1d1d1d]">
               loading...
             </div>
           ) : (
-            <div>
+            <div className="h-[710px] scrollbar-transparent overflow-y-scroll">
               {data?.data?.chat?.map((chats) => (
                 <Link
                   className="group hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]"
@@ -156,7 +158,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
         <div className="">
           <Link
             to={"/settings"}
-            className="mx-2 absolute w-[284px] bottom-3 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px]"
+            className="mx-2 w-[284px] bottom-3 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px]"
           >
             <IoMdSettings size={25} className="mr-2" />
             Settings

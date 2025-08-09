@@ -12,7 +12,7 @@ from langchain_core.prompts import (
 from agents.tools.web_parser import check_all_urls, check_for_url
 from services.fetching_functions import get_all_messages_4_doc
 from agents.summarizer_agent import (
-    fetch_and_summarize,
+    # fetch_and_summarize, # might use later on to set up a non streaming alternative
     fetch_and_summarize_stream,
     get_url_summary,
 )  # Tool for Doc to use to get the summary of webpage from a user
@@ -32,6 +32,7 @@ DocBrain = ChatOllama(
         "chat",  # tool: allows Doc to be able to chat with the user and answer questions ( might change for other models later on if I want to use them for different purposes)
         get_url_summary,  # tool for scraping web url's for data and summarizing the content on the page.
     ],
+    verbose=True,
 )
 # model: choose the model that I want to use, choosing the models brain
 # temp has to do with how accurate the response is from the AI, less imaginative
@@ -115,11 +116,10 @@ async def getKnowledgeFromDocStreaming(
                     yield t
                 yield "\n\n"
 
-
+        # NOTE: added "else" to be able to stream properly if needed
         else:
 
             # stream the list of summaries to the frontend
-            # WARNING: Might have to add the "else" to be able to stream properly if needed
 
             print("Streaming response from Doc to the User")
             # message_history so that doc has the messages for the current chat
