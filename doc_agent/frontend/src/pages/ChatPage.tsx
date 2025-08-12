@@ -158,6 +158,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
     mutationFn: streamMessage,
     onSuccess: () => {
       setChatInput("");
+      // TODO: remove before finishing up the project
       console.log("Streaming started successfully");
     },
     onError: (error) => {

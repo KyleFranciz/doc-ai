@@ -27,7 +27,7 @@ export default function MainPage() {
           onClick={() => {
             navigate("signup");
           }}
-          className="bg-[#222222] text-white mr-3 px-4 py-2 rounded-lg hover:cursor-pointer hover:bg-[#0F9E6A]/80 transition duration-300"
+          className="bg-neutral-800 text-white mr-3 px-4 py-2 rounded-lg hover:cursor-pointer hover:bg-[#0F9E6A]/80 transition duration-300"
         >
           I'm new here
         </button>
@@ -35,7 +35,7 @@ export default function MainPage() {
           onClick={() => {
             navigate("login");
           }}
-          className="bg-[#0F9E6A] text-white px-4 py-2 rounded-lg hover:cursor-pointer  hover:bg-[#0F9E6A]/80 transition duration-300"
+          className="bg-neutral-800 text-white px-4 py-2 rounded-lg hover:cursor-pointer  hover:bg-[#0F9E6A]/80 transition duration-300"
         >
           I know you
         </button>

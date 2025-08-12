@@ -54,13 +54,17 @@ export default function Sidebar({ user }: SidebarUserInterface) {
 
   // api fetch for all the chats in the database
   const { data, isLoading, error } = useQuery({
-    // The users chats are loaded into the sidebar so that they can se their chat history
+    // The users chats are loaded into the sidebar so that they can see their chat history
     queryFn: () => fetchChats(user?.id),
     queryKey: ["chats"], // key is an array of chats
+    // refetchInterval: 10000, // refetch the chats every 10 seconds (might not use)
+    refetchOnWindowFocus: true,
   });
 
-  // TODO: WORK ON MAKING SURE THAT THE CHAT REFRESHES ONCE A NEW CHAT IS ADDED TO THE DB
-  // mutation function to refresh the chats on the Sidebar
+  /*TODO: make fetch function that checks sessionID in the parameter
+   * if it is detected make the chatbar refetch the again*/
+
+  // mutation function to refresh the chats when chat deleted
   const { mutateAsync: deletedChatMutation } = useMutation({
     // function to delete the chat session
     mutationFn: deleteChat,
@@ -100,6 +104,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
         ))}
       </ul>
 
+      {/*NOTE: Conversation Section */}
       {/*RECENT CHATS ARE BELLOW*/}
       {/*Section that has all the chats from the DB */}
       {user ? (
@@ -158,7 +163,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
         <div className="">
           <Link
             to={"/settings"}
-            className="mx-2 w-[284px] bottom-3 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px]"
+            className="mx-2 w-[284px] absolute bottom-3 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px]"
           >
             <IoMdSettings size={25} className="mr-2" />
             Settings

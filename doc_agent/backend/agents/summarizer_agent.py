@@ -15,7 +15,7 @@ from agents.tools.web_parser import web_scraper
 
 # Brain of the Summarizer
 SummarizerBrain = ChatOllama(
-    model="llama3.2:latest",  # decided to use Meta's LLM
+    model="qwen3:8b",  # changed LLM to Qwen3 to help with a better response from the llm
     temperature=0.5,  # NOTE: Adjust to make summary more creative
     disable_streaming=True,  # not streaming
     tool=[web_scraper],  # tool to search the web
