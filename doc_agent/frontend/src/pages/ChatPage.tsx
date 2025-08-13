@@ -220,8 +220,8 @@ export default function ChatPage({ user }: ChatPageUserI) {
   // base render for when the page loads and everything is successful
   return (
     <div className="flex flex-col items-center bg-[#171717]">
-      <div className="pt-[60px] flex-shrink-0 p-4 border-b border-[gray]">
-        <h1 className="text-[1.3rem] font-semibold">Chat {sessionId}</h1>
+      <div className="pt-[35px] flex-shrink-0 p-4 ">
+        {/* <h1 className="text-[1.3rem] font-semibold">Chat {sessionId}</h1> */}
       </div>
 
       {/* Display error messages */}

@@ -52,17 +52,16 @@ export default function Sidebar({ user }: SidebarUserInterface) {
   // create state to keep track of the navbar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
+  /*TODO: make fetch function that checks sessionID in the parameter
+   * if it is detected make the chatbar refetch the again*/
   // api fetch for all the chats in the database
   const { data, isLoading, error } = useQuery({
     // The users chats are loaded into the sidebar so that they can see their chat history
     queryFn: () => fetchChats(user?.id),
     queryKey: ["chats"], // key is an array of chats
     // refetchInterval: 10000, // refetch the chats every 10 seconds (might not use)
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: true, // refetches when the window changes
   });
-
-  /*TODO: make fetch function that checks sessionID in the parameter
-   * if it is detected make the chatbar refetch the again*/
 
   // mutation function to refresh the chats when chat deleted
   const { mutateAsync: deletedChatMutation } = useMutation({
@@ -84,10 +83,10 @@ export default function Sidebar({ user }: SidebarUserInterface) {
       <div className=" h-[40px] flex justify-between items-center pt-2 px-2.5">
         {/*Logo for the top half of the sidebar */}
         <Link to={"/"}>
-          <FaHome size={25} />
+          <FaHome size={30} />
         </Link>
         <button className="hover:cursor-pointer" onClick={toggleSidebar}>
-          {isSidebarOpen ? <TbLayoutSidebarLeftCollapse size={25} /> : <></>}
+          {isSidebarOpen ? <TbLayoutSidebarLeftCollapse size={30} /> : <></>}
         </button>
       </div>
       <ul className="mt-6">
@@ -108,8 +107,8 @@ export default function Sidebar({ user }: SidebarUserInterface) {
       {/*RECENT CHATS ARE BELLOW*/}
       {/*Section that has all the chats from the DB */}
       {user ? (
-        <div className="mt-5 w-full cursor-pointer">
-          <div>
+        <div className="mt-5 h-full w-full scrollbar-transparent overflow-y-scroll cursor-pointer">
+          <div className="">
             <h3 className="px-2 mx-2 mb-2 font-light text-xs">Conversations</h3>
           </div>
           <div>
@@ -126,7 +125,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
               loading...
             </div>
           ) : (
-            <div className="h-[710px] scrollbar-transparent overflow-y-scroll">
+            <div className="h-[710px]">
               {data?.data?.chat?.map((chats) => (
                 <Link
                   className="group hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]"
@@ -160,10 +159,10 @@ export default function Sidebar({ user }: SidebarUserInterface) {
       )}
       {/*SETTINGS SECTION*/}
       {user ? (
-        <div className="">
+        <div className="bg-[#101010] w-auto flex justify-center items-center h-[80px]">
           <Link
             to={"/settings"}
-            className="mx-2 w-[284px] absolute bottom-3 px-2 flex items-center h-[45px] hover:bg-[#1d1d1d] rounded-[8px]"
+            className="mx-2 mb-1 w-[284px] absolute bottom-0 bg-[#101010] px-2 flex items-center h-[55px] hover:bg-[#1d1d1d] rounded-[8px]"
           >
             <IoMdSettings size={25} className="mr-2" />
             Settings
