@@ -9,6 +9,13 @@ export type MarkdownRendererProps = {
 
 type InlineCodeProps = React.HTMLAttributes<HTMLElement> & { inline?: boolean };
 
+// TODO: implement the CodeBlock component into this to load the code blocks from the Shadcn Library
+
+// interface CodeProps {
+//   children: string,
+//   inline?: boolean,
+// }
+
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   content,
 }) => {

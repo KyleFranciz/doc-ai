@@ -53,6 +53,9 @@ export default function ChatPage({ user }: ChatPageUserI) {
   // Streaming function using Fetch
   // Improved Streaming function using Fetch
   const streamMessage = async (message: string) => {
+    // invalidate the chats key so that the sidebar refetches
+    queryClient.invalidateQueries({ queryKey: ["chats"] });
+
     // States that are set when the message is being streamed
     setIsStreaming(true);
     setCurrentStreamingMessage("");
