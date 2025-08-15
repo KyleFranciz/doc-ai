@@ -145,6 +145,12 @@ body {
     format("opentype");
 }
 
+@font-face {
+  font-family: "CascadiaNF";
+  src: url("/doc_agent/frontend/src/assets/font/CascadiaCodeNF.ttf")
+    format("ttf");
+}
+
 /*---break---*/
 
 @theme inline {

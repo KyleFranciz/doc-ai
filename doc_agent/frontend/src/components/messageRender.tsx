@@ -12,7 +12,13 @@ const MessageRender: React.FC<MessageRenderProps> = ({ chatInfo }) => {
   return chatInfo.map((info) => (
     <div className="" key={info.id}>
       {info.role === "ai" ? (
-        <div className="p-2 my-1 max-w-xl rounded-md bg-[#171717] text-[#fffffe4]">
+        // Cascadia NF can be changed later on if needed
+        <div
+          className="p-2 my-1 max-w-xl rounded-md bg-[#171717] text-[#fffffe4]"
+          style={{
+            fontFamily: '"Cascadia Code NF", "Cascadia Code", monospace',
+          }}
+        >
           <MarkdownRenderer content={info.content} />
         </div>
       ) : (
