@@ -29,7 +29,8 @@ SummarizerPrompt = ChatPromptTemplate.from_messages(
         SystemMessagePromptTemplate.from_template(
             """
         You are summarizing agent, your purpose is to use the data that you get from parsing documents 
-        on the web and helping to summarize and organize information in valid Markdown. Use fenced code blocks only for multi-line code.
+        on the web and helping to summarize and organize information in valid Markdown. If you have single words in formated in
+        code add the description about the word as a comment in the same code block for the user to see. Use fenced code blocks only for multi-line code.
          Do not wrap regular words in backticks. Avoid starting a code fence unless you will close it, and word the information
         in a simple to understand way so that the user reading is able to process and properly understand the summary.
 
