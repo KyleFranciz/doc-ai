@@ -222,7 +222,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
 
   // base render for when the page loads and everything is successful
   return (
-    <div className="flex flex-col items-center bg-[#171717]">
+    <div className="h-screen flex flex-col items-center bg-[#171717]">
       <div className="pt-[35px] flex-shrink-0 p-4 ">
         {/* <h1 className="text-[1.3rem] font-semibold">Chat {sessionId}</h1> */}
       </div>
@@ -240,7 +240,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
       {/*If the chat has no messages*/}
 
       {/*Container for the chat messages to be displayed here */}
-      <div className="px-4">
+      <div className="px-4 relative">
         {isPending ? (
           <div className="flex justify-center items-center h-64">
             <SyncLoader speedMultiplier={0.5} color="white" />
@@ -260,7 +260,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
                       {userQuestion}
                     </div>
                     {/*This renders the streaming message in Markdown*/}
-                    <div className="p-2 my-1 max-w-xl h-full rounded-md bg-[#171717] text-[#ffffff]">
+                    <div className="flex-1 p-2 my-1 max-w-xl h-full rounded-md bg-[#171717] text-[#ffffff]">
                       <MarkdownRenderer
                         content={stabilizeMarkdown(currentStreamingMessage)}
                       />
@@ -308,7 +308,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
 
       {/*ChatBox component for inputting questions from the user*/}
       {/* TODO: animate the box to go down from the middle of the page */}
-      <div ref={bottomRef} className="pb-4 z-1 sticky bg-[#171717] bottom-0">
+      <div ref={bottomRef} className=" pb-4 z-1 sticky bg-[#171717] bottom-0">
         <ChatBox
           onSendMessage={handleSendMessage}
           chatInput={chatInput}
