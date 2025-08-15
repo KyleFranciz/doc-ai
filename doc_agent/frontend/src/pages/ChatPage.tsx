@@ -222,93 +222,84 @@ export default function ChatPage({ user }: ChatPageUserI) {
 
   // base render for when the page loads and everything is successful
   return (
-    <div className="h-screen flex flex-col items-center bg-[#171717]">
-      <div className="pt-[35px] flex-shrink-0 p-4 ">
+    <div className="h-screen items-center flex flex-col bg-[#171717]">
+      <div className="pt-[35px] flex-shrink-0 p-4">
         {/* <h1 className="text-[1.3rem] font-semibold">Chat {sessionId}</h1> */}
       </div>
 
       {/* Display error messages */}
-      <div>
-        {error && (
-          <div className="flex-shrink-0">
-            <strong>ERROR:</strong>
-            {error.message}
-          </div>
-        )}
-      </div>
+      {error && (
+        <div className="flex-shrink-0 px-4">
+          <strong>ERROR:</strong>
+          {error.message}
+        </div>
+      )}
 
-      {/*If the chat has no messages*/}
-
-      {/*Container for the chat messages to be displayed here */}
-      <div className="px-4 relative">
+      {/*Container for the chat messages - this takes up remaining space */}
+      <div className="flex-1 px-4 overflow-y-auto">
         {isPending ? (
           <div className="flex justify-center items-center h-64">
             <SyncLoader speedMultiplier={0.5} color="white" />
           </div>
         ) : (
           // render the messages from the backend using the data from the useGetSessionMessages hook
-          <div className="h-full">
-            <div className="h-full mt-[20px]">
-              <MessageRender chatInfo={data?.data.messages || []} />
-              {/*Handles the streaming request to the backend and back to the frontend */}
-              {/*Show the message that is streaming to the user and the current question that the user wants to know*/}
-              {isStreaming && currentStreamingMessage && (
+          <div className="mt-[20px] pb-4">
+            <MessageRender chatInfo={data?.data.messages || []} />
+            {/*Handles the streaming request to the backend and back to the frontend */}
+            {/*Show the message that is streaming to the user and the current question that the user wants to know*/}
+            {isStreaming && currentStreamingMessage && (
+              <div className="">
                 <div className="">
-                  <div className="">
-                    <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
-                      {/*Initial question from the user while the message is rendering to the frontend*/}
-                      {userQuestion}
-                    </div>
-                    {/*This renders the streaming message in Markdown*/}
-                    <div className="flex-1 p-2 my-1 max-w-xl h-full rounded-md bg-[#171717] text-[#ffffff]">
-                      <MarkdownRenderer
-                        content={stabilizeMarkdown(currentStreamingMessage)}
-                      />
-                      {/* NOTE: might decide to add back for showing a typing effect */}
-                      {/* <span className="animate-pulse">|</span> */}
-                    </div>
+                  <div className="p-2 max-w-xl my-2 rounded-md bg-[#282828] font-medium text-[#ffffff]">
+                    {/*Initial question from the user while the message is rendering to the frontend*/}
+                    {userQuestion}
+                  </div>
+                  {/*This renders the streaming message in Markdown*/}
+                  <div className="flex-1 p-2 my-1 max-w-xl rounded-md bg-[#171717] text-[#ffffff]">
+                    <MarkdownRenderer
+                      content={stabilizeMarkdown(currentStreamingMessage)}
+                    />
+                    {/* NOTE: might decide to add back for showing a typing effect */}
+                    {/* <span className="animate-pulse">|</span> */}
                   </div>
                 </div>
-              )}
-              {isPending && (
-                <div className="flex justify-center items-center py-5">
-                  <div className="flex items-center px-2 justify-center bg-[#252525] rounded-[5px] p-2 h-[70px] w-[400px]">
+              </div>
+            )}
+            {isPending && (
+              <div className="flex justify-center items-center py-5">
+                <div className="flex items-center px-2 justify-center bg-[#252525] rounded-[5px] p-2 h-[70px] w-[400px]">
+                  <SyncLoader speedMultiplier={0.5} color="white" size={8} />
+                </div>
+              </div>
+            )}
+
+            {/* Show loading for streaming */}
+            {isStreaming && !currentStreamingMessage && (
+              <>
+                {/*NOTE: UI thinking message for when streaming response is loading*/}
+                <div className="flex flex-col justify-center items-center py-5">
+                  <div className="flex items-center justify-center bg-[#252525] rounded-[30px] p-2 h-[50px] w-[200px]">
+                    <p className="mr-1">Thinking</p>
                     <SyncLoader speedMultiplier={0.5} color="white" size={8} />
                   </div>
                 </div>
-              )}
-
-              {/* Show loading for streaming */}
-              {isStreaming && !currentStreamingMessage && (
-                <>
-                  {/*NOTE: UI thinking message for when streaming response is loading*/}
-                  <div className="flex flex-col justify-center items-center py-5">
-                    <div className="flex items-center justify-center bg-[#252525] rounded-[30px] p-2 h-[50px] w-[200px]">
-                      <p className="mr-1">Thinking</p>
-                      <SyncLoader
-                        speedMultiplier={0.5}
-                        color="white"
-                        size={8}
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-              {/* Show error for sending messages */}
-              {error && (
-                <div className="flex-shrink-0">
-                  <strong>Message failed to send to the server...</strong>
-                  {error.message}
-                </div>
-              )}
-            </div>
+              </>
+            )}
+            {/* Show error for sending messages */}
+            {error && (
+              <div className="flex-shrink-0">
+                <strong>Message failed to send to the server...</strong>
+                {error.message}
+              </div>
+            )}
+            {/* Bottom reference for auto-scrolling */}
+            <div ref={bottomRef} />
           </div>
         )}
       </div>
 
-      {/*ChatBox component for inputting questions from the user*/}
-      {/* TODO: animate the box to go down from the middle of the page */}
-      <div ref={bottomRef} className=" pb-4 z-1 sticky bg-[#171717] bottom-0">
+      {/*ChatBox component for inputting questions from the user - fixed at bottom */}
+      <div className="flex-shrink-0 pb-4 px-4 bg-[#171717] flex justify-center">
         <ChatBox
           onSendMessage={handleSendMessage}
           chatInput={chatInput}
