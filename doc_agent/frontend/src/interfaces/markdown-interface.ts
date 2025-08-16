@@ -1,11 +1,11 @@
 // interface for code blocks
-export interface CodeProps {
+export type CodeProps = {
   node?: never;
   inline?: boolean;
   className?: string;
   children: React.ReactNode;
   [key: string]: unknown;
-}
+};
 
 // interface for the heading props
 export interface HeadingProps {
