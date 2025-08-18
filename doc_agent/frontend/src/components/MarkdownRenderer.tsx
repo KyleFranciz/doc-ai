@@ -3,6 +3,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import type { Components } from "react-markdown";
+import { CodeBlock, CodeBlockCopyButton } from "./ai-elements/code-block";
+
+// TODO: FIGURE OUT THE CodeBlock COMPONENT AND WHY ITS NOT WORKING PROPERLY
 
 // Define proper interface for code component props
 interface CodeProps {
@@ -13,7 +16,7 @@ interface CodeProps {
 }
 
 export type MarkdownRendererProps = {
-  content: string | undefined;
+  content: string;
 };
 
 // TODO: implement the CodeBlock component into this to load the code blocks from the Shadcn Library
@@ -43,31 +46,46 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       </div>
     ),
     // Handle inline code (single backticks) and code blocks (triple backticks) differently
-    code: ({ children, inline }: CodeProps) => {
-      if (inline) {
-        // Inline code styling - single backticks
+    code: ({ children, className, ...props }: CodeProps) => {
+      console.log("Code component props:", { className, children, props });
+
+      // Check if this code element is inside a pre element (code block)
+      // If it has a language class, it's likely a code block
+      const isCodeBlock = className && className.startsWith("language-");
+
+      console.log("Is code block:", isCodeBlock, "className:", className);
+
+      if (!isCodeBlock) {
+        // This is inside a <pre> element (code block), so just style the content
+        const language = className?.replace("language-", "");
+        const codeString = String(children).replace(/\n$/, ""); // Remove trailing newline
         return (
-          <code className="bg-gray-100 dark:bg-[#141414] text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded text-sm font-mono">
-            {children}
-          </code>
-        );
-      } else {
-        // Code block styling - triple backticks
-        return (
-          <div className="my-4 rounded-lg overflow-hidden">
-            <pre className="bg-[#141414] text-gray-100 p-4 overflow-x-auto">
-              <code
-                style={{
-                  fontFamily: '"Cascadia Code NF", "Cascadia Code", monospace',
-                }}
-                className="text-sm leading-relaxed"
-              >
-                {children}
-              </code>
-            </pre>
-          </div>
+          <CodeBlock
+            code={codeString}
+            language={language || "python"}
+            showLineNumbers={false}
+            className=""
+          >
+            <CodeBlockCopyButton />
+          </CodeBlock>
         );
       }
+      //   // Inline code styling - single backticks
+      //   return (
+      //     <code className="bg-[#141414] text-red-300 px-1.5 py-0.5 rounded ">
+      //       {children}
+      //     </code>
+      //   );
+      // }
+
+      //   // Code blocks are wrapped in <pre> tags
+      //   return (
+      //     <div className="my-4 rounded-lg overflow-hidden">
+      //       <pre className="bg-[#141414] text-white p-4 overflow-x-auto">
+      //         {children}
+      //       </pre>
+      //     </div>
+      //   );
     },
     blockquote: ({ children }) => (
       <blockquote className="">{children}</blockquote>
