@@ -10,9 +10,18 @@ import { validatePassword } from "../functions/passwordValidator"; // brought in
 export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; // going to add update user function later on
 
 // make a function to get create and add a username to supabase
-export const createUserName = (usersName: string) => {
-  //check the username in the database and see if the user is in the database
+export const createUserName = (usersName: string, userID: string) => {
+  //
+  //check the username in the database and see if the user is in the database return an error if the user is
+  //user the users auth to make the change to make the query to the database
   // if it passes and the username is good then add the user to the database
+  //
+};
+
+// function to update the users info that is stored to the account
+export const updateUserName = (changedName: string, userID: string) => {
+  // check if the username is the same as the one tied to the account already
+  // use the users auth id to make the query in the table to edit the data
 };
 
 //^ function to sign up the user
