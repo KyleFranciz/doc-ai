@@ -357,7 +357,7 @@ async def delete_chat(
 # NOTE: different route to get all the different chat titles from the database
 @app.get("/api/chats/{user_id}")
 async def get_all_chat_titles(
-    user_id: str,
+    user_id: str,  # the user id gotten from the requests to the backend
 ):  # user_id will be sent in to be searched in database, user will be added later on
     # max out the amount of chats that the user can get
     # NOTE: MAX_CHATS = 20 #contol the amount of chats that get displayed might make this for guest users only

@@ -130,6 +130,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
                 <Link
                   className="group hover:bg-[#1d1d1d] mx-2 h-[45px] px-2 flex items-center rounded-[8px]"
                   to={`/chat/${chats.session_id}`}
+                  key={chats.session_id}
                 >
                   {chats.title}
                   <div className="ml-auto hidden group-hover:block">

@@ -1,9 +1,19 @@
+// This file is for handling all the sign up and sign in functionality
 // setting up the user sign in and sign out functionality
+
 import { toast } from "sonner";
 import { supabase } from "./supabaseClient"; // brought in to use Supabase for auth
 import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the passwordValidator
 
+//TODO: Might have to add username functionality
+
 export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; // going to add update user function later on
+
+// make a function to get create and add a username to supabase
+export const createUserName = (usersName: string) => {
+  //check the username in the database and see if the user is in the database
+  // if it passes and the username is good then add the user to the database
+};
 
 //^ function to sign up the user
 export const signUpSupabase = async (email: string, password: string) => {
@@ -21,6 +31,7 @@ export const signUpSupabase = async (email: string, password: string) => {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: email,
       password: password,
+      // data: { username: "username" }, // TODO: add username for the signed in user
       options: {
         emailRedirectTo: "/prompt", // redirect to dashboard after the user signs up for the first time
       },
@@ -33,7 +44,7 @@ export const signUpSupabase = async (email: string, password: string) => {
         signUpError.message.includes("already exists")
       ) {
         toast.error(
-          "An account with this email already exists. Please sign in instead."
+          "An account with this email already exists. Please sign in instead.",
         );
       } else {
         toast.error(`Sign up failed: ${signUpError.message}`);
@@ -50,7 +61,7 @@ export const signUpSupabase = async (email: string, password: string) => {
         // We must sign them out and show the correct error.
         await supabase.auth.signOut();
         toast.error(
-          "An account with this email already exists. Please sign in instead."
+          "An account with this email already exists. Please sign in instead.",
         );
         return false;
       }
@@ -65,7 +76,7 @@ export const signUpSupabase = async (email: string, password: string) => {
 
       // Show the appropriate verification message for a new user.
       toast.success(
-        "Please check your email to verify your account before signing in."
+        "Please check your email to verify your account before signing in.",
       );
       return true;
     }
@@ -83,7 +94,7 @@ export const signInSupabase = async (email: string, password: string) => {
   try {
     // try to sign in the user
     const { data, error: signInError } = await supabase.auth.signInWithPassword(
-      { email, password }
+      { email, password },
     );
 
     // show if there was an error during the sign in process
@@ -93,11 +104,11 @@ export const signInSupabase = async (email: string, password: string) => {
         toast.error("Invalid email or password. Please try again.");
       } else if (signInError.message.includes("Email not confirmed")) {
         toast.error(
-          "Please check your email and confirm your account before signing in."
+          "Please check your email and confirm your account before signing in.",
         );
       } else if (signInError.message.includes("Too many requests")) {
         toast.error(
-          "Too many sign-in attempts. Please wait a moment and try again."
+          "Too many sign-in attempts. Please wait a moment and try again.",
         );
       } else {
         toast.error(`Sign in failed: ${signInError.message}`);
