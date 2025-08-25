@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SignupBox from "../components/SignupComponent";
+import SignupBox from "../components/SignupBox";
 import { signUpSupabase } from "../connections/user-connections"; // custom function
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
@@ -8,6 +8,7 @@ export default function SignUpPage() {
   // state to hold the email and password input values (passed down to component SignupBox)
   const [email, setEmail] = useState<string>(""); // handle email
   const [password, setPassword] = useState<string>(""); // handle password
+  // NOTE: add username input and use created function to send the data to the database and add it to the user acc
   const [signUpActive, setSignUpActive] = useState<boolean>(false); // to show the success or failure message
 
   // set up navigate

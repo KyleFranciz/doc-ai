@@ -5,13 +5,13 @@ import { toast } from "sonner";
 import { supabase } from "./supabaseClient"; // brought in to use Supabase for auth
 import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the passwordValidator
 
-//TODO: Might have to add username functionality
+//TODO: Work on the username functionality with creation and editing
 
 export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; // going to add update user function later on
 
 // make a function to get create and add a username to supabase
 export const createUserName = (usersName: string, userID: string) => {
-  //
+  // NOTE: add to profiles table, use the datas user id that I get back from the creation to the user
   //check the username in the database and see if the user is in the database return an error if the user is
   //user the users auth to make the change to make the query to the database
   // if it passes and the username is good then add the user to the database
@@ -21,30 +21,39 @@ export const createUserName = (usersName: string, userID: string) => {
 // function to update the users info that is stored to the account
 export const updateUserName = (changedName: string, userID: string) => {
   // check if the username is the same as the one tied to the account already
-  // use the users auth id to make the query in the table to edit the data
+  // use the users auth id to make the query in the table to edit the username
 };
 
 //^ function to sign up the user
-export const signUpSupabase = async (email: string, password: string) => {
+export const signUpSupabase = async (
+  email: string,
+  password: string,
+  username: string,
+) => {
   try {
     // check the users password to make sure that it meets the requirements
     const checkedPassword = validatePassword(password);
 
-    //if the password is not valid, show an error message and exit the function
+    // if the password is not valid, show an error message and exit the function
     if (checkedPassword) {
       toast.error(checkedPassword);
       return false; // return if the password is not valid and leave the function
     }
 
+    // TODO: Import username checker to make sure that the username is appropriate, if not exit the function and return error message
+
     // Proceed directly with signup
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: email,
       password: password,
-      // data: { username: "username" }, // TODO: add username for the signed in user
       options: {
-        emailRedirectTo: "/prompt", // redirect to dashboard after the user signs up for the first time
+        emailRedirectTo: "/prompt", // NOTE: redirect to dashboard after the user signs up for the first time (might change)
+        data: { username: username }, // used for the users main display name
+        // NOTE: Might add in more elements later on
       },
     });
+
+    // TODO: add the username to profiles table along with the userID to be stored that associated
 
     // check if there's an error when signing up the user
     if (signUpError) {

@@ -7,6 +7,7 @@ from dotenv import load_dotenv  # type: ignore # load_env  is important to loadi
 import os  # os allows me to access the file and pull the variables that were pulled
 from supabase import create_client, Client  # type: ignore #create client and handle the client once its made # import supabase so that I can access the database
 import traceback  # For checking the real errors that are not shown if the error is not shown
+from schemas.user_schema import ProfileRequest, ProfileResponse
 from schemas.chat_schema import (
     DocsResponse,
     MessageRequest,
@@ -67,13 +68,56 @@ app.add_middleware(
 )
 
 
-# Test route
-@app.get("/")
-def get_entry_root():  # general connection
-    return {"message": "Hey there user"}
+# NOTE: Route to get the profile from the data base
+@app.get(
+    "/api/profile/{user_id}"
+)  # route to get all the profiles from the database (user_id is passed in as a parameter)
+async def get_profile(
+    user_id: str,
+):  # user_id is a place holder that will use the user_id from the parameter
+    try:
+        # check if the user_id is in the database
+        profile = (
+            supabase.table("profiles").select("*").eq("user_id", user_id).execute()
+        )
+
+        # if the user_id is not found in the database error is raise
+        if not profile.data:
+            raise HTTPException(status_code=404, detail="User not found in database")
+
+        # if the user_id is found in the database return the profile to the frontend to be used
+        return profile.data
+
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=str(err))
 
 
-# TODO: I might ask for a session Id to keep track of the session and send the Id to the backend so I can retrieve the data later
+# TODO: route to post the profile to the database
+@app.post(
+    "/api/profile", response_model=ProfileResponse
+)  # ProfileModel is the response from the supabase table in the database
+async def create_profile(
+    profile: ProfileRequest,
+):  # might not use the user_id because it is already in the request
+    # check if the user_id is in the database
+    try:
+        # check if the username is appropriate
+
+        # if it is format the data to be sent to the database
+        sentProfile = (
+            supabase.table("profiles")
+            .insert(username=profile.username, user_id=profile.user_id)
+            .execute()
+        )
+
+        # check if the user_id is in the database
+        if not sentProfile.data:
+            raise HTTPException(status_code=404, detail="User not found in database")
+
+        return "profile has been created in the database"
+
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=str(err))
 
 
 # Adding data to the table
@@ -107,7 +151,8 @@ async def askDoc(
             )
             .execute()
         )
-        print("successfully added")
+
+        print("successfully added", UserQuestion)  # alert for debug
 
         # ^ check if the chat table to see if it already exists in the database
         checkChatDB = getFirstChat(
