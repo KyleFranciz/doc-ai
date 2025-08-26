@@ -2,7 +2,8 @@
 
 import { Profanity } from "@2toad/profanity"; // library for checking profanity
 
-const profanity = new Profanity(); // initialize the profanity checker
+// initialize the profanity checker
+const profanity = new Profanity();
 
 // function to check if the username contains symbols
 const hasSymbols = (username: string): boolean => {

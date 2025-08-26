@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "./supabaseClient"; // brought in to use Supabase for auth
 import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the passwordValidator
 import { validateUsername } from "@/functions/usernameValidator";
+// import { Profile } from "@/interfaces/user-interface";
 // import {Profile} from "../interfaces/user-interface";
 
 //TODO: Work on the username functionality with creation and editing
@@ -13,35 +14,29 @@ export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; 
 
 // make a function to get create and add a username to supabase
 // NOTE: add to profiles table, use the datas user id that I get back from the creation to the user
-export const createUserName = async (usersName: string, userID: string) => {
-  //check the username in the database and see if the user is in the database return an error if the user is
-  const { isValid, message } = validateUsername(usersName);
+export const createUserName = async (username: string, user_id: string) => {
+  // NOTE: The username is validated in the signUpSupabase function already
 
-  if (!isValid) {
-    toast.error(message);
-    return false;
-  }
-  // if it passes and the username is good then add the user to the database if the user_id matches as well
-  // only make add username if the userid matches the one in the database
   // WARNING: Might have to use interface when updating the data in the database
   const { data, error } = await supabase
     .from("profiles")
-    .insert(usersName)
-    .eq("user_id", userID)
+    .insert({ username: username, user_id: user_id, avatar_url: "blank url" }) // TODO: add a default avatar for new users to have
     .select();
 
+  // check if there is an error adding the profile info to the database
   if (error) {
     toast.error(error.message);
     return false;
   }
 
+  // edgecase - might not be needed
   if (!data) {
     toast.error("There was an error adding the username to the database");
     return false;
   }
 
   // return a success message and true so that the user knows and the function is able to be completed
-  toast.success(`Successfully added ${data} to the database`);
+  toast.success(`Successfully added user to the database: ${data} `);
   return true;
   //
 };
@@ -57,8 +52,9 @@ export const updateUserName = async (changedName: string, userID: string) => {
   }
 
   // otherwise keep going
-  // change the username in the database
-  // WARNING: Might have to use interface when updating the data in the database
+  // update the username in the database
+  // check if the user has a username linked to an account
+  // WARNING: Might have to use interface when updating the data in the database, Profile page may be needed
   const { data, error } = await supabase
     .from("profiles")
     .update({
@@ -99,6 +95,13 @@ export const signUpSupabase = async (
     }
 
     // TODO: Import username checker to make sure that the username is appropriate, if not exit the function and return error message
+    const { isValid, message } = validateUsername(username);
+
+    // if the username is not valid, show an error message and exit the function
+    if (!isValid) {
+      toast.error(message);
+      return false;
+    }
 
     // Proceed directly with signup
     const { data, error: signUpError } = await supabase.auth.signUp({
@@ -110,8 +113,6 @@ export const signUpSupabase = async (
         // NOTE: Might add in more elements later on
       },
     });
-
-    // TODO: add the username to profiles table along with the userID to be stored that associated
 
     // check if there's an error when signing up the user
     if (signUpError) {
@@ -139,6 +140,15 @@ export const signUpSupabase = async (
         toast.error(
           "An account with this email already exists. Please sign in instead.",
         );
+        return false;
+      }
+
+      // add the user to the profiles table to be store after sign up
+      const success = await createUserName(username, data.user.id);
+
+      // if the username is not added to the database, show an error message
+      if (!success) {
+        toast.error("There was an error adding the username to the database");
         return false;
       }
 

@@ -24,8 +24,8 @@ export default function SignUpPage() {
     try {
       setSignUpActive(true); // set signup status as active
 
-      // check the username before the user is added to the database
-
+      // if it reaches here then the username is valid
+      // NOTE: username and password are validated in the this function already
       const success = await signUpSupabase(email, password, username); // call the signUpSupabase function to sign up the user
 
       // add the user to the profiles table to be store after sign up
