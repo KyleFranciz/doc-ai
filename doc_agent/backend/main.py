@@ -95,13 +95,13 @@ async def get_profile(
 # TODO: route to post the profile to the database
 @app.post(
     "/api/profile", response_model=ProfileResponse
-)  # ProfileModel is the response from the supabase table in the database
+)  # ProfileResponse is the response from the supabase table in the database
 async def create_profile(
     profile: ProfileRequest,
 ):  # might not use the user_id because it is already in the request
     # check if the user_id is in the database
     try:
-        # check if the username is appropriate
+        # NOTE: username appropriatness is checked in the frontend
 
         # if it is format the data to be sent to the database
         sentProfile = (

@@ -1,27 +1,85 @@
 // This file is for handling all the sign up and sign in functionality
 // setting up the user sign in and sign out functionality
-
+// import axios from "axios";
 import { toast } from "sonner";
 import { supabase } from "./supabaseClient"; // brought in to use Supabase for auth
 import { validatePassword } from "../functions/passwordValidator"; // brought in to validate the passwordValidator
+import { validateUsername } from "@/functions/usernameValidator";
+// import {Profile} from "../interfaces/user-interface";
 
 //TODO: Work on the username functionality with creation and editing
 
 export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; // going to add update user function later on
 
 // make a function to get create and add a username to supabase
-export const createUserName = (usersName: string, userID: string) => {
-  // NOTE: add to profiles table, use the datas user id that I get back from the creation to the user
+// NOTE: add to profiles table, use the datas user id that I get back from the creation to the user
+export const createUserName = async (usersName: string, userID: string) => {
   //check the username in the database and see if the user is in the database return an error if the user is
-  //user the users auth to make the change to make the query to the database
-  // if it passes and the username is good then add the user to the database
+  const { isValid, message } = validateUsername(usersName);
+
+  if (!isValid) {
+    toast.error(message);
+    return false;
+  }
+  // if it passes and the username is good then add the user to the database if the user_id matches as well
+  // only make add username if the userid matches the one in the database
+  // WARNING: Might have to use interface when updating the data in the database
+  const { data, error } = await supabase
+    .from("profiles")
+    .insert(usersName)
+    .eq("user_id", userID)
+    .select();
+
+  if (error) {
+    toast.error(error.message);
+    return false;
+  }
+
+  if (!data) {
+    toast.error("There was an error adding the username to the database");
+    return false;
+  }
+
+  // return a success message and true so that the user knows and the function is able to be completed
+  toast.success(`Successfully added ${data} to the database`);
+  return true;
   //
 };
 
 // function to update the users info that is stored to the account
-export const updateUserName = (changedName: string, userID: string) => {
-  // check if the username is the same as the one tied to the account already
-  // use the users auth id to make the query in the table to edit the username
+export const updateUserName = async (changedName: string, userID: string) => {
+  // check if the username is valid, no profanity or symbols
+  const { isValid, message } = validateUsername(changedName);
+
+  if (!isValid) {
+    toast.error(message);
+    return false; // stop the function return false
+  }
+
+  // otherwise keep going
+  // change the username in the database
+  // WARNING: Might have to use interface when updating the data in the database
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({
+      username: changedName,
+    })
+    .eq("user_id", userID)
+    .select();
+
+  if (error) {
+    toast.error(error.message);
+    return false;
+  }
+
+  if (!data) {
+    toast.error("There was an error updating the username in the database");
+    return false;
+  }
+
+  // return a success message and true so that the user knows and the function is able to be completed
+  toast.success(`Successfully updated ${data} in the database`);
+  return true;
 };
 
 //^ function to sign up the user

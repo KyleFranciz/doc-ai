@@ -5,7 +5,7 @@ import React from "react";
 // interface for the sign up info being passed between components
 interface SignUpBox {
   handleSubmit: (e: React.FormEvent) => Promise<void>;
-  userName?: string; //NOTE: import custom function to add the user name to its own table, also add it in the metatdata for user Sign in
+  userName: string; //NOTE: import custom function to add the user name to its own table, also add it in the metatdata for user Sign in
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
   password: string;
@@ -22,6 +22,7 @@ export default function SignupBox(props: SignUpBox) {
             <h1 className="text-2xl font-bold text-white mb-2">
               Sign up for your account
             </h1>
+            {/* TODO: ADD a username input */}
             <p className="text-gray-300 text-sm">
               Enter your email for your new account
             </p>
