@@ -4,6 +4,8 @@ import { useSidebar } from "../context/SidebarContext";
 import { TbLayoutSidebarLeftExpand } from "react-icons/tb";
 import { SignOutSupabase } from "../connections/user-connections";
 import { User } from "@supabase/supabase-js";
+import { UsernameModal } from "./UsernameModal.tsx";
+// import { useState } from "react";
 
 // interface for the Navbar component
 interface NavbarProps {
@@ -17,6 +19,23 @@ export default function Navbar({ user }: NavbarProps) {
 
   // handle the toggle for the sidebar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
+
+  // NOTE: might not need this
+  // handle the state for the modal
+  // const [isModalOpen, setIsModalOpen] = useState(false); // handles the opening and closing of the modal
+  // const [modalInput , setModalInput] = useState(""); // gets the input for the modal from the user
+
+  // handle the modal opening and closing
+  // const handleModal = () => {
+  //   // toggle the modal on and off
+  //   setIsModalOpen(!isModalOpen);
+  // }
+
+  // handle the submit for the modal
+  // const handleModalSubmit = () => {
+  //   // close the modal
+  //   setIsModalOpen(false);
+  // }
 
   return (
     <nav className="fixed right-0 w-full bg-[#171717] ">
@@ -32,7 +51,8 @@ export default function Navbar({ user }: NavbarProps) {
           </motion.button>
           {user ? (
             //? Sign Out button for the user
-            <div>
+            <div className="flex items-center justify-between w-[176px]">
+              <UsernameModal user={user} />
               <motion.button
                 onTap={() => SignOutSupabase()}
                 whileHover={{ scale: 1.05 }}

@@ -15,12 +15,19 @@ export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; 
 // make a function to get create and add a username to supabase
 // NOTE: add to profiles table, use the datas user id that I get back from the creation to the user
 export const createUserName = async (username: string, user_id: string) => {
-  // NOTE: The username is validated in the signUpSupabase function already
+  // check if the username is valid, no profanity or symbols and if the username already exists
+  const { isValid, message } = await validateUsername(username);
+
+  // if the username is invalid, show user the error message
+  if (!isValid) {
+    toast.error(message);
+    return false;
+  }
 
   // WARNING: Might have to use interface when updating the data in the database
   const { data, error } = await supabase
     .from("profiles")
-    .insert({ username: username, user_id: user_id, avatar_url: "blank url" }) // TODO: add a default avatar for new users to have
+    .insert({ username: username, user_id: user_id })
     .select();
 
   // check if there is an error adding the profile info to the database
@@ -43,9 +50,10 @@ export const createUserName = async (username: string, user_id: string) => {
 
 // function to update the users info that is stored to the account
 export const updateUserName = async (changedName: string, userID: string) => {
-  // check if the username is valid, no profanity or symbols
-  const { isValid, message } = validateUsername(changedName);
+  // check if the username is valid, no profanity or symbols and if the username already exists
+  const { isValid, message } = await validateUsername(changedName);
 
+  // if the username is invalid, show user the error message
   if (!isValid) {
     toast.error(message);
     return false; // stop the function return false
@@ -53,8 +61,7 @@ export const updateUserName = async (changedName: string, userID: string) => {
 
   // otherwise keep going
   // update the username in the database
-  // check if the user has a username linked to an account
-  // WARNING: Might have to use interface when updating the data in the database, Profile page may be needed
+  // check if the users identity matches the one in the database
   const { data, error } = await supabase
     .from("profiles")
     .update({
@@ -95,7 +102,7 @@ export const signUpSupabase = async (
     }
 
     // TODO: Import username checker to make sure that the username is appropriate, if not exit the function and return error message
-    const { isValid, message } = validateUsername(username);
+    const { isValid, message } = await validateUsername(username);
 
     // if the username is not valid, show an error message and exit the function
     if (!isValid) {

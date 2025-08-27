@@ -16,10 +16,10 @@ export interface User {
 
 // scheme for profile table in the database
 export interface Profile {
-  id: string; // unique user_id for each profile
-  user_id: string; // users id from account
+  id?: string; // unique user_id for each profile
+  user_id: string; //
   username: string; // username
-  created_at: string; // when the user was created
-  updated_at: string; // when the user was last updated
+  created_at?: string; // when the user was created
+  updated_at?: string; // when the user was last updated
   avatar_url?: string; // optional: will change based on what the user picks as the profile picture
 }

@@ -12,12 +12,13 @@ import LoginPage from "./pages/LoginPage";
 import ChatPage from "./pages/ChatPage";
 import SettingsPage from "./pages/SettingsPage";
 import { RouterProvider } from "react-router-dom";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   // states to store for the user to help w/ giving access to certain parts of the app
   const [user, setUser] = useState<User | null>(null); // null by default since the user is not logged in yet by default
   const [loading, setLoading] = useState<boolean>(true); // handles the loading states for the different page and components
-  // 
+  //
   // handle the users session so that I can check if the user is logged in (handle on reload)
   useEffect(() => {
     // get the session from supabase
@@ -33,7 +34,6 @@ function App() {
       setUser(session?.user ?? null);
       setLoading(false);
     });
-
 
     // clean up the unmounting of the subscription
     return () => {
@@ -55,10 +55,15 @@ function App() {
         // Prompt page for making request to Doc
         { path: "prompt", element: <PromptPage user={user} /> }, // make accessible to everyone, just don't save chat history
         // Page to host the different chats that the user makes with doc
-        { path: "chat/:sessionId", element: user ? <ChatPage user={user} /> : <LoginPage /> },
+        {
+          path: "chat/:sessionId",
+          element: user ? <ChatPage user={user} /> : <LoginPage />,
+        },
         // Page to adjust the settings of the application
         { path: "settings", Component: user ? SettingsPage : SignUpPage },
         // Page to login to the app
+        // TODO: add the user to the profile page
+        { path: "profile", Component: ProfilePage },
         {
           path: "login",
           element: user ? <PromptPage user={user} /> : <LoginPage />,
