@@ -31,6 +31,17 @@ export default function PromptBox(props: PromptBoxI) {
             required
             // make the value the same as the state
             value={props.value}
+            onKeyDown={(e) => {
+              // enter key to submit the form
+              if (e.key === "Enter") {
+                // prevent the form from submitting
+                e.preventDefault();
+                // submit the form
+                props.handleSubmit?.(e);
+              }
+            }}
+            // make the text area disabled while loading
+            disabled={props.loading}
           />
           {/*bottom button for the input bar */}
           <div className="flex justify-center items-center">

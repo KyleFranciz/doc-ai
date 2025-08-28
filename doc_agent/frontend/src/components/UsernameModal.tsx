@@ -42,6 +42,9 @@ export function UsernameModal({ user }: UsernameModalProps) {
     // call the create username function
     updateUserName(username, user?.id as string);
 
+    // reset the username state
+    setUsername("");
+
     // set the loading state to false
     setIsLoading(false);
 

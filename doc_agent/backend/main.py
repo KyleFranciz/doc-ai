@@ -78,16 +78,48 @@ async def get_profile(
     try:
         # check if the user_id is in the database
         profile = (
-            supabase.table("profiles").select("*").eq("user_id", user_id).execute()
+            # get the users profile name
+            supabase.table("profiles")
+            .select("*")
+            .eq("user_id", user_id)
+            .execute()
         )
 
         # if the user_id is not found in the database error is raise
         if not profile.data:
             raise HTTPException(status_code=404, detail="User not found in database")
 
-        # if the user_id is found in the database return the profile to the frontend to be used
+        # if the user_id is found in the database return the profile to the frontend
         return profile.data
 
+    # if the user_id is not found in the database error is raised
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=str(err))
+
+
+# TODO: make a route to update the profile of a user
+@app.put("/api/profile/{user_id}")
+async def update_profile(user_id: str, changed_name: str):
+    # try to update the data
+    try:
+        # check if the user_id is in the database
+        profile: ProfileResponse = (
+            # update get back the name to check
+            supabase.table("profiles")
+            .update({"username": changed_name})
+            .eq("user_id", user_id)
+            .execute()
+        )
+
+        # if the user_id is not found in the database error is raise
+        # might change the .data part because it might not be needed
+        if not profile.data:
+            raise HTTPException(status_code=404, detail="User not found in database")
+
+        # if the user_id is found in the database return the profile to the frontend
+        return profile
+
+    # if the user_id is not found in the database error is raised
     except Exception as err:
         raise HTTPException(status_code=500, detail=str(err))
 
@@ -98,15 +130,22 @@ async def get_profile(
 )  # ProfileResponse is the response from the supabase table in the database
 async def create_profile(
     profile: ProfileRequest,
-):  # might not use the user_id because it is already in the request
-    # check if the user_id is in the database
+):
+    # NOTE: this will only be used to create a profile for the first time (might not even use possibly)
+    """
+    This is a function to create a profile in the database
+    """
     try:
         # NOTE: username appropriatness is checked in the frontend
 
         # if it is format the data to be sent to the database
         sentProfile = (
             supabase.table("profiles")
-            .insert(username=profile.username, user_id=profile.user_id)
+            .insert(
+                username=profile.username,
+                user_id=profile.user_id,
+                avatar_url=profile.avatar_url,
+            )
             .execute()
         )
 
@@ -277,13 +316,15 @@ async def askDoc(
 
 
 # Async Function to stream the response from Doc
-async def stream_doc_response(user_request: MessageRequest):
+async def stream_doc_response(
+    user_request: MessageRequest,
+):  # MessageRequest is an object that has the question, session_id, and user_id
     """
     This is a function that generates the response from Doc
     and streams it to the frontend as the responses are being generated
     """
 
-    # variable to store the entire response once its done to send to the backend
+    # variable to store the entire response once its done to send to the backend:
     full_response = ""
 
     try:

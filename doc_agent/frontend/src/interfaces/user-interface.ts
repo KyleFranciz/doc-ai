@@ -17,7 +17,7 @@ export interface User {
 // scheme for profile table in the database
 export interface Profile {
   id?: string; // unique user_id for each profile
-  user_id: string; //
+  user_id: string | undefined; //
   username: string; // username
   created_at?: string; // when the user was created
   updated_at?: string; // when the user was last updated

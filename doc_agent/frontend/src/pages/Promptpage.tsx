@@ -38,6 +38,8 @@ function PromptPage({ user }: PromptPageProps) {
   const navigate = useNavigate();
   // todo: decide if the message icon will route to a new chat
 
+  // TODO: add in the query function from user-connections to query the profile from the backend
+
   // Function to send the prompt to doc
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

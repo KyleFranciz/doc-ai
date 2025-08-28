@@ -7,7 +7,6 @@ from pydantic import BaseModel
 class ProfileRequest(BaseModel):
     username: str  # username that the user creates
     user_id: str  # user_id from supabase auth user
-    full_name: str  # users full name
     avatar_url: str  # users icon, is blank till the user uploads one
 
 
@@ -15,6 +14,4 @@ class ProfileRequest(BaseModel):
 class ProfileResponse(BaseModel):
     user_id: str  # user_id from supabase auth user
     username: str  # username that the user creates
-    full_name: str  # users full name
     avatar_url: str  # might not use till I set up in the database
-
