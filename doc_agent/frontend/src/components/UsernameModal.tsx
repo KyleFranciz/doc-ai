@@ -1,3 +1,4 @@
+// TODO: WORK ON THE PROFILEMUTATION AND GETTING IT TO WORK
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,6 +16,7 @@ import { updateUserName } from "@/connections/user-connections";
 import { useState } from "react";
 import { FormEvent } from "react"; // for the form event
 import { User } from "@supabase/supabase-js";
+// import { useUpdateProfile } from "@/api/ProfileFetcher";
 
 // interface for the UsernameModal component
 interface UsernameModalProps {
@@ -26,6 +28,9 @@ export function UsernameModal({ user }: UsernameModalProps) {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // custom mutate hook to update the profile and the username in the data base
+  // const updateProfileMutatation = useUpdateProfile(user?.id as string);
 
   // funtion to close the modal
   const closeModal = () => {
@@ -41,6 +46,7 @@ export function UsernameModal({ user }: UsernameModalProps) {
 
     // call the create username function
     updateUserName(username, user?.id as string);
+    // updateProfileMutatation.mutate(username);
 
     // reset the username state
     setUsername("");

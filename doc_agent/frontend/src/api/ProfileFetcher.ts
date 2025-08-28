@@ -58,6 +58,7 @@ export const useProfile = (user_id: string | undefined) => {
     // refresh if the user changes
     queryKey: ["profile", user_id],
     queryFn: () => fetchProfile(user_id),
+    enabled: !!user_id,
   });
 
   // the invalidation of the query is handled by the useUpdateProfile hook

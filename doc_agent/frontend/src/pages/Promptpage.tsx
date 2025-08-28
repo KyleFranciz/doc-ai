@@ -3,10 +3,11 @@
 import { useState } from "react";
 import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
-import { useNavigate } from "react-router";
+import { data, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 import logo from "../assets/logos/Doc-Logo.png";
+import { useProfile } from "@/api/ProfileFetcher";
 
 // interface for the message sent to the server
 export interface MessageToDoc {
@@ -23,6 +24,7 @@ interface PromptPageProps {
 // TODO: make guest user to allow the user top have chats with doc
 
 // PromptPage components
+// NOTE: the user is used to get the user information from the database
 function PromptPage({ user }: PromptPageProps) {
   //useState to store the variables inside
   const [message2send, setMessage2Send] = useState<string>("");
@@ -39,6 +41,16 @@ function PromptPage({ user }: PromptPageProps) {
   // todo: decide if the message icon will route to a new chat
 
   // TODO: add in the query function from user-connections to query the profile from the backend
+  const { data: profile, isLoading, error } = useProfile(user?.id);
+
+  // handle if there is an error in the query
+  if (error) {
+    toast.error(`There was an error getting the user data ${error}`);
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   // Function to send the prompt to doc
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,7 +86,7 @@ function PromptPage({ user }: PromptPageProps) {
         <div className=" justify-center flex-col flex w-full items-center ">
           <h1 className="font-[instumentSerif] tracking-tight text-[#ffff] text-[6rem]">
             {/*TODO: Change to be able to display the users name*/}
-            {user ? `Welcome User` : "Welcome"}
+            {user ? `Welcome ${profile?.data?.username}` : "Welcome"}
           </h1>
           <div className="flex justify-center itmes-center">
             <h3 className="flex justify-center font-[instrumentSerif] mt-[-40px] mb-3 text-[1.5rem] text-[#b0b0b0]">

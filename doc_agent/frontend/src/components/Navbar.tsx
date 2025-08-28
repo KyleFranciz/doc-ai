@@ -20,23 +20,6 @@ export default function Navbar({ user }: NavbarProps) {
   // handle the toggle for the sidebar
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
-  // NOTE: might not need this
-  // handle the state for the modal
-  // const [isModalOpen, setIsModalOpen] = useState(false); // handles the opening and closing of the modal
-  // const [modalInput , setModalInput] = useState(""); // gets the input for the modal from the user
-
-  // handle the modal opening and closing
-  // const handleModal = () => {
-  //   // toggle the modal on and off
-  //   setIsModalOpen(!isModalOpen);
-  // }
-
-  // handle the submit for the modal
-  // const handleModalSubmit = () => {
-  //   // close the modal
-  //   setIsModalOpen(false);
-  // }
-
   return (
     <nav className="fixed right-0 w-full bg-[#171717] ">
       <ul className="flex justify-between items-center mx-6 h-[55px]">
@@ -52,6 +35,7 @@ export default function Navbar({ user }: NavbarProps) {
           {user ? (
             //? Sign Out button for the user
             <div className="flex items-center justify-between w-[176px]">
+              {/*NOTE: this is the Shadcn modal component */}
               <UsernameModal user={user} />
               <motion.button
                 onTap={() => SignOutSupabase()}

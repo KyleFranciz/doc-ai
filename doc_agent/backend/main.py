@@ -90,7 +90,7 @@ async def get_profile(
             raise HTTPException(status_code=404, detail="User not found in database")
 
         # if the user_id is found in the database return the profile to the frontend
-        return profile.data
+        return profile.data[0]
 
     # if the user_id is not found in the database error is raised
     except Exception as err:
@@ -103,7 +103,7 @@ async def update_profile(user_id: str, changed_name: str):
     # try to update the data
     try:
         # check if the user_id is in the database
-        profile: ProfileResponse = (
+        profile = (
             # update get back the name to check
             supabase.table("profiles")
             .update({"username": changed_name})
@@ -116,8 +116,9 @@ async def update_profile(user_id: str, changed_name: str):
         if not profile.data:
             raise HTTPException(status_code=404, detail="User not found in database")
 
-        # if the user_id is found in the database return the profile to the frontend
-        return profile
+        # if the user_id is found in the database return the first profile to the frontend
+        # NOTE: might add index to get the first profile in the database
+        return profile.data[0]
 
     # if the user_id is not found in the database error is raised
     except Exception as err:
