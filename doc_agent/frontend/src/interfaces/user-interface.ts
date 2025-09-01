@@ -23,3 +23,11 @@ export interface Profile {
   updated_at?: string; // when the user was last updated
   avatar_url?: string; // optional: will change based on what the user picks as the profile picture
 }
+
+// interface for the response that is gotten back from the backend
+// T is interchangable for any data type being fetched from the backend
+export interface APIResponse<T> {
+  success: boolean;
+  profile: T | null; // the single profile that is gotten back from the response
+  error: string | null;
+}

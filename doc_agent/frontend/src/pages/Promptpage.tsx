@@ -3,19 +3,19 @@
 import { useState } from "react";
 import PromptBox from "../components/PromptBox";
 import { useChatSession } from "../hooks/useChatSession";
-import { data, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 import logo from "../assets/logos/Doc-Logo.png";
 import { useProfile } from "@/api/ProfileFetcher";
 
-// interface for the message sent to the server
-export interface MessageToDoc {
-  question: string;
-  session_id: string | undefined;
-  user_id: string | undefined;
-  role: "human" | "ai";
-}
+// // interface for the message sent to the server
+// export interface MessageToDoc {
+//   question: string;
+//   session_id: string | undefined;
+//   user_id: string | undefined;
+//   role: "human" | "ai";
+// }
 
 // interface for the user being brought into this page
 interface PromptPageProps {
@@ -41,6 +41,7 @@ function PromptPage({ user }: PromptPageProps) {
   // todo: decide if the message icon will route to a new chat
 
   // TODO: add in the query function from user-connections to query the profile from the backend
+  // NOTE: The data is modeled after the put request type declaration
   const { data: profile, isLoading, error } = useProfile(user?.id);
 
   // handle if there is an error in the query
@@ -88,7 +89,7 @@ function PromptPage({ user }: PromptPageProps) {
             {/*TODO: Change to be able to display the users name*/}
             {user ? `Welcome ${profile?.data?.username}` : "Welcome"}
           </h1>
-          <div className="flex justify-center itmes-center">
+          <div className="flex justify-center items-center">
             <h3 className="flex justify-center font-[instrumentSerif] mt-[-40px] mb-3 text-[1.5rem] text-[#b0b0b0]">
               What do you want to research today?
               <img className="w-[38px] h-[38px]" src={logo} />

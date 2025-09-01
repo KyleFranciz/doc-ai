@@ -1,10 +1,11 @@
 # TODO: Refactor the code for the server connection to make it more prod ready
-from fastapi import FastAPI, HTTPException  # type: ignore # import the stuff for fastapi
+from fastapi import FastAPI, HTTPException, Header, Depends  # type: ignore # import the stuff for fastapi
 from fastapi.middleware.cors import (
     CORSMiddleware,
 )  # import core package to help with making the API
 from dotenv import load_dotenv  # type: ignore # load_env  is important to loading the env variables from the file
 import os  # os allows me to access the file and pull the variables that were pulled
+import requests
 from supabase import create_client, Client  # type: ignore #create client and handle the client once its made # import supabase so that I can access the database
 import traceback  # For checking the real errors that are not shown if the error is not shown
 from schemas.user_schema import ProfileRequest, ProfileResponse
@@ -23,6 +24,7 @@ from services.fetching_functions import (
 import json
 from typing import Optional
 from fastapi.responses import StreamingResponse  # type: ignore # import the streaming response to help with streaming the response to the user
+from jose import jwt, jwk
 
 # TODO:: Figure out why is the llm saying its getting called twice when it answers
 
@@ -34,6 +36,24 @@ url: str = os.getenv("SUPABASE_URL")  # Supabase url
 key: str = os.getenv("SUPABASE_KEY")  # Supabase key
 frontend_url: str = os.getenv("REACT_URL")
 # doc_url : str = os.getenv("DOC_URL") # might use later
+
+# str to send auth request to the backend to make user that the person making the request is authenticated
+JWKS_URL: str = f"https://{url}/auth/v1/.well-known/jwks.json"
+
+# get the auth combinations to check for
+def get_jwks():
+    try:
+        return requests.get(JWKS_URL,timeout=10).json()
+    except Exception as e:
+        print(f"Error fetching JWKS: {e}")
+        return None
+
+# call the function to get help get the keys
+jwks = get_jwks()
+
+# if I cant get the current user
+if not jwks:
+    raise HTTPException(status_code=500, detail="Failed to fetch JWKS")
 
 
 # Check if the variables were retrieved properly
@@ -68,13 +88,37 @@ app.add_middleware(
 )
 
 
+# Function to check if the user is authenticated
+def get_current_user(auth: str = Header(...)):
+    if not auth.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing authentication header")
+    token = auth.split(" ")[1]
+    try:
+        # get the key ID from the token header
+        unverified_header = jwt.get_unverified_header(token)
+        kid = unverified_header.get("kid")
+
+        key = None
+        for jwk_key in jwks["keys"]:
+            if jwk_key["kid"] == kid:
+                key = jwk.construct(jwk_key)
+                break
+
+        payload = jwt.decode(token, key, algorithms=["RS256"])
+        return {"id": payload["sub"], "email": payload.get("email")}
+    except Exception:
+        raise HTTPException(
+            status_code=401, detail="Invalid authentication credentials"
+        )
+
+
 # NOTE: Route to get the profile from the data base
 @app.get(
-    "/api/profile/{user_id}"
-)  # route to get all the profiles from the database (user_id is passed in as a parameter)
+    "/api/profiles/{user_id}"
+)  # route to get all the profiles from the database (get user_id from the header)
 async def get_profile(
     user_id: str,
-):  # user_id is a place holder that will use the user_id from the parameter
+):  # TODO: get the user_id from the header add in decoder to get the info from the route
     try:
         # check if the user_id is in the database
         profile = (
@@ -98,27 +142,32 @@ async def get_profile(
 
 
 # TODO: make a route to update the profile of a user
-@app.put("/api/profile/{user_id}")
-async def update_profile(user_id: str, changed_name: str):
+@app.put("/api/profiles", response_model=ProfileResponse)
+# user_id is passed into the profile that is sent to this route
+async def update_profile(
+    profile: ProfileRequest, current_user=Depends(get_current_user)
+):
+    # TODO: update the route to account for verification
     # try to update the data
     try:
+        user_id = current_user["id"]
         # check if the user_id is in the database
-        profile = (
+        sent_profile = (
             # update get back the name to check
             supabase.table("profiles")
-            .update({"username": changed_name})
+            .update({"username": profile.username, "avatar_url": profile.avatar_url})
             .eq("user_id", user_id)
             .execute()
         )
 
         # if the user_id is not found in the database error is raise
         # might change the .data part because it might not be needed
-        if not profile.data:
+        if not sent_profile.data:
             raise HTTPException(status_code=404, detail="User not found in database")
 
         # if the user_id is found in the database return the first profile to the frontend
-        # NOTE: might add index to get the first profile in the database
-        return profile.data[0]
+        # NOTE: returning an object to the frontend to be used
+        return {"success": True, "profile": sent_profile.data[0], "error": None}
 
     # if the user_id is not found in the database error is raised
     except Exception as err:
@@ -127,7 +176,7 @@ async def update_profile(user_id: str, changed_name: str):
 
 # TODO: route to post the profile to the database
 @app.post(
-    "/api/profile", response_model=ProfileResponse
+    "/api/profiles", response_model=ProfileResponse
 )  # ProfileResponse is the response from the supabase table in the database
 async def create_profile(
     profile: ProfileRequest,
@@ -138,14 +187,15 @@ async def create_profile(
     """
     try:
         # NOTE: username appropriatness is checked in the frontend
-
-        # if it is format the data to be sent to the database
+        # add the data into the database as an object
         sentProfile = (
             supabase.table("profiles")
             .insert(
-                username=profile.username,
-                user_id=profile.user_id,
-                avatar_url=profile.avatar_url,
+                {
+                    "username": profile.username,
+                    "user_id": profile.user_id,
+                    "avatar_url": profile.avatar_url,
+                }
             )
             .execute()
         )

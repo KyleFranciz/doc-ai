@@ -1,3 +1,11 @@
+/// interface for the message sent to the server
+export interface MessageToDoc {
+  question: string;
+  session_id: string | undefined;
+  user_id: string | undefined;
+  role: "human" | "ai";
+}
+
 // Message that is retrieved from the session id saved in the database
 export interface ChatMessage {
   id: string;

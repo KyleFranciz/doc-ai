@@ -12,6 +12,6 @@ class ProfileRequest(BaseModel):
 
 # Profile schema to tell the sort of data that will be sent to the frontend
 class ProfileResponse(BaseModel):
-    user_id: str  # user_id from supabase auth user
-    username: str  # username that the user creates
-    avatar_url: str  # might not use till I set up in the database
+    success: bool
+    profile: ProfileRequest  # the first item in the list is fetched from the database and returned
+    error: None  # should get back None by default
