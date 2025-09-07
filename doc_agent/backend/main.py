@@ -31,30 +31,11 @@ from jose import jwt, jwk
 # Load all the variables from the .env file
 load_dotenv()
 
-# ^ import the supabase connection string
+# bring in the variables from the .env files
 url: str = os.getenv("SUPABASE_URL")  # Supabase url
 key: str = os.getenv("SUPABASE_KEY")  # Supabase key
 frontend_url: str = os.getenv("REACT_URL")
 # doc_url : str = os.getenv("DOC_URL") # might use later
-
-# str to send auth request to the backend to make user that the person making the request is authenticated
-JWKS_URL: str = f"https://{url}/auth/v1/.well-known/jwks.json"
-
-# get the auth combinations to check for
-def get_jwks():
-    try:
-        return requests.get(JWKS_URL,timeout=10).json()
-    except Exception as e:
-        print(f"Error fetching JWKS: {e}")
-        return None
-
-# call the function to get help get the keys
-jwks = get_jwks()
-
-# if I cant get the current user
-if not jwks:
-    raise HTTPException(status_code=500, detail="Failed to fetch JWKS")
-
 
 # Check if the variables were retrieved properly
 if not url:
@@ -63,6 +44,30 @@ if not key:
     raise ValueError("Supabase Key was not loaded properly")
 if not frontend_url:
     raise ValueError("react front end url was not loaded properly")
+
+# Connect to the auth server to get the combo to decode the auth tokens
+JWKS_URL: str = f"{url}/auth/v1/.well-known/jwks.json"
+
+
+# send the auth combinations to check for
+def get_jwks():
+    # try to connect to the supabase auth
+    try:
+        print("JWKS_URL is fetched correctly")
+        # jwks can now be used to authenticate the user requests
+        return requests.get(JWKS_URL, timeout=10).json()
+    except Exception as e:
+        print(f"Error fetching JWKS: {e}")
+        return None
+
+
+# call the function to get help get the keys
+jwks = get_jwks()
+
+# check if I can get the current user
+if not jwks:
+    # raise and error if I can't
+    raise HTTPException(status_code=500, detail="Failed to fetch JWKS")
 
 
 try:
@@ -90,9 +95,13 @@ app.add_middleware(
 
 # Function to check if the user is authenticated
 def get_current_user(auth: str = Header(...)):
+    # check for the bearer token
     if not auth.startswith("Bearer "):
+        # raise and exeption if the bearer token isn't in the auth
         raise HTTPException(status_code=401, detail="Missing authentication header")
+    # get the token to use
     token = auth.split(" ")[1]
+    # attempt to get use the token in the header
     try:
         # get the key ID from the token header
         unverified_header = jwt.get_unverified_header(token)
