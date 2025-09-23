@@ -1,0 +1,53 @@
+# THis is the base workflow for a workflow that I use for doc-ai
+name: My CI Workflow
+
+# controls when the workflow will run
+on:
+  push: # runs on push to main
+    branches: [main]
+  pull_request: # runs on pull request to main
+    branches: [main]
+
+# list the job that this flow will handle (frontend and backend flow)
+jobs:
+  # name of the job
+  frontend: # frontend: job to build and test the project
+    runs-on: ubuntu-latest # runs on the latest ubuntu linux version
+    defaults:
+      run:
+        working-directory: frontend
+    steps: # list the steps that will be ran
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install # install dependencies
+
+      # add in later once I have finished tests
+      # - name: Run tests
+      # run: npm run test
+
+      - name: Build project
+        run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt
+
+      # add in later once I have finished tests
+      # - name: Run tests
+      # - run: pytest # set up later when I have finished tests for backend
