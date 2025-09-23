@@ -46,7 +46,7 @@ const SidebarMapper: SidebarInterface[] = [
 // TODO: SET UP MUTATION FOR TO REFRESH ALL THE CHATS THAT THE USER HAS WHEN A NEW CHAT IS CREATED
 
 export default function Sidebar({ user }: SidebarUserInterface) {
-  // get the query client to handle the queries and mutations, help sidbar refetch
+  // get the query client to handle the queries and mutations, help sidebar refetch
   const queryClient = useQueryClient();
 
   // create state to keep track of the navbar

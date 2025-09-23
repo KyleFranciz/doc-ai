@@ -51,7 +51,7 @@ JWKS_URL: str = f"{url}/auth/v1/.well-known/jwks.json"
 
 # send the auth combinations to check for
 def get_jwks():
-    # try to connect to the supabase auth
+    # try to connect to the supabase auth and get the patterns
     try:
         print("JWKS_URL is fetched correctly")
         # jwks can now be used to authenticate the user requests
@@ -69,7 +69,7 @@ if not jwks:
     # raise and error if I can't
     raise HTTPException(status_code=500, detail="Failed to fetch JWKS")
 
-
+# try to connect to the database with the variables from the .env
 try:
     # establish the connection to the supabase database:
     supabase: Client = create_client(url, key)  # then make the connection to the DB
@@ -93,7 +93,7 @@ app.add_middleware(
 )
 
 
-# Function to check if the user is authenticated
+# Function to check if the user is authenticated before allowing access to routes
 def get_current_user(auth: str = Header(...)):
     # check for the bearer token
     if not auth.startswith("Bearer "):
@@ -104,13 +104,15 @@ def get_current_user(auth: str = Header(...)):
     # attempt to get use the token in the header
     try:
         # get the key ID from the token header
-        unverified_header = jwt.get_unverified_header(token)
-        kid = unverified_header.get("kid")
+        unverified_header = jwt.get_unverified_header(
+            token
+        )  # decodes the token and gets the header
+        kid = unverified_header.get("kid")  # from the dict get the kid
 
-        key = None
-        for jwk_key in jwks["keys"]:
-            if jwk_key["kid"] == kid:
-                key = jwk.construct(jwk_key)
+        key = None  # initialize the key as None
+        for jwk_key in jwks["keys"]:  # get each of the keys from the jwks
+            if jwk_key["kid"] == kid:  # check if the kid is the same as the key
+                key = jwk.construct(jwk_key)  #
                 break
 
         payload = jwt.decode(token, key, algorithms=["RS256"])

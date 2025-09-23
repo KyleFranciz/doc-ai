@@ -65,7 +65,12 @@ export const useUpdateProfile = (user_id: string | undefined) => {
 
 // hook to fetch the profile of the user
 export const useProfile = (user_id: string | undefined) => {
-  // query to get the profile from the backend
+  // check if the user_id is defined
+  if (!user_id) {
+    throw new Error("User id is undefined");
+  }
+
+  // otherwise make the query to get the profile from the backend
   const ProfileQuery = useQuery({
     // refresh if the user changes
     queryKey: ["profile", user_id],
