@@ -1,0 +1,30 @@
+# Core API Framework
+fastapi==0.115.12
+uvicorn==0.34.2
+
+# Database & Authentication
+supabase==2.15.1
+python-jose==3.5.0
+
+# Environment & Configuration
+python-dotenv==1.0.1
+
+# HTTP Requests
+requests==2.32.3
+
+# Data Validation
+pydantic==2.11.3
+
+# AI/LLM Libraries
+langchain==0.3.24
+langchain-ollama==0.3.2
+langchain-core==0.3.56
+
+# LangChain Tools
+langchain-community==0.3.23
+
+# Web Scraping
+beautifulsoup4==4.13.4
+
+# Standard Library (built-in, no installation needed)
+# asyncio, os, json, typing, traceback, re
