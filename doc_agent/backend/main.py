@@ -21,10 +21,10 @@ from services.fetching_functions import (
     getFirstMessage,
     getFirstChat,
 )  # import function to get the first message from sessions in the database
-import json
-from typing import Optional
+import json  # help to get the response from the requests
+from typing import Optional  # gives the option to add the types to classes
 from fastapi.responses import StreamingResponse  # type: ignore # import the streaming response to help with streaming the response to the user
-from jose import jwt, jwk
+from jose import jwt, jwk  # to help with the authentication of users use of the routes
 
 # TODO:: Figure out why is the llm saying its getting called twice when it answers
 
@@ -49,13 +49,13 @@ if not frontend_url:
 JWKS_URL: str = f"{url}/auth/v1/.well-known/jwks.json"
 
 
-# send the auth combinations to check for
+# funtion to get the jwk structure to compare with the jwt
 def get_jwks():
     # try to connect to the supabase auth and get the patterns
     try:
         print("JWKS_URL is fetched correctly")
         # jwks can now be used to authenticate the user requests
-        return requests.get(JWKS_URL, timeout=10).json()
+        return requests.get(JWKS_URL, timeout=10).json()  # return the response
     except Exception as e:
         print(f"Error fetching JWKS: {e}")
         return None
@@ -82,7 +82,7 @@ except Exception as err:
 
 
 # Assign the app to a variable
-app = FastAPI()
+app = FastAPI()  # make the server as a class
 
 # Create cors to help with cross origin requests
 app.add_middleware(
