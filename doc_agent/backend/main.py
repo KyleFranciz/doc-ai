@@ -1,11 +1,10 @@
 # TODO: Refactor the code for the server connection to make it more prod ready
-from fastapi import FastAPI, HTTPException, Header, Depends  # type: ignore # import the stuff for fastapi
+from fastapi import FastAPI, HTTPException, Depends  # type: ignore # import the stuff for fastapi
 from fastapi.middleware.cors import (
     CORSMiddleware,
 )  # import core package to help with making the API
 from dotenv import load_dotenv  # type: ignore # load_env  is important to loading the env variables from the file
 import os  # os allows me to access the file and pull the variables that were pulled
-import requests
 from supabase import create_client, Client  # type: ignore #create client and handle the client once its made # import supabase so that I can access the database
 import traceback  # For checking the real errors that are not shown if the error is not shown
 from schemas.user_schema import ProfileRequest, ProfileResponse
@@ -17,6 +16,7 @@ from agents.doc_agent import (
     getKnowledgeFromDoc,
     getKnowledgeFromDocStreaming,
 )  # function to ask Doc the question before returning the answer to the use # import the function from the doc agent to help with creating the response from the llm
+from services.auth_service import get_current_user
 from services.fetching_functions import (
     getFirstMessage,
     getFirstChat,
@@ -24,7 +24,6 @@ from services.fetching_functions import (
 import json  # help to get the response from the requests
 from typing import Optional  # gives the option to add the types to classes
 from fastapi.responses import StreamingResponse  # type: ignore # import the streaming response to help with streaming the response to the user
-from jose import jwt, jwk  # to help with the authentication of users use of the routes
 
 # TODO:: Figure out why is the llm saying its getting called twice when it answers
 
@@ -45,29 +44,6 @@ if not key:
 if not frontend_url:
     raise ValueError("react front end url was not loaded properly")
 
-# Connect to the auth server to get the combo to decode the auth tokens
-JWKS_URL: str = f"{url}/auth/v1/.well-known/jwks.json"
-
-
-# funtion to get the jwk structure to compare with the jwt
-def get_jwks():
-    # try to connect to the supabase auth and get the patterns
-    try:
-        print("JWKS_URL is fetched correctly")
-        # jwks can now be used to authenticate the user requests
-        return requests.get(JWKS_URL, timeout=10).json()  # return the response
-    except Exception as e:
-        print(f"Error fetching JWKS: {e}")
-        return None
-
-
-# call the function to get help get the keys
-jwks = get_jwks()
-
-# check if I can get the current user
-if not jwks:
-    # raise and error if I can't
-    raise HTTPException(status_code=500, detail="Failed to fetch JWKS")
 
 # try to connect to the database with the variables from the .env
 try:
@@ -81,10 +57,10 @@ except Exception as err:
     raise RuntimeError("Failed to initialize connection to supabase", err)
 
 
-# Assign the app to a variable
+# create the server
 app = FastAPI()  # make the server as a class
 
-# Create cors to help with cross origin requests
+# Create the middle ware to allow requests from anywhere during dev
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -93,44 +69,23 @@ app.add_middleware(
 )
 
 
-# Function to check if the user is authenticated before allowing access to routes
-def get_current_user(auth: str = Header(...)):
-    # check for the bearer token
-    if not auth.startswith("Bearer "):
-        # raise and exeption if the bearer token isn't in the auth
-        raise HTTPException(status_code=401, detail="Missing authentication header")
-    # get the token to use
-    token = auth.split(" ")[1]
-    # attempt to get use the token in the header
-    try:
-        # get the key ID from the token header
-        unverified_header = jwt.get_unverified_header(
-            token
-        )  # decodes the token and gets the header
-        kid = unverified_header.get("kid")  # from the dict get the kid
-
-        key = None  # initialize the key as None
-        for jwk_key in jwks["keys"]:  # get each of the keys from the jwks
-            if jwk_key["kid"] == kid:  # check if the kid is the same as the key
-                key = jwk.construct(jwk_key)  #
-                break
-
-        payload = jwt.decode(token, key, algorithms=["RS256"])
-        return {"id": payload["sub"], "email": payload.get("email")}
-    except Exception:
-        raise HTTPException(
-            status_code=401, detail="Invalid authentication credentials"
-        )
-
-
-# NOTE: Route to get the profile from the data base
+# TODO: Make sure that this route is set up, might not need the try block
+# NOTE: Route to get the profile from the database
 @app.get(
     "/api/profiles/{user_id}"
 )  # route to get all the profiles from the database (get user_id from the header)
 async def get_profile(
-    user_id: str,
+    current_user=Depends(get_current_user),
 ):  # TODO: get the user_id from the header add in decoder to get the info from the route
+
     try:
+        # get the user_id decoded and saved
+        user_id = current_user["id"]  # use the "id" key to get the user id to pass
+
+        # log the id to check
+        print(user_id)
+
+        # pass in the user_id that I decoded
         # check if the user_id is in the database
         profile = (
             # get the users profile name
@@ -155,9 +110,7 @@ async def get_profile(
 # TODO: make a route to update the profile of a user
 @app.put("/api/profiles", response_model=ProfileResponse)
 # user_id is passed into the profile that is sent to this route
-async def update_profile(
-    profile: ProfileRequest, current_user=Depends(get_current_user)
-):
+async def update_profile(profile: ProfileRequest, current_user=Depends()):
     # TODO: update the route to account for verification
     # try to update the data
     try:
