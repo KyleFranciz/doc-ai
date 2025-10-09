@@ -4,7 +4,7 @@ import ChatBox from "../components/ChatBox";
 import MessageRender from "../components/messageRender"; // this component houses all my markdown code to render after the message is completed
 import { SyncLoader } from "react-spinners";
 import { useEffect, useRef, useState } from "react";
-import { MessageToDoc } from "./Promptpage";
+import { MessageToDoc } from "@/interfaces/chat-interfaces";
 //import axios from "axios";
 import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";

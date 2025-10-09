@@ -70,11 +70,12 @@ app.add_middleware(
 
 
 # TODO: Make sure that this route is set up, might not need the try block
-# NOTE: Route to get the profile from the database
+# NOTE: the user_id will be gotten from the frontend request and decoded with the Depends function: get_current_user()
 @app.get(
-    "/api/profiles/{user_id}"
+    "/api/profiles"
 )  # route to get all the profiles from the database (get user_id from the header)
 async def get_profile(
+    # use Depends to call the function to look get the user from the request to authenticate the user
     current_user=Depends(get_current_user),
 ):  # TODO: get the user_id from the header add in decoder to get the info from the route
 
@@ -82,7 +83,14 @@ async def get_profile(
         # get the user_id decoded and saved
         user_id = current_user["id"]  # use the "id" key to get the user id to pass
 
-        # log the id to check
+        # check to see if there is a user_id:
+        if not user_id:
+            raise HTTPException(
+                status_code=401,
+                detail=f"There was an error getting the user_id from the header, we got back: {user_id}",
+            )
+
+        # otherwise print the log the id to check
         print(user_id)
 
         # pass in the user_id that I decoded

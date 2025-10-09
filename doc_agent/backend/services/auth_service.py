@@ -7,6 +7,11 @@ from services.auth_decoder import decode_token
 
 
 def get_current_user(auth: str = Header(...)):
+    """
+    This function gets the auth info from the header and checks the token and get the auth info by deciphering it
+
+    auth : str (Header) get the header from a request, use with the Depends function to implement in routes
+    """
     # check if the request header has the Bearer
     if not auth.startswith("Bearer "):
         # raise and except

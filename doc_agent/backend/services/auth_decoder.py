@@ -43,10 +43,11 @@ def decode_token(token: str):
         for jwk_key in jwks["keys"]:  # get each of the keys from the jwks
             if jwk_key["kid"] == kid:  # check if the kid is the same as the key
                 key = jwk.construct(jwk_key)  #
-                break
+                break  # break the loop once the key is constructed
 
         # decode the token and verify the signature
         payload = jwt.decode(token, key, algorithms=["RS256"])
+        # return the "id" and the "email" (might not need the email)
         return {"id": payload["sub"], "email": payload.get("email")}
 
     except Exception:
