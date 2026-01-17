@@ -10,6 +10,7 @@ import { fetchMessages } from "../api/ChatFetcher";
 import { toast } from "sonner";
 import { User } from "@supabase/supabase-js";
 import { MarkdownRenderer } from "../components/MarkdownRenderer"; // this component renders the markdown content for the messages
+import { supabase } from "../connections/supabaseClient";
 
 //TODO: Make the markdown out put from the use display properly on the frontend
 
@@ -66,11 +67,19 @@ export default function ChatPage({ user }: ChatPageUserI) {
       bottomRef.current.scrollIntoView({ behavior: "instant" });
     }
 
+    const session = await supabase.auth.getSession();
+    const accessToken = session.data.session?.access_token;
+    const userId = session.data.session?.user?.id ?? user?.id;
+
+    if (!accessToken) {
+      throw new Error("No access token found");
+    }
+
     // Question that is sent to doc
     const questionToDoc: MessageToDoc = {
       question: message, // question to Doc
       session_id: sessionId, // current session
-      user_id: user?.id, // the id of the current user
+      user_id: userId, // the id of the current user
       role: "human", // human sending the message
     };
 
@@ -80,6 +89,7 @@ export default function ChatPage({ user }: ChatPageUserI) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(questionToDoc),
       });

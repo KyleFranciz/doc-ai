@@ -9,14 +9,6 @@ import { User } from "@supabase/supabase-js";
 import logo from "../assets/logos/Doc-Logo.png";
 import { useProfile } from "@/api/ProfileFetcher";
 
-// // interface for the message sent to the server
-// export interface MessageToDoc {
-//   question: string;
-//   session_id: string | undefined;
-//   user_id: string | undefined;
-//   role: "human" | "ai";
-// }
-
 // interface for the user being brought into this page
 interface PromptPageProps {
   user: User | null;
@@ -87,7 +79,7 @@ function PromptPage({ user }: PromptPageProps) {
         <div className=" justify-center flex-col flex w-full items-center ">
           <h1 className="font-[instumentSerif] tracking-tight text-[#ffff] text-[6rem]">
             {/*TODO: Change to be able to display the users name*/}
-            {user ? `Welcome ${profile?.data?.username}` : "Welcome"}
+            {user ? `Welcome ${profile?.username}` : "Welcome"}
           </h1>
           <div className="flex justify-center items-center">
             <h3 className="flex justify-center font-[instrumentSerif] mt-[-40px] mb-3 text-[1.5rem] text-[#b0b0b0]">

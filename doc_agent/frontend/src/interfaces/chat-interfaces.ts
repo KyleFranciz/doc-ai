@@ -4,6 +4,7 @@ export interface MessageToDoc {
   session_id: string | undefined;
   user_id: string | undefined;
   role: "human" | "ai";
+  // might add in auth or bearer token to send in message request to prevent attacks
 }
 
 // Message that is retrieved from the session id saved in the database

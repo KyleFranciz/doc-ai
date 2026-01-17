@@ -111,18 +111,23 @@ async def get_profile(
         return profile.data[0]
 
     # if the user_id is not found in the database error is raised
+    except HTTPException:
+        raise
     except Exception as err:
         raise HTTPException(status_code=500, detail=str(err))
 
 
 # TODO: make a route to update the profile of a user
 @app.put("/api/profiles", response_model=ProfileResponse)
+# NOTE: CHECK SCHEMA STRUCTURE TO MAKE SURE CAUSE IM GETTIN 422 ERROR ON frontend REQUESTS
 # user_id is passed into the profile that is sent to this route
-async def update_profile(profile: ProfileRequest, current_user=Depends()):
+async def update_profile(
+    profile: ProfileRequest, current_user=Depends(get_current_user)
+):
     # TODO: update the route to account for verification
     # try to update the data
     try:
-        user_id = current_user["id"]
+        user_id = current_user["id"]  # get the value of the use id from the frontend
         # check if the user_id is in the database
         sent_profile = (
             # update get back the name to check
@@ -142,6 +147,8 @@ async def update_profile(profile: ProfileRequest, current_user=Depends()):
         return {"success": True, "profile": sent_profile.data[0], "error": None}
 
     # if the user_id is not found in the database error is raised
+    except HTTPException:
+        raise
     except Exception as err:
         raise HTTPException(status_code=500, detail=str(err))
 
@@ -158,6 +165,7 @@ async def create_profile(
     This is a function to create a profile in the database
     """
     try:
+        # TODO: add a check to ensure correct user is changing data
         # NOTE: username appropriatness is checked in the frontend
         # add the data into the database as an object
         sentProfile = (
@@ -178,6 +186,8 @@ async def create_profile(
 
         return "profile has been created in the database"
 
+    except HTTPException:
+        raise
     except Exception as err:
         raise HTTPException(status_code=500, detail=str(err))
 
@@ -192,11 +202,14 @@ async def askDoc(
     # can be changed in the params that are sent to the user
     user_request: MessageRequest,
     stream: Optional[bool] = False,
+    current_user=Depends(get_current_user),
 ):  # ? the params have message_to_doc, session_id, user_id and role
     # ? supabase functions by default are synchronous
     """This is a route to prompt Doc with the question as well as return a response to the user as well"""
 
     try:
+
+        user_id = current_user["id"]
 
         # try to create a table in supabase
         # ^ add users question to the DB
@@ -208,7 +221,7 @@ async def askDoc(
                     "session_id": user_request.session_id,  # information about the session id that the user is in with Doc
                     "role": "human",  # fill to automatically be human
                     "content": user_request.question,  # question the user wanted to know the answer to
-                    "user_id": user_request.user_id,  #! id of the user ( Replace once the auth flow is made )
+                    "user_id": user_id,  #! id of the user ( Replace once the auth flow is made )
                 }
             )
             .execute()
@@ -233,6 +246,7 @@ async def askDoc(
                 f"First message from the database: {FirstMessage}"
             )  # show the first message from the database
 
+            # TODO: might replace with AI function to make small summary of the chat topic
             # CODE BLOCK TO CHECK AND ADJUST THE LENGTH OF THE TITLES BASED ON THE WORDS COUNT
             # if the len of the first message is longer than 25 letters
             if len(FirstMessage) >= 25:
@@ -249,7 +263,7 @@ async def askDoc(
                 supabase.table("chats")
                 .insert(
                     {
-                        "user_id": user_request.user_id,
+                        "user_id": user_id,
                         "title": short_title.title(),  # shorten the title for the chat and formats as title
                         "session_id": user_request.session_id,  # add the session_id of the chat
                     }
@@ -267,7 +281,7 @@ async def askDoc(
         if stream:
             # return a stream response to the frontend
             return StreamingResponse(
-                stream_doc_response(user_request),
+                stream_doc_response(user_request, user_id),
                 media_type="text/plain",
                 headers={
                     "Cache-Control": "no-cache",
@@ -294,7 +308,7 @@ async def askDoc(
                         "session_id": user_request.session_id,
                         "role": "ai",  # adds ai role to the message being sent for doc
                         "content": answer,
-                        "user_id": user_request.user_id,
+                        "user_id": user_id,
                     }
                 )
                 .execute()
@@ -341,6 +355,7 @@ async def askDoc(
 # Async Function to stream the response from Doc
 async def stream_doc_response(
     user_request: MessageRequest,
+    user_id: str,
 ):  # MessageRequest is an object that has the question, session_id, and user_id
     """
     This is a function that generates the response from Doc
@@ -369,7 +384,7 @@ async def stream_doc_response(
                 "session_id": user_request.session_id,
                 "role": "ai",
                 "content": full_response,
-                "user_id": user_request.user_id,
+                "user_id": user_id,
             }
         ).execute()
 
@@ -387,6 +402,7 @@ async def stream_doc_response(
 @app.get("/api/chat/{session_id}")
 async def get_msg_for_chat(
     session_id: str,
+    current_user=Depends(get_current_user),
 ):  # session id will be sent in to be searched in database, user will be added later on
     """
     This is a function to get info from the chat session and load it in
@@ -397,6 +413,25 @@ async def get_msg_for_chat(
     """
     # try to get the data:
     try:
+        user_id = current_user["id"]
+        chat_record = (
+            supabase.table("chats")
+            .select("user_id")
+            .eq("session_id", session_id)
+            .execute()
+        )
+
+        if not chat_record.data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No chat found for session id: {session_id}",
+            )
+
+        if chat_record.data[0]["user_id"] != user_id:
+            raise HTTPException(
+                status_code=403, detail="Not authorized to access this chat"
+            )
+
         # Query the supabase table and try to get the messages that the user has
         response = (
             supabase.table("messages")
@@ -426,6 +461,8 @@ async def get_msg_for_chat(
                 detail=f"unfortunately there were no messages that matched the session id you gave: {session_id}",
             )
 
+    except HTTPException:
+        raise
     except Exception as err:
         # log the error
         raise HTTPException(
@@ -437,8 +474,28 @@ async def get_msg_for_chat(
 @app.delete("/api/chat/{session_id}")
 async def delete_chat(
     session_id: str,
+    current_user=Depends(get_current_user),
 ):  # session id will be sent in to be searched in database, user will be added later on
     try:
+        user_id = current_user["id"]
+        chat_record = (
+            supabase.table("chats")
+            .select("user_id")
+            .eq("session_id", session_id)
+            .execute()
+        )
+
+        if not chat_record.data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No chat found for session id: {session_id}",
+            )
+
+        if chat_record.data[0]["user_id"] != user_id:
+            raise HTTPException(
+                status_code=403, detail="Not authorized to delete this chat"
+            )
+
         # use the chat session_id to delete the chat
         chat_deleted = (
             # delete that chat titles from the database
@@ -458,21 +515,24 @@ async def delete_chat(
             chat_deleted,
             messages_deleted,
         )
+    except HTTPException:
+        raise
     except Exception as err:
         # see the error that might pop up
         raise HTTPException(status_code=404, detail=f"failed to delete the chat: {err}")
 
 
 # NOTE: different route to get all the different chat titles from the database
-@app.get("/api/chats/{user_id}")
+@app.get("/api/chats")
 async def get_all_chat_titles(
-    user_id: str,  # the user id gotten from the requests to the backend
+    current_user=Depends(get_current_user),
 ):  # user_id will be sent in to be searched in database, user will be added later on
     # max out the amount of chats that the user can get
     # NOTE: MAX_CHATS = 20 #contol the amount of chats that get displayed might make this for guest users only
 
     # Try to get the chats from the backend
     try:
+        user_id = current_user["id"]
         # fetch the data from the backend and have the newest chats at the top
         all_chats = (
             supabase.table("chats")
@@ -493,6 +553,8 @@ async def get_all_chat_titles(
         elif all_chats.data == 0:
             return {"chat": [], "amount_of_chats": 0}
 
+    except HTTPException:
+        raise
     except Exception as err:
         raise HTTPException(status_code=404, detail=f"failed to fetch the chats: {err}")
     # get all the data of the chat info

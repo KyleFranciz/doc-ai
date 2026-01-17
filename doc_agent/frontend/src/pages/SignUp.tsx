@@ -61,6 +61,7 @@ export default function SignUpPage() {
         signUpActive={signUpActive}
         handleSubmit={handleSubmit}
         userName={username}
+        setUserName={setUsername}
       />
     </div>
   );

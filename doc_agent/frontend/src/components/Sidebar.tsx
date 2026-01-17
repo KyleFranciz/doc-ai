@@ -57,7 +57,7 @@ export default function Sidebar({ user }: SidebarUserInterface) {
   // api fetch for all the chats in the database
   const { data, isLoading, error } = useQuery({
     // The users chats are loaded into the sidebar so that they can see their chat history
-    queryFn: () => fetchChats(user?.id),
+    queryFn: () => fetchChats(),
     queryKey: ["chats"], // key is an array of chats
     // refetchInterval: 10000, // refetch the chats every 10 seconds (might not use)
     refetchOnWindowFocus: true, // refetches when the window changes

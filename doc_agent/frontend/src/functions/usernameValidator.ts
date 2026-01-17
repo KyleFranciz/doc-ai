@@ -64,7 +64,7 @@ export const validateUsername = async (
 
     // otherwise, the username is valid and can be used
     return { isValid: true, message: "Username is valid." };
-  } catch (error) {
+  } catch (_error) {
     return {
       isValid: false,
       message: "There was an error validating the username.",

@@ -13,7 +13,9 @@ export const useAuthListener = () => {
     // create the listener for the auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log(`Auth change Event: ${event}, Session:${session}`);
+        console.log(
+          `Auth change Event: ${event}, Session:${session?.access_token}`,
+        );
 
         // use switch case to handle the auth state switching
         switch (event) {
@@ -33,7 +35,7 @@ export const useAuthListener = () => {
             break;
 
           case "INITIAL_SESSION":
-            if (session) {
+            if (session?.access_token) {
               // let the user know that they are already signed in
               toast.success("Welcome back");
               // navigate straight to the prompt page
@@ -45,7 +47,7 @@ export const useAuthListener = () => {
             // stop the function from running after so it doesn't keep running
             break;
         }
-      }
+      },
     );
     // stop the listener from running after so it doesn't keep running
     return () => {

@@ -1,55 +1,33 @@
-# TODO: make the auth decoder to get the token from the header requst to extract the user_id
 import os
 from dotenv import load_dotenv
-from fastapi import requests
-import requests
-from jose import jwt, jwk
 from fastapi import HTTPException
+from services.jwks_cache import JWKSCache, decode_jwt
 
-# load all the variables from the .env
+
 load_dotenv()
 
-# bring in env variables
-url: str = os.getenv("SUPABASE_URL")
+url: str | None = os.getenv("SUPABASE_URL")
+if not url:
+    raise ValueError("Supabase Url was not loaded properly")
 
-# create the JWKS_URL to get the decoder key
-JWKS_URL: str = f"{url}/auth/v1/.well-known/jwks.json"
+project_id = os.getenv("PROJECT_ID")
+if project_id:
+    jwks_url = f"https://{project_id}.supabase.co/auth/v1/.well-known/jwks.json"
+else:
+    jwks_url = f"{url}/auth/v1/.well-known/jwks.json"
+issuer = os.getenv("SUPABASE_JWT_ISSUER", f"{url}/auth/v1")
+audience = os.getenv("SUPABASE_JWT_AUD", "authenticated")
+cache_ttl = int(os.getenv("JWKS_CACHE_TTL", "300"))
 
-
-# function to get the jwk structure to compare with the jwt
-def get_jwks():
-    # try to connect to the supabase auth and get the patterns
-    try:
-        print("JWKS_URL is fetched correctly")
-        # jwks can now be used to authenticate the user requests
-        return requests.get(JWKS_URL, timeout=10).json()  # return the response
-    except Exception as e:
-        print(f"Error fetching JWKS: {e}")
-        return None
-
-
-jwks = get_jwks()
+jwks_cache = JWKSCache(jwks_url, ttl_seconds=cache_ttl)
 
 
 def decode_token(token: str):
     try:
-        # get the key ID from the token header
-        unverified_header = jwt.get_unverified_header(
-            token
-        )  # decodes the token and gets the header
-        kid = unverified_header.get("kid")  # from the dict get the kid
-
-        key = None  # initialize the key as None
-        for jwk_key in jwks["keys"]:  # get each of the keys from the jwks
-            if jwk_key["kid"] == kid:  # check if the kid is the same as the key
-                key = jwk.construct(jwk_key)  #
-                break  # break the loop once the key is constructed
-
-        # decode the token and verify the signature
-        payload = jwt.decode(token, key, algorithms=["RS256"])
-        # return the "id" and the "email" (might not need the email)
+        payload = decode_jwt(token, jwks_cache, issuer=issuer, audience=audience)
         return {"id": payload["sub"], "email": payload.get("email")}
-
+    except HTTPException:
+        raise
     except Exception:
         raise HTTPException(
             status_code=401, detail="Invalid authentication credentials"

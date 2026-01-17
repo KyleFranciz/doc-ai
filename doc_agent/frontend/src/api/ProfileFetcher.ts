@@ -6,37 +6,32 @@ import { supabase } from "@/connections/supabaseClient";
 
 const BASE_API_URL: string = import.meta.env.VITE_DOC_BASE_API;
 
-// NOTE: might make an access_token function to get the access_token of the user to make the code cleaner
+const getOptionalAccessToken = async () => {
+  const session = await supabase.auth.getSession();
+  return session.data.session?.access_token ?? null;
+};
 
-// function to get the profile of the user from the database
-export const fetchProfile = async () => {
-  // get the users current session info
-  const session = await supabase.auth.getSession(); // get the session data of the user
-  const access_token = session.data?.session?.access_token; // get the access_token of the user thats currently logged in
-
-  // account for if the user isnt logged in or and attacker
-  if (!access_token) {
+const getAccessToken = async () => {
+  const accessToken = await getOptionalAccessToken();
+  if (!accessToken) {
     throw new Error("No access token found");
   }
+  return accessToken;
+};
 
+// function to get the profile of the user from the database
+export const fetchProfile = async (accessToken: string) => {
   // TODO: edit the type of the response to match the other route that I have for the profiles
   const response = await axios.get<Profile>(`${BASE_API_URL}/api/profiles`, {
     // headers for the request
-    headers: { Authorization: `Bearer ${access_token}` }, // header will send the access token to use in order to get the profile
+    headers: { Authorization: `Bearer ${accessToken}` }, // header will send the access token to use in order to get the profile
   });
 
   return response?.data;
 };
 
 export const updateProfile = async (profile: Profile) => {
-  // get the users current session info
-  const session = await supabase.auth.getSession();
-  const access_token = session.data.session?.access_token;
-
-  // account for if the user isnt logged in or and attacker
-  if (!access_token) {
-    throw new Error("No access token found");
-  }
+  const accessToken = await getAccessToken();
 
   return await axios.put<APIResponse<Profile>>(
     `${BASE_API_URL}/api/profiles`,
@@ -46,7 +41,7 @@ export const updateProfile = async (profile: Profile) => {
     {
       headers: {
         // access token to make the request to the backend for auth edit
-        Authorization: `Bearer ${access_token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     },
   );
@@ -81,21 +76,26 @@ export const useUpdateProfile = (user_id: string | undefined) => {
 // WARN: LOOK BACK AT THIS FUNCTION TO SEE IF THE USER ID IS NEED
 // hook to fetch the profile of the user
 export const useProfile = (user_id: string | undefined) => {
-  // check if the user_id is defined
-  if (!user_id) {
-    throw new Error("User id is undefined");
-  }
+  const sessionQuery = useQuery({
+    queryKey: ["session-token"],
+    queryFn: getOptionalAccessToken,
+  });
+
+  const accessToken = sessionQuery.data;
 
   // otherwise make the query to get the profile from the backend
   const ProfileQuery = useQuery({
     // refresh if the user changes
     queryKey: ["profile", user_id],
-    queryFn: () => fetchProfile(),
-    enabled: user_id !== undefined, // only enabled if the user is logged in, made the syntax clearer
+    queryFn: () => fetchProfile(accessToken as string),
+    enabled: Boolean(user_id && accessToken), // only enabled when a user ID and token are present
   });
 
   // the invalidation of the query is handled by the useUpdateProfile hook
 
-  // return the query
-  return ProfileQuery;
+  return {
+    ...ProfileQuery,
+    isLoading: ProfileQuery.isLoading || sessionQuery.isLoading,
+    error: ProfileQuery.error ?? sessionQuery.error,
+  };
 };

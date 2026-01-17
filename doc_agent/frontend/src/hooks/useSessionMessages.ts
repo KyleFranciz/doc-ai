@@ -6,7 +6,7 @@ import {
   UseSessionOptions,
 } from "../interfaces/chat-interfaces";
 import axios, { AxiosError } from "axios";
-import { MessageToDoc } from "../pages/Promptpage";
+import { MessageToDoc } from "../interfaces/chat-interfaces";
 import { supabase } from "../connections/supabaseClient";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
@@ -56,13 +56,23 @@ export const useSessionMessages = (
       setLoading(true);
       setError(null);
 
+      const session = await supabase.auth.getSession();
+      const accessToken = session.data.session?.access_token;
+
+      if (!accessToken) {
+        throw new Error("No access token found");
+      }
+
       const response = await axios.get<GetMessagesResponse>(
         // might add back in base url if request not successful
-        `${BASE_API_URL}/api/chat/${sessionId}`
+        `${BASE_API_URL}/api/chat/${sessionId}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
       );
 
       // update the component is still mounted
-      if (!mountedRef.current) {
+      if (mountedRef.current) {
         setMessages(response.data.messages);
         console.log(response.data.messages);
       }
@@ -175,11 +185,19 @@ export const useSessionMessages = (
         // reset error message to null
         setError(null);
 
+        const session = await supabase.auth.getSession();
+        const accessToken = session.data.session?.access_token;
+        const userId = session.data.session?.user?.id;
+
+        if (!accessToken) {
+          throw new Error("No access token found");
+        }
+
         // format the message that I'll send
         const questionToSend: MessageToDoc = {
           question: content,
           session_id: sessionId,
-          user_id: "user_tester",
+          user_id: userId,
           role: role,
         };
 
@@ -190,7 +208,10 @@ export const useSessionMessages = (
           questionToSend, // question, sessionId and user info sent
           {
             // header to send
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
           }
         );
 

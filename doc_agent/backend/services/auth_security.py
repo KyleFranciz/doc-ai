@@ -1,9 +1,9 @@
 # This has all the functions to help me handle auth with supabase and auth from requests
 
 # imports
-from fastapi import HTTPException, Header
+from fastapi import Header, HTTPException
 from jose import jwk, jwt
-from main import get_jwks
+from auth_decoder import get_jwks
 
 # use the function and use it to use in the function
 jwks = get_jwks()

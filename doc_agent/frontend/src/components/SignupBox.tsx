@@ -6,6 +6,7 @@ import React from "react";
 interface SignUpBox {
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   userName: string; //NOTE: import custom function to add the user name to its own table, also add it in the metatdata for user Sign in
+  setUserName: React.Dispatch<React.SetStateAction<string>>;
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
   password: string;
@@ -22,13 +23,25 @@ export default function SignupBox(props: SignUpBox) {
             <h1 className="text-2xl font-bold text-white mb-2">
               Sign up for your account
             </h1>
-            {/* TODO: ADD a username input */}
             <p className="text-gray-300 text-sm">
-              Enter your email for your new account
+              Enter your information for your new account
             </p>
           </div>
           {/*Input fields for the email and password*/}
           <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-white mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                placeholder="Username"
+                className="w-full px-3 mb-2 py-2 bg-[#292929] outline-[0.5px] border-gray-300 rounded-md placeholder:text-white placeholder:opacity-35 text-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                onChange={(e) => props.setUserName(e.target.value)}
+                required
+                value={props.userName}
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-white mb-2">
                 Email

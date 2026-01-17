@@ -1,17 +1,13 @@
 # imported functions that I will use
 
-from dotenv import load_dotenv
-
 import os
 
+from dotenv import load_dotenv
+from langchain.schema import AIMessage, HumanMessage
+
 # from typing import List (might need later)
-
-
 # Supabase connection so that I can use it to access connections to the tables in the DB
 from supabase import Client, create_client
-
-from langchain.schema import HumanMessage, AIMessage
-
 
 load_dotenv()
 

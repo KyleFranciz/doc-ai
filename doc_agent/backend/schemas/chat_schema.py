@@ -1,4 +1,5 @@
 # Import the base model from pydantic so that I can create a model for these chat pieces
+from typing import Optional
 from pydantic import BaseModel  # create default model for the responses from the api
 
 # import langchain Ai message that the Agent gives back as a default response in this format
@@ -12,8 +13,9 @@ class MessageRequest(
 
     question: str
     session_id: str  # string to that the session can be saved in the database
-    user_id: str  # id of the user that sends the request
+    user_id: Optional[str]  # id of the user that sends the request
     role: str  # role will be filled automatically
+    # bearer or auth feild might be added in to help secure the messages sent
 
 
 # returned to in json format to the user

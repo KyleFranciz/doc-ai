@@ -14,6 +14,7 @@ export type AuthCheckerEvents = "SIGNED_IN" | "SIGNED_OUT" | "TOKEN_REFRESHED"; 
 
 // make a function to get create and add a username to supabase
 // NOTE: add to profiles table, use the datas user id that I get back from the creation to the user
+// TODO: add in the bearer token might use supabase or supabase function to handle validation
 export const createUserName = async (username: string, user_id: string) => {
   // check if the username is valid, no profanity or symbols and if the username already exists
   const { isValid, message } = await validateUsername(username);
@@ -115,6 +116,7 @@ export const signUpSupabase = async (
       email: email,
       password: password,
       options: {
+        // TODO: use base url in the emailRedirectTo
         emailRedirectTo: "/prompt", // NOTE: redirect to dashboard after the user signs up for the first time (might change)
         data: { username: username }, // used for the users main display name
         // NOTE: Might add in more elements later on
